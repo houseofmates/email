@@ -8,7 +8,7 @@ store = { path = "../store" }
 common = { path =  "../common" }
 utils = { path =  "../utils" }
 trc = { path = "../trc" }
-email = { path = "../email" }
+email_lib = { path = "../email" }
 smtp = { path = "../smtp" }
 jmap = { path = "../jmap" }
 dav = { path = "../dav" }

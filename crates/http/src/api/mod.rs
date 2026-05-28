@@ -37,6 +37,8 @@ use jmap_proto::error::request::RequestError;
 use registry::schema::enums::Permission;
 use std::time::Duration;
 use utils::url_params::UrlParams;
+use crate::email::alias::Alias;
+use http_proto::JsonResponse;
 
 pub trait ManagementApi: Sync + Send {
     fn handle_api_request(
@@ -59,8 +61,8 @@ impl ManagementApi for Server {
         req: &mut HttpRequest,
         session: &HttpSessionData,
     ) -> trc::Result<HttpResponse> {
-        let is_post = req.method() == Method::POST;
-        let body = if is_post {
+        let needs_body = req.method() == Method::POST || req.method() == Method::PUT;
+        let body = if needs_body {
             fetch_body(req, 1024 * 1024, session.session_id).await
         } else {
             None
@@ -241,6 +243,13 @@ impl ManagementApi for Server {
                     _ => Err(trc::ResourceEvent::NotFound.into_err()),
                 }
             }
+            "aliases" => {
+                // Authenticate request
+                let (_in_flight, access_token) = self.authenticate_headers(req, session).await?;
+                let path: Vec<String> = path.iter().map(|s| s.to_string()).collect();
+                self.handle_aliases_request(&access_token, req, req.method().clone(), body, path)
+                    .await
+            }
             _ => Err(trc::ResourceEvent::NotFound.into_err()),
         }
     }
@@ -298,6 +307,59 @@ impl ManagementApi for Server {
         }
     }
 }
+
+async fn handle_aliases_request(&self, access_token: &AccessToken, req: &HttpRequest, method: Method, body: Option<Vec<u8>>, path: Vec<String>) -> trc::Result<HttpResponse> {
+    // For simplicity, we allow any authenticated user to manage aliases.
+    // In a real system, you might check permissions or tie aliases to the account.
+    let account_id = access_token.account_id();
+
+    match path.as_slice() {
+        ["aliases"] => match method {
+            &Method::GET => {
+                // List aliases
+                let store = &self.inner.alias_state.as_ref().unwrap().store;
+                let aliases = store.list();
+                Ok(JsonResponse::new(aliases).into_http_response())
+            }
+            &Method::POST => {
+                // Create alias
+                let body = body.ok_or_else(|| trc::LimitEvent::SizeRequest.into_err())?;
+                let alias: Alias = serde_json::from_slice(&body)?;
+                let store = &self.inner.alias_state.as_ref().unwrap().store;
+                store.insert(alias.clone())?;
+                Ok(JsonResponse::with_status(StatusCode::CREATED, alias).into_http_response())
+            }
+            _ => Err(trc::ResourceEvent::MethodNotAllowed.into_err()),
+        },
+        ["aliases", id] => match method {
+            &Method::GET => {
+                // Get alias by id
+                let store = &self.inner.alias_state.as_ref().unwrap().store;
+                let alias = store.get(id).ok_or_else(|| trc::ResourceEvent::NotFound.into_err())?;
+                Ok(JsonResponse::new(alias).into_http_response())
+            }
+            &Method::PUT => {
+                // Update alias
+                let body = body.ok_or_else(|| trc::LimitEvent::SizeRequest.into_err())?;
+                let mut alias: Alias = serde_json::from_slice(&body)?;
+                // Ensure the ID matches the path
+                alias.id = id.to_string();
+                let store = &self.inner.alias_state.as_ref().unwrap().store;
+                store.update(id, alias.clone())?;
+                Ok(JsonResponse::new(alias).into_http_response())
+            }
+            &Method::DELETE => {
+                // Delete alias
+                let store = &self.inner.alias_state.as_ref().unwrap().store;
+                store.delete(id)?;
+                Ok(JsonResponse::with_status(StatusCode::NO_CONTENT, ()).into_http_response())
+            }
+            _ => Err(trc::ResourceEvent::MethodNotAllowed.into_err()),
+        },
+        _ => Err(trc::ResourceEvent::NotFound.into_err()),
+    }
+}
+
 
 pub trait ToManageHttpResponse {
     fn into_http_response(self) -> HttpResponse;

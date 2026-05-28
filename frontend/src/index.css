@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Varela Round", sans-serif;
+  --color-pkm-900: #050505;
+  --color-pkm-800: #0a0a0a;
+  --color-pkm-700: #141414;
+  --color-pkm-600: #1f1f1f;
+  --color-pkm-500: #2a2a2a;
+  --color-pkm-400: #3a3a3a;
+  --color-gold: #f6b012;
+  --color-sky: #3c9fdd;
+  --color-gold-dim: rgba(246, 176, 18, 0.15);
+  --color-sky-dim: rgba(60, 159, 221, 0.15);
+}
+
+body {
+  margin: 0;
+  background: #050505;
+  color: #ccc;
+  font-family: "Varela Round", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: rgba(246, 176, 18, 0.3);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  transition: background-color 0s 600000s, color 0s 600000s;
+}

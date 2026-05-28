@@ -1,5 +1,5 @@
 [package]
-name = "email"
+name = "email_lib"
 version = "0.16.7"
 edition = "2024"
 
