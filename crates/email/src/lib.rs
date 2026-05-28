@@ -13,3 +13,4 @@ pub mod message;
 pub mod push;
 pub mod sieve;
 pub mod submission;
+pub mod alias;

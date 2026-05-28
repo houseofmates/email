@@ -16,7 +16,7 @@ services = { path =  "../services" }
 directory = { path =  "../directory" }
 trc = { path = "../trc" }
 spam-filter = { path = "../spam-filter" }
-email = { path = "../email" }
+email_lib = { path = "../email" }
 groupware = { path = "../groupware" }
 registry = { path = "../registry" }
 calcard = { version = "0.3" }

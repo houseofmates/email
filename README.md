@@ -5,17 +5,17 @@
 </p>
 
 <h3 align="center">
-  Secure, scalable mail & collaboration server with comprehensive protocol support 🛡️ <br/>(IMAP, JMAP, SMTP, CalDAV, CardDAV, WebDAV)
+  Personal email suite forked from Stalwart - Secure, scalable mail & collaboration server with alias management 🛡️ <br/>(IMAP, JMAP, SMTP, CalDAV, CardDAV, WebDAV)
 </h3>
 
 <br>
 
 <p align="center">
-  <a href="https://github.com/stalwartlabs/stalwart/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/stalwartlabs/stalwart/ci.yml?style=flat-square" alt="continuous integration"></a>
+  <a href="https://github.com/houseofmates/email/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/houseofmates/email/ci.yml?style=flat-square" alt="continuous integration"></a>
   &nbsp;
   <a href="https://www.gnu.org/licenses/agpl-3.0"><img src="https://img.shields.io/badge/License-AGPL_v3-blue.svg?label=license&style=flat-square" alt="License: AGPL v3"></a>
   &nbsp;
-  <a href="https://stalw.art/docs/install/get-started"><img src="https://img.shields.io/badge/read_the-docs-red?style=flat-square" alt="Documentation"></a>
+  <a href="./docs/install/get-started"><img src="https://img.shields.io/badge/read_the-docs-red?style=flat-square" alt="Documentation"></a>
 </p>
 <p align="center">
   <a href="https://mastodon.social/@stalwartlabs"><img src="https://img.shields.io/mastodon/follow/109929667531941122?style=flat-square&logo=mastodon&color=%236364ff&label=Follow%20on%20Mastodon" alt="Mastodon"></a>
@@ -28,9 +28,13 @@
   <a href="https://www.reddit.com/r/stalwartlabs/"><img src="https://img.shields.io/reddit/subreddit-subscribers/stalwartlabs?label=Join%20%2Fr%2Fstalwartlabs&logo=reddit&style=flat-square" alt="Reddit"></a>
 </p>
 
+## Fork Notice
+
+This is a personal fork of [stalwartlabs/stalwart](https://github.com/stalwartlabs/stalwart) modified to create a personal email suite with integrated alias management, inspired by Proton Pass. The core mail server functionality remains, with additions for alias workflows and a personal frontend.
+
 ## Features
 
-**Stalwart** is an open-source mail & collaboration server with JMAP, IMAP4, POP3, SMTP, CalDAV, CardDAV and WebDAV support and a wide range of modern features. It is written in Rust and designed to be secure, fast, robust and scalable.
+**Email** is a personal email server forked from Stalwart with added alias management capabilities. It is written in Rust and designed to be secure, fast, robust and scalable.
 
 Key features:
 
@@ -128,34 +132,34 @@ Key features:
 
 ## Presentation
 
-**Want a deeper dive?** Need to explain to your boss why Stalwart is the perfect fit? Whether you're evaluating options, making a case to your team, or simply curious about how it all works under the hood, these slides walk you through the key features, architecture, and benefits of Stalwart. Browse the [slides](https://stalw.art/slides) to see what makes it stand out.
+**Want a deeper dive?** Need to explain to your boss why Email is the perfect fit? Whether you're evaluating options, making a case to your team, or simply curious about how it all works under the hood, these slides walk you through the key features, architecture, and benefits of Email. Browse the [slides](https://stalw.art/slides) to see what makes it stand out.
 
 ## Get Started
 
-Install Stalwart on your server by following the instructions for your platform:
+Install Email on your server by following the instructions for your platform:
 
-- [Linux / MacOS](https://stalw.art/docs/install/platform/linux)
-- [Windows](https://stalw.art/docs/install/platform/windows)
-- [Docker](https://stalw.art/docs/install/platform/docker)
+- [Linux / MacOS](./docs/install/platform/linux)
+- [Windows](./docs/install/platform/windows)
+- [Docker](./docs/install/platform/docker)
 
-All documentation is available at [stalw.art/docs](https://stalw.art/docs/install/get-started).
+All documentation is available at [./docs/install/get-started](./docs/install/get-started).
 
 ## Support
 
-If you are having problems running Stalwart, found a bug, or just have a question, please head to the [Stalwart Support Portal](https://support.stalw.art) at [support.stalw.art](https://support.stalw.art). 
-Additionally, you may purchase an [Enterprise License](https://stalw.art/enterprise) to obtain priority support from Stalwart Labs LLC, including response-time commitments and a private Priority Support area on the portal.
+If you are having problems running Email, found a bug, or just have a question, please head to the [Email Support Portal](https://support.stalw.art) at [support.stalw.art]. 
+Additionally, you may purchase an [Enterprise License](./enterprise) to obtain priority support from Stalwart Labs LLC, including response-time commitments and a private Priority Support area on the portal.
 
 ## Roadmap
 
-Stalwart has reached an exciting point in its journey, it’s now **feature complete**. All the core functionality and open standard email and collaboration protocols that we set out to support are in place. In other words, Stalwart already does everything you’d expect from a modern, standards-compliant mail and collaboration platform.
+Email has reached an exciting point in its journey, it’s now **feature complete** for personal use. All the core functionality and open standard email and collaboration protocols that we set out to support are in place. In other words, Email already does everything you’d expect from a modern, standards-compliant mail and collaboration platform, plus alias management.
 
 The next major milestone is all about refinement: finalizing the database schema and focusing on performance optimizations to ensure everything runs as efficiently and reliably as possible. Once that’s done, we’ll be ready to roll out version **1.0**.
 
-Of course, development doesn’t stop there. The community has contributed hundreds of great ideas for improvements and new features, everything from subtle usability tweaks to entirely new integrations. You can see the full list of proposals over on our [GitHub issues](https://github.com/stalwartlabs/stalwart/issues?q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc+label%3Aenhancement). If there’s something you’d like to see prioritized, just give it a thumbs up as we plan to implement enhancements based on the community’s votes.
+Of course, development doesn’t stop there. The community has contributed hundreds of great ideas for improvements and new features, everything from subtle usability tweaks to entirely new integrations. You can see the full list of proposals over on our [GitHub issues](https://github.com/houseofmates/email/issues?q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc+label%3Aenhancement). If there’s something you’d like to see prioritized, just give it a thumbs up as we plan to implement enhancements based on the community’s votes.
 
 ## Sponsorship
 
-Your support is crucial in helping us continue to improve the project, add new features, and maintain the highest level of quality. By [becoming a sponsor](https://opencollective.com/stalwart), you help fund the development and future of Stalwart. As a thank-you, sponsors who contribute $5 per month or more will automatically receive a [Enterprise edition](https://stalw.art/enterprise/) license. And, sponsors who contribute $30 per month or more, also have access to [Premium Support](https://stalw.art/support) from Stalwart Labs.
+Your support is crucial in helping us continue to improve the project, add new features, and maintain the highest level of quality. By [becoming a sponsor](https://opencollective.com/houseofmates), you help fund the development and future of Email. As a thank-you, sponsors who contribute $5 per month or more will automatically receive a [Enterprise edition](./enterprise/) license. And, sponsors who contribute $30 per month or more, also have access to [Premium Support](./support) from Stalwart Labs.
 
 ## Funding
 
@@ -164,7 +168,7 @@ Part of the development of this project was funded through:
 - [NGI0 Entrust Fund](https://nlnet.nl/entrust), a fund established by [NLnet](https://nlnet.nl/) with financial support from the European Commission's [Next Generation Internet](https://ngi.eu/) programme, under the aegis of DG Communications Networks, Content and Technology under grant agreement No 101069594.
 - [NGI Zero Core](https://nlnet.nl/NGI0/), a fund established by [NLnet](https://nlnet.nl/) with financial support from the European Commission's programme, under the aegis of DG Communications Networks, Content and Technology under grant agreement No 101092990.
 
-If you find the project useful you can help by [becoming a sponsor](https://opencollective.com/stalwart). Thank you!
+If you find the project useful you can help by [becoming a sponsor](https://opencollective.com/houseofmates). Thank you!
 
 ## License
 

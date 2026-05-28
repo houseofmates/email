@@ -1,6 +1,6 @@
 [package]
-name = "stalwart"
-description = "Stalwart Mail and Collaboration Server"
+name = "email"
+description = "Personal email server forked from Stalwart"
 authors = [ "Stalwart Labs LLC <hello@stalw.art>"]
 repository = "https://github.com/stalwartlabs/stalwart"
 homepage = "https://stalw.art"
@@ -11,7 +11,7 @@ version = "0.16.7"
 edition = "2024"
 
 [[bin]]
-name = "stalwart"
+name = "email"
 path = "src/main.rs"
 
 [dependencies]
@@ -26,7 +26,7 @@ pop3 = { path = "../pop3" }
 spam-filter = { path = "../spam-filter" }
 managesieve = { path = "../managesieve" }
 common = { path = "../common" }
-email = { path = "../email" }
+email_lib = { path = "../email" }
 directory = { path = "../directory" }
 http = { path = "../http" }
 dav = { path = "../dav" }
@@ -64,7 +64,7 @@ enterprise = [ "jmap/enterprise",
                "store/enterprise", 
                "managesieve/enterprise", 
                "directory/enterprise", 
-               "email/enterprise",
+               "email_lib/enterprise",
                "spam-filter/enterprise",
                "http/enterprise",
                "dav/enterprise",

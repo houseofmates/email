@@ -17,7 +17,7 @@ utils = { path =  "../utils" }
 nlp = { path =  "../nlp" }
 directory = { path =  "../directory" }
 common = { path =  "../common" }
-email = { path =  "../email" }
+email_lib = { path = "../email" }
 registry = { path =  "../registry" }
 spam-filter = { path =  "../spam-filter" }
 trc = { path = "../trc" }

@@ -1136,6 +1136,7 @@ dependencies = [
  "pwhash",
  "quick-xml 0.39.4",
  "quick_cache",
+ "rand 0.8.6",
  "rasn",
  "rasn-cms",
  "rasn-pkix",
@@ -2098,6 +2099,37 @@ dependencies = [
 name = "email"
 version = "0.16.7"
 dependencies = [
+ "common",
+ "coordinator",
+ "dav",
+ "directory",
+ "email_lib",
+ "groupware",
+ "http 0.16.7",
+ "http_proto",
+ "imap",
+ "jemallocator",
+ "jmap",
+ "managesieve",
+ "migration",
+ "pop3",
+ "registry",
+ "rustls 0.23.40",
+ "services",
+ "smtp",
+ "smtp-proto",
+ "spam-filter",
+ "store",
+ "tokio",
+ "trc",
+ "types",
+ "utils",
+]
+
+[[package]]
+name = "email_lib"
+version = "0.16.7"
+dependencies = [
  "aes 0.8.4",
  "aes-gcm",
  "aes-gcm-siv",
@@ -2978,7 +3010,7 @@ dependencies = [
  "compact_str",
  "dav",
  "directory",
- "email",
+ "email_lib",
  "form-data",
  "groupware",
  "hashify",
@@ -3346,7 +3378,7 @@ dependencies = [
  "common",
  "compact_str",
  "directory",
- "email",
+ "email_lib",
  "imap_proto",
  "indexmap 2.14.0",
  "mail-parser",
@@ -3590,7 +3622,7 @@ dependencies = [
  "common",
  "compact_str",
  "directory",
- "email",
+ "email_lib",
  "futures-util",
  "groupware",
  "hashify",
@@ -4182,7 +4214,7 @@ dependencies = [
  "common",
  "compact_str",
  "directory",
- "email",
+ "email_lib",
  "imap",
  "imap_proto",
  "jmap_proto",
@@ -4295,7 +4327,7 @@ dependencies = [
  "common",
  "compact_str",
  "directory",
- "email",
+ "email_lib",
  "futures",
  "lz4_flex 0.13.1",
  "nlp",
@@ -5244,7 +5276,7 @@ version = "0.16.7"
 dependencies = [
  "common",
  "directory",
- "email",
+ "email_lib",
  "imap",
  "mail-parser",
  "registry",
@@ -6976,7 +7008,7 @@ dependencies = [
  "compact_str",
  "directory",
  "dns-update",
- "email",
+ "email_lib",
  "groupware",
  "hkdf 0.13.0",
  "jmap_proto",
@@ -7226,7 +7258,7 @@ dependencies = [
  "common",
  "compact_str",
  "directory",
- "email",
+ "email_lib",
  "form_urlencoded",
  "hashify",
  "http-body-util",
@@ -7425,37 +7457,6 @@ name = "stable_deref_trait"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6ce2be8dc25455e1f91df71bfa12ad37d7af1092ae736f3a6cd0e37bc7810596"
-
-[[package]]
-name = "stalwart"
-version = "0.16.7"
-dependencies = [
- "common",
- "coordinator",
- "dav",
- "directory",
- "email",
- "groupware",
- "http 0.16.7",
- "http_proto",
- "imap",
- "jemallocator",
- "jmap",
- "managesieve",
- "migration",
- "pop3",
- "registry",
- "rustls 0.23.40",
- "services",
- "smtp",
- "smtp-proto",
- "spam-filter",
- "store",
- "tokio",
- "trc",
- "types",
- "utils",
-]
 
 [[package]]
 name = "static_assertions"
@@ -7681,7 +7682,7 @@ dependencies = [
  "directory",
  "dns-update",
  "ece",
- "email",
+ "email_lib",
  "flate2",
  "form_urlencoded",
  "futures",

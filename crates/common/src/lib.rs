@@ -59,6 +59,7 @@ use utils::{
     snowflake::SnowflakeIdGenerator,
 };
 
+pub mod alias;
 pub mod auth;
 pub mod cache;
 pub mod config;
@@ -139,6 +140,7 @@ pub struct Inner {
     pub data: Data,
     pub cache: Caches,
     pub ipc: Ipc,
+    pub alias_state: Option<alias::AliasState>,
 }
 
 #[allow(clippy::type_complexity)]

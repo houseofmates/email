@@ -10,7 +10,7 @@ directory = { path = "../directory" }
 trc = { path = "../trc" }
 store = { path = "../store" }
 common = { path = "../common" }
-email = { path = "../email" }
+email_lib = { path = "../email" }
 nlp = { path = "../nlp" }
 utils = { path = "../utils" }
 registry = { path = "../registry" }

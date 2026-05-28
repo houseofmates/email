@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Email Alias Manager",
+  "description": "Manage your email aliases for the personal email suite",
+  "version": "1.0",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_page": "options.html",
+  "permissions": [
+    "storage",
+    "tabs",
+    "http://localhost:8080/",
+    "https://localhost:8080/"
+  ],
+  "host_permissions": [
+    "http://localhost:8080/*",
+    "https://localhost:8080/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  }
+}
