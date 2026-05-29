@@ -9,7 +9,6 @@
 use crate::backend::oidc::OpenIdDirectory;
 use backend::{ldap::LdapDirectory, sql::SqlDirectory};
 use deadpool::managed::PoolError;
-use ldap3::LdapError;
 use std::{collections::HashMap, fmt::Debug, sync::Arc};
 
 pub mod backend;
