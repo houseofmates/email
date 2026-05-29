@@ -15,7 +15,7 @@ use mail_parser::decoders::base64::base64_decode;
 use pbkdf2::Pbkdf2;
 use pwhash::{bcrypt, bsdi_crypt, md5_crypt, sha1_crypt, sha256_crypt, sha512_crypt, unix_crypt};
 use registry::schema::enums::PasswordHashAlgorithm;
-use scrypt::Scrypt;
+use scrypt;
 use sha1::Digest;
 use sha1::Sha1;
 use sha2::Sha256;
@@ -91,7 +91,15 @@ async fn verify_hash_prefix(hashed_secret: &str, secret: &[u8]) -> trc::Result<b
                 } else if is_pbkdf2 {
                     Pbkdf2.verify_password(&secret, &hash)
                 } else {
-                    Scrypt::new().verify_password(&secret, &hash)
+                    // scrypt 0.12: use the scrypt function, not the Scrypt struct
+                    let params = scrypt::Params::try_from(&hash).map_err(|_| ());
+                    match params {
+                        Ok(params) => {
+                            let password_hash = scrypt::scrypt(&secret, &hash.salt, &params);
+                            password_hash.map(|_| ()).map_err(|_| ())
+                        }
+                        Err(_) => Err(()),
+                    }
                 };
 
                 tx.send(Ok(result.is_ok())).ok();
@@ -266,9 +274,29 @@ pub async fn hash_secret(algorithm: PasswordHashAlgorithm, secret: Vec<u8>) -> t
                     .ok()
                     .unwrap_or(());
             }
-            PasswordHashAlgorithm::Scrypt => Scrypt::new().hash_password(secret.as_slice(), &salt)
-                .map(|h| h.to_string()),
-            PasswordHashAlgorithm::Pbkdf2 => Pbkdf2.hash_password(secret.as_slice(), &salt)
+            PasswordHashAlgorithm::Scrypt => {
+                // scrypt 0.12: use the scrypt function, then encode as PHC string
+                let params = scrypt::Params::new(14, 8, 1).map_err(|err| {
+                    trc::AuthEvent::Error
+                        .reason(err)
+                        .details("scrypt params invalid")
+                })?;
+                let password_hash = scrypt::scrypt(secret.as_slice(), &salt, &params)
+                    .map_err(|err| {
+                        trc::AuthEvent::Error
+                            .reason(err)
+                            .details("scrypt hash failed")
+                    })?;
+                Ok(PasswordHash {
+                    algorithm: "scrypt".into(),
+                    version: None,
+                    params: params.to_string().into(),
+                    salt: Some(salt),
+                    hash: Some(password_hash.as_slice()),
+                }.to_string())
+            }
+            PasswordHashAlgorithm::Pbkdf2 => Pbkdf2
+                .hash_password(secret.as_slice(), &salt)
                 .map(|h| h.to_string()),
         };
 
@@ -458,10 +486,19 @@ mod tests {
             .to_string();
         assert!(is_password_hash(&argon), "argon2 not detected: {argon}");
 
-        let pbkdf = Pbkdf2::hash_password(b"hello", &salt).unwrap().to_string();
+        let pbkdf = Pbkdf2.hash_password(b"hello", &salt).unwrap().to_string();
         assert!(is_password_hash(&pbkdf), "pbkdf2 not detected: {pbkdf}");
 
-        let scr = Scrypt::hash_password(b"hello", &salt).unwrap().to_string();
+        let params = scrypt::Params::new(14, 8, 1).unwrap();
+        let scr = scrypt::scrypt(b"hello", &salt, &params)
+            .map(|hash| PasswordHash {
+                algorithm: "scrypt".into(),
+                version: None,
+                params: params.to_string().into(),
+                salt: Some(salt),
+                hash: Some(hash.as_slice()),
+            }.to_string())
+            .unwrap();
         assert!(is_password_hash(&scr), "scrypt not detected: {scr}");
     }
 
@@ -560,7 +597,7 @@ mod tests {
         assert!(is_password_hash(&format!("{{ARGON2}}{a}")));
         assert!(is_password_hash(&format!("{{ARGON2I}}{a}")));
 
-        let p = Pbkdf2::hash_password(b"hello", &salt).unwrap().to_string();
+        let p = Pbkdf2.hash_password(b"hello", &salt).unwrap().to_string();
         assert!(is_password_hash(&format!("{{PBKDF2}}{p}")));
 
         let mut h = Sha1::new();
