@@ -1,3 +1,4 @@
+use rand::RngExt;
 /*
  * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
  *
