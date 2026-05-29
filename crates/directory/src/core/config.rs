@@ -6,7 +6,6 @@
 
 use crate::{
     Directories,
-    backend::{ldap::LdapDirectory, oidc::OpenIdDirectory, sql::SqlDirectory},
 };
 use registry::schema::{
     prelude::ObjectType,
