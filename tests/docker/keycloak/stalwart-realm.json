@@ -1,5 +1,5 @@
 {
-  "realm": "stalwart",
+  "realm": "email",
   "enabled": true,
   "registrationAllowed": false,
   "loginWithEmailAllowed": true,
@@ -7,10 +7,10 @@
   "sslRequired": "none",
   "clients": [
     {
-      "clientId": "stalwart",
+      "clientId": "email",
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
-      "secret": "stalwart-secret",
+      "secret": "email-secret",
       "redirectUris": [
         "*"
       ],
@@ -62,7 +62,7 @@
           "protocolMapper": "oidc-audience-mapper",
           "consentRequired": false,
           "config": {
-            "included.client.audience": "stalwart",
+            "included.client.audience": "email",
             "id.token.claim": "false",
             "access.token.claim": "true"
           }
@@ -70,10 +70,10 @@
       ]
     },
     {
-      "clientId": "stalwart-fallback",
+      "clientId": "email-fallback",
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
-      "secret": "stalwart-fallback-secret",
+      "secret": "email-fallback-secret",
       "redirectUris": [
         "*"
       ],
@@ -127,7 +127,7 @@
           "protocolMapper": "oidc-audience-mapper",
           "consentRequired": false,
           "config": {
-            "included.client.audience": "stalwart",
+            "included.client.audience": "email",
             "id.token.claim": "false",
             "access.token.claim": "true"
           }

@@ -1,4 +1,4 @@
-require ["variables", "include", "vnd.stalwart.expressions", "reject"];
+require ["variables", "include", "vnd.email.expressions", "reject"];
 
 global "score";
 

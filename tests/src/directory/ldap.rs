@@ -143,8 +143,8 @@ pub fn ldap_test_directory() -> structs::LdapDirectory {
         attr_member_of: Map::new(vec!["memberOf".to_string()]),
         attr_secret: Map::new(vec![]),
         attr_secret_changed: Map::new(vec!["shadowLastChange".to_string()]),
-        base_dn: "dc=stalwart,dc=test".into(),
-        bind_dn: "cn=admin,dc=stalwart,dc=test".to_string().into(),
+        base_dn: "dc=email,dc=test".into(),
+        bind_dn: "cn=admin,dc=email,dc=test".to_string().into(),
         bind_secret: SecretKeyOptional::Value(SecretKeyValue {
             secret: "admin".into(),
         }),

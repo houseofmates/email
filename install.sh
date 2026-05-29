@@ -12,7 +12,7 @@
 set -e
 set -u
 
-readonly BASE_URL="https://github.com/stalwartlabs/stalwart/releases/latest/download"
+readonly BASE_URL="https://github.com/stalwartlabs/email/releases/latest/download"
 
 main() {
     downloader --check
@@ -34,7 +34,7 @@ main() {
     # Detect OS
     local _os _uname _account
     _uname="$(uname)"
-    _account="stalwart"
+    _account="email"
     case "$_uname" in
         Linux)  _os="linux" ;;
         Darwin) _os="macos"; _account="_stalwart" ;;
@@ -42,12 +42,12 @@ main() {
     esac
 
     # Parse arguments
-    local _component="stalwart"
+    local _component="email"
     local _prefix=""
     while [ $# -gt 0 ]; do
         case "$1" in
             --fdb)
-                _component="stalwart-foundationdb"
+                _component="email-foundationdb"
                 ;;
             -h|--help)
                 print_usage
@@ -70,18 +70,18 @@ main() {
     local _bin_dir _bin_file _conf_dir _log_dir _data_dir _env_file _config_file
     if [ -z "$_prefix" ]; then
         _bin_dir="/usr/local/bin"
-        _conf_dir="/etc/stalwart"
-        _log_dir="/var/log/stalwart"
-        _data_dir="/var/lib/stalwart"
+        _conf_dir="/etc/email"
+        _log_dir="/var/log/email"
+        _data_dir="/var/lib/email"
     else
         _bin_dir="${_prefix}/bin"
         _conf_dir="${_prefix}/etc"
         _log_dir="${_prefix}/logs"
         _data_dir="${_prefix}/data"
     fi
-    _bin_file="${_bin_dir}/stalwart"
+    _bin_file="${_bin_dir}/email"
     _config_file="${_conf_dir}/config.json"
-    _env_file="${_conf_dir}/stalwart.env"
+    _env_file="${_conf_dir}/email.env"
 
     # Detect architecture
     get_architecture || return 1
@@ -98,12 +98,12 @@ main() {
     say "⏳ Downloading ${_component} for ${_arch}..."
     local _tmp _tar _src_name
     _tmp="$(mktemp -d)"
-    _tar="${_tmp}/stalwart.tar.gz"
+    _tar="${_tmp}/email.tar.gz"
     ensure downloader "${BASE_URL}/${_component}-${_arch}.tar.gz" "$_tar" "$_arch"
     ensure tar zxf "$_tar" -C "$_tmp"
-    _src_name="stalwart"
-    if [ "$_component" = "stalwart-foundationdb" ]; then
-        _src_name="stalwart-foundationdb"
+    _src_name="email"
+    if [ "$_component" = "email-foundationdb" ]; then
+        _src_name="email-foundationdb"
     fi
     ensure cp "${_tmp}/${_src_name}" "$_bin_file"
     ensure chmod 0755 "$_bin_file"
@@ -153,14 +153,14 @@ main() {
     say "👉 To find the password, inspect the service logs:"
     case "$_service_type" in
         systemd)
-            say "     journalctl -u stalwart -n 200 | grep -A8 'bootstrap mode'"
+            say "     journalctl -u email -n 200 | grep -A8 'bootstrap mode'"
             ;;
         initd)
             say "     grep -A8 'bootstrap mode' /var/log/syslog 2>/dev/null \\"
             say "       || grep -A8 'bootstrap mode' /var/log/messages"
             ;;
         launchd)
-            say "     sudo log show --predicate 'process == \"stalwart\"' --last 5m"
+            say "     sudo log show --predicate 'process == \"email\"' --last 5m"
             ;;
     esac
     say ""
@@ -184,16 +184,16 @@ Options:
   -h, --help  Show this help.
 
 With no PREFIX, Stalwart is installed under standard FHS paths:
-  binary   /usr/local/bin/stalwart
-  config   /etc/stalwart/config.json      (created by the daemon on first run)
-  env      /etc/stalwart/stalwart.env
-  logs     /var/log/stalwart/
-  data     /var/lib/stalwart/
+  binary   /usr/local/bin/email
+  config   /etc/email/config.json      (created by the daemon on first run)
+  env      /etc/email/email.env
+  logs     /var/log/email/
+  data     /var/lib/email/
 
 When PREFIX is provided, a self-contained layout is used instead:
-  binary   $PREFIX/bin/stalwart
+  binary   $PREFIX/bin/email
   config   $PREFIX/etc/config.json
-  env      $PREFIX/etc/stalwart.env
+  env      $PREFIX/etc/email.env
   logs     $PREFIX/logs/
   data     $PREFIX/data/
 EOF
@@ -252,14 +252,14 @@ create_account() {
         ensure dscl /Local/Default -create Groups/_stalwart Password \*
         ensure dscl /Local/Default -create Groups/_stalwart PrimaryGroupID $_gid
         ensure dscl /Local/Default -create Groups/_stalwart RealName "Stalwart service"
-        ensure dscl /Local/Default -create Groups/_stalwart RecordName _stalwart stalwart
+        ensure dscl /Local/Default -create Groups/_stalwart RecordName _stalwart email
 
         ensure dscl /Local/Default -create Users/_stalwart
         ensure dscl /Local/Default -create Users/_stalwart NFSHomeDirectory /var/empty
         ensure dscl /Local/Default -create Users/_stalwart Password \*
         ensure dscl /Local/Default -create Users/_stalwart PrimaryGroupID $_gid
         ensure dscl /Local/Default -create Users/_stalwart RealName "Stalwart service"
-        ensure dscl /Local/Default -create Users/_stalwart RecordName _stalwart stalwart
+        ensure dscl /Local/Default -create Users/_stalwart RecordName _stalwart email
         ensure dscl /Local/Default -create Users/_stalwart UniqueID $_uid
         ensure dscl /Local/Default -create Users/_stalwart UserShell /usr/bin/false
 
@@ -272,7 +272,7 @@ create_account() {
 
 create_service_linux_systemd() {
     local _bin="$1" _config="$2" _env="$3" _user="$4"
-    cat > /etc/systemd/system/stalwart.service <<EOF
+    cat > /etc/systemd/system/email.service <<EOF
 [Unit]
 Description=Stalwart
 Conflicts=postfix.service sendmail.service exim4.service
@@ -287,7 +287,7 @@ Restart=on-failure
 RestartSec=5
 EnvironmentFile=-${_env}
 ExecStart=${_bin} --config=${_config}
-SyslogIdentifier=stalwart
+SyslogIdentifier=email
 User=${_user}
 Group=${_user}
 AmbientCapabilities=CAP_NET_BIND_SERVICE
@@ -296,16 +296,16 @@ AmbientCapabilities=CAP_NET_BIND_SERVICE
 WantedBy=multi-user.target
 EOF
     systemctl daemon-reload
-    systemctl enable stalwart.service
-    systemctl restart stalwart.service
+    systemctl enable email.service
+    systemctl restart email.service
 }
 
 create_service_linux_initd() {
     local _bin="$1" _config="$2" _env="$3" _user="$4"
-    cat > /etc/init.d/stalwart <<EOF
+    cat > /etc/init.d/email <<EOF
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:          stalwart
+# Provides:          email
 # Required-Start:    \$network
 # Required-Stop:     \$network
 # Default-Start:     2 3 4 5
@@ -323,7 +323,7 @@ PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DAEMON=${_bin}
 DAEMON_ARGS="--config=${_config}"
 ENV_FILE=${_env}
-PIDFILE=/var/run/stalwart.pid
+PIDFILE=/var/run/email.pid
 ULIMIT_NOFILE=65536
 
 [ -x "\$DAEMON" ] || exit 0
@@ -348,7 +348,7 @@ do_start()
 
 do_stop()
 {
-    start-stop-daemon --stop --quiet --retry=INT/30/KILL/5 --pidfile \$PIDFILE --name stalwart
+    start-stop-daemon --stop --quiet --retry=INT/30/KILL/5 --pidfile \$PIDFILE --name email
     RETVAL="\$?"
     [ "\$RETVAL" = 2 ] && return 2
     start-stop-daemon --stop --quiet --oknodo --retry=0/30/KILL/5 --exec \$DAEMON
@@ -359,7 +359,7 @@ do_stop()
 
 case "\$1" in
   start)
-    [ "\$VERBOSE" != no ] && log_daemon_msg "Starting Stalwart Server" "stalwart"
+    [ "\$VERBOSE" != no ] && log_daemon_msg "Starting Stalwart Server" "email"
     do_start
     case "\$?" in
         0|1) [ "\$VERBOSE" != no ] && log_end_msg 0 ;;
@@ -367,7 +367,7 @@ case "\$1" in
     esac
     ;;
   stop)
-    [ "\$VERBOSE" != no ] && log_daemon_msg "Stopping Stalwart Server" "stalwart"
+    [ "\$VERBOSE" != no ] && log_daemon_msg "Stopping Stalwart Server" "email"
     do_stop
     case "\$?" in
         0|1) [ "\$VERBOSE" != no ] && log_end_msg 0 ;;
@@ -375,10 +375,10 @@ case "\$1" in
     esac
     ;;
   status)
-    status_of_proc "\$DAEMON" "stalwart" && exit 0 || exit \$?
+    status_of_proc "\$DAEMON" "email" && exit 0 || exit \$?
     ;;
   restart)
-    log_daemon_msg "Restarting Stalwart Server" "stalwart"
+    log_daemon_msg "Restarting Stalwart Server" "email"
     do_stop
     case "\$?" in
       0|1)
@@ -394,26 +394,26 @@ case "\$1" in
     esac
     ;;
   *)
-    echo "Usage: /etc/init.d/stalwart {start|stop|status|restart}" >&2
+    echo "Usage: /etc/init.d/email {start|stop|status|restart}" >&2
     exit 3
     ;;
 esac
 
 exit 0
 EOF
-    chmod +x /etc/init.d/stalwart
-    update-rc.d stalwart defaults
-    service stalwart start
+    chmod +x /etc/init.d/email
+    update-rc.d email defaults
+    service email start
 }
 
 create_service_macos() {
     local _bin="$1" _config="$2" _env="$3" _user="$4"
-    local _plist="/Library/LaunchDaemons/stalwart.plist"
+    local _plist="/Library/LaunchDaemons/email.plist"
 
     # Remove any legacy LaunchAgent from a prior install
-    if [ -f /Library/LaunchAgents/stalwart.mail.plist ]; then
-        launchctl unload /Library/LaunchAgents/stalwart.mail.plist 2>/dev/null || true
-        rm -f /Library/LaunchAgents/stalwart.mail.plist
+    if [ -f /Library/LaunchAgents/email.mail.plist ]; then
+        launchctl unload /Library/LaunchAgents/email.mail.plist 2>/dev/null || true
+        rm -f /Library/LaunchAgents/email.mail.plist
     fi
 
     # launchd has no EnvironmentFile equivalent — wrap with sh to source the env file
@@ -424,7 +424,7 @@ create_service_macos() {
 <plist version="1.0">
     <dict>
         <key>Label</key>
-        <string>stalwart</string>
+        <string>email</string>
         <key>ServiceDescription</key>
         <string>Stalwart</string>
         <key>UserName</key>
@@ -448,7 +448,7 @@ EOF
     chown root:wheel "$_plist"
     launchctl bootout system "$_plist" 2>/dev/null || true
     launchctl bootstrap system "$_plist"
-    launchctl enable system/stalwart
+    launchctl enable system/email
 }
 
 

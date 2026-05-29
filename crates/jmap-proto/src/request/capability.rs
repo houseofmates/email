@@ -89,7 +89,7 @@ pub enum Capability {
     FileNode = 1 << 15,
     #[serde(rename(serialize = "urn:ietf:params:jmap:mail:share"))]
     MailShare = 1 << 16,
-    #[serde(rename(serialize = "urn:stalwart:jmap"))]
+    #[serde(rename(serialize = "urn:email:jmap"))]
     Stalwart = 1 << 17,
 }
 
@@ -314,7 +314,7 @@ impl Capability {
             Capability::PrincipalsAvailability => "urn:ietf:params:jmap:principals:availability",
             Capability::FileNode => "urn:ietf:params:jmap:filenode",
             Capability::MailShare => "urn:ietf:params:jmap:mail:share",
-            Capability::Stalwart => "urn:stalwart:jmap",
+            Capability::Stalwart => "urn:email:jmap",
         }
     }
 
@@ -456,7 +456,7 @@ impl Capability {
             "urn:ietf:params:jmap:contacts:parse" => Capability::ContactsParse,
             "urn:ietf:params:jmap:calendars:parse" => Capability::CalendarsParse,
             "urn:ietf:params:jmap:mail:share" => Capability::MailShare,
-            "urn:stalwart:jmap" => Capability::Stalwart,
+            "urn:email:jmap" => Capability::Stalwart,
         )
     }
 }

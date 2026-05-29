@@ -6,7 +6,7 @@ All data is lost on `docker compose down` – every restart is a clean slate.
 ## Quick Start
 
 ```bash
-cd stalwart-test
+cd email-test
 docker compose up -d
 ```
 
@@ -16,27 +16,27 @@ Wait ~30 seconds for all services to initialize (Keycloak takes the longest).
 
 | Service        | Host              | Port(s)         | Credentials / Notes                        |
 |----------------|-------------------|-----------------|--------------------------------------------|
-| PostgreSQL     | localhost         | 5432            | `stalwart` / `stalwart`, db: `stalwart`    |
-| MySQL          | localhost         | 3306            | `stalwart` / `stalwart`, db: `stalwart`    |
+| PostgreSQL     | localhost         | 5432            | `email` / `email`, db: `email`    |
+| MySQL          | localhost         | 3306            | `email` / `email`, db: `email`    |
 | FoundationDB   | localhost         | 4500            | Cluster file from container                |
 | Redis          | localhost         | 6379            | No auth                                    |
 | OpenSearch     | localhost         | 9200            | No auth, security plugin disabled          |
-| Meilisearch    | localhost         | 7700            | Master key: `stalwart-master-key`          |
-| MinIO (S3)     | localhost         | 9000 / 9001     | `minioadmin` / `minioadmin`, bucket: `stalwart` |
+| Meilisearch    | localhost         | 7700            | Master key: `email-master-key`          |
+| MinIO (S3)     | localhost         | 9000 / 9001     | `minioadmin` / `minioadmin`, bucket: `email` |
 | Keycloak (OIDC)| localhost         | 9080            | Admin: `admin` / `admin`                   |
-| OpenLDAP       | localhost         | 389 / 636 (TLS) | Admin DN: `cn=admin,dc=stalwart,dc=test`, pw: `admin` |
+| OpenLDAP       | localhost         | 389 / 636 (TLS) | Admin DN: `cn=admin,dc=email,dc=test`, pw: `admin` |
 | Pebble (ACME)  | localhost         | 14000 / 15000   | Self-signed TLS, uses challtestsrv         |
 | Challtestsrv   | localhost         | 8055            | ACME challenge test server (management API)|
-| PowerDNS       | localhost         | 5300 / 8081     | API key: `stalwart-api-key`                |
+| PowerDNS       | localhost         | 5300 / 8081     | API key: `email-api-key`                |
 | NATS           | localhost         | 4222 / 8222     | No auth                                    |
 
 ## OIDC (Keycloak) Details
 
-- **OIDC Discovery**: `http://localhost:9080/realms/stalwart/.well-known/openid-configuration`
-- **Token Endpoint**: `http://localhost:9080/realms/stalwart/protocol/openid-connect/token`
-- **Client ID**: `stalwart`
-- **Client Secret**: `stalwart-secret`
-- **Realm**: `stalwart`
+- **OIDC Discovery**: `http://localhost:9080/realms/email/.well-known/openid-configuration`
+- **Token Endpoint**: `http://localhost:9080/realms/email/protocol/openid-connect/token`
+- **Client ID**: `email`
+- **Client Secret**: `email-secret`
+- **Realm**: `email`
 
 ### Test Users
 
@@ -49,44 +49,44 @@ Wait ~30 seconds for all services to initialize (Keycloak takes the longest).
 ### Example: Get a Token
 
 ```bash
-curl -X POST http://localhost:9080/realms/stalwart/protocol/openid-connect/token \
+curl -X POST http://localhost:9080/realms/email/protocol/openid-connect/token \
   -d "grant_type=password" \
-  -d "client_id=stalwart" \
-  -d "client_secret=stalwart-secret" \
+  -d "client_id=email" \
+  -d "client_secret=email-secret" \
   -d "username=john.doe@example.org" \
   -d "password=this is an OIDC password"
 ```
 
 ## LDAP Details
 
-- **Base DN**: `dc=stalwart,dc=test`
-- **Admin DN**: `cn=admin,dc=stalwart,dc=test`
+- **Base DN**: `dc=email,dc=test`
+- **Admin DN**: `cn=admin,dc=email,dc=test`
 - **Admin Password**: `admin`
-- **Read-only DN**: `cn=readonly,dc=stalwart,dc=test`
+- **Read-only DN**: `cn=readonly,dc=email,dc=test`
 - **Read-only Password**: `readonly`
-- **User DN pattern**: `uid={username},ou=users,dc=stalwart,dc=test`
+- **User DN pattern**: `uid={username},ou=users,dc=email,dc=test`
 
 ### Test Users
 
 | DN                                             | Mail                     | Password                 |
 |------------------------------------------------|--------------------------|--------------------------|
-| uid=john.doe,ou=users,dc=stalwart,dc=test      | john.doe@example.org     | this is an LDAP password |
-| uid=jane.smith,ou=users,dc=stalwart,dc=test     | jane.smith@example.org   | this is an LDAP password |
-| uid=bill.foobar,ou=users,dc=stalwart,dc=test    | bill.foobar@example.org  | this is an LDAP password |
+| uid=john.doe,ou=users,dc=email,dc=test      | john.doe@example.org     | this is an LDAP password |
+| uid=jane.smith,ou=users,dc=email,dc=test     | jane.smith@example.org   | this is an LDAP password |
+| uid=bill.foobar,ou=users,dc=email,dc=test    | bill.foobar@example.org  | this is an LDAP password |
 
 ### Groups
 
 | DN                                          | Mail                    | Members          |
 |---------------------------------------------|-------------------------|------------------|
-| cn=sales,ou=groups,dc=stalwart,dc=test      | sales@example.org       | john.doe, jane.smith |
-| cn=corporate,ou=groups,dc=stalwart,dc=test  | corporate@example.org   | bill.foobar, jane.smith |
+| cn=sales,ou=groups,dc=email,dc=test      | sales@example.org       | john.doe, jane.smith |
+| cn=corporate,ou=groups,dc=email,dc=test  | corporate@example.org   | bill.foobar, jane.smith |
 
 ### Example: Search by Email
 
 ```bash
 ldapsearch -x -H ldap://localhost:389 \
-  -D "cn=admin,dc=stalwart,dc=test" -w admin \
-  -b "dc=stalwart,dc=test" "(mail=john.doe@example.org)"
+  -D "cn=admin,dc=email,dc=test" -w admin \
+  -b "dc=email,dc=test" "(mail=john.doe@example.org)"
 ```
 
 ## S3 (MinIO) Details
@@ -94,16 +94,16 @@ ldapsearch -x -H ldap://localhost:389 \
 - **Endpoint**: `http://localhost:9000`
 - **Access Key**: `minioadmin`
 - **Secret Key**: `minioadmin`
-- **Bucket**: `stalwart`
+- **Bucket**: `email`
 - **Console**: `http://localhost:9001`
 - **Region**: `us-east-1` (MinIO default)
 
 ## DNS (PowerDNS) Details
 
 - **DNS port**: 5300 (TCP+UDP)
-- **API**: `http://localhost:8081` (API key: `stalwart-api-key`)
-- **Zone**: `stalwart.test`
-- **TSIG key name**: `stalwart-update-key`
+- **API**: `http://localhost:8081` (API key: `email-api-key`)
+- **Zone**: `email.test`
+- **TSIG key name**: `email-update-key`
 - **TSIG algorithm**: `hmac-sha256`
 - **TSIG secret (base64)**: `c3RhbHdhcnQtdGVzdC10c2lnLXNlY3JldC1rZXkxMjM0NTY3ODkw`
 
@@ -114,16 +114,16 @@ ldapsearch -x -H ldap://localhost:389 \
 ### Example: Query TLSA Record
 
 ```bash
-dig @localhost -p 5300 _25._tcp.mail.stalwart.test TLSA
+dig @localhost -p 5300 _25._tcp.mail.email.test TLSA
 ```
 
 ### Example: RFC2136 Dynamic Update
 
 ```bash
-nsupdate -y hmac-sha256:stalwart-update-key:c3RhbHdhcnQtdGVzdC10c2lnLXNlY3JldC1rZXkxMjM0NTY3ODkw <<EOF
+nsupdate -y hmac-sha256:email-update-key:c3RhbHdhcnQtdGVzdC10c2lnLXNlY3JldC1rZXkxMjM0NTY3ODkw <<EOF
 server 127.0.0.1 5300
-zone stalwart.test
-update add test.stalwart.test 300 A 192.168.1.100
+zone email.test
+update add test.email.test 300 A 192.168.1.100
 send
 EOF
 ```
@@ -161,11 +161,11 @@ Change them to match whatever port your test Stalwart instance listens on.
 ```bash
 # Add a DNS-01 TXT challenge response
 curl -s -X POST http://localhost:8055/add-dns \
-  -d '{"host": "_acme-challenge.mail.stalwart.test.", "value": "dns-challenge-token"}'
+  -d '{"host": "_acme-challenge.mail.email.test.", "value": "dns-challenge-token"}'
 
 # Remove a DNS-01 TXT challenge response
 curl -s -X POST http://localhost:8055/del-dns \
-  -d '{"host": "_acme-challenge.mail.stalwart.test."}'
+  -d '{"host": "_acme-challenge.mail.email.test."}'
 
 # Add an HTTP-01 challenge response (served by challtestsrv itself)
 curl -s -X POST http://localhost:8055/add-http \
@@ -177,11 +177,11 @@ curl -s -X POST http://localhost:8055/del-http \
 
 # Add a TLS-ALPN-01 challenge response (served by challtestsrv itself)
 curl -s -X POST http://localhost:8055/add-tlsalpn \
-  -d '{"host": "mail.stalwart.test", "content": "base64-encoded-key-authz"}'
+  -d '{"host": "mail.email.test", "content": "base64-encoded-key-authz"}'
 
 # Remove a TLS-ALPN-01 challenge response
 curl -s -X POST http://localhost:8055/del-tlsalpn \
-  -d '{"host": "mail.stalwart.test"}'
+  -d '{"host": "mail.email.test"}'
 
 # Clear all mock DNS/challenge data
 curl -s -X POST http://localhost:8055/clear-request-count
@@ -191,7 +191,7 @@ curl -s -X POST http://localhost:8055/clear-request-count
 
 A shared self-signed certificate is generated at startup and mounted into services
 that need it. The cert is valid for:
-- `localhost`, `keycloak`, `openldap`, `pebble`, `*.stalwart.test`, `127.0.0.1`
+- `localhost`, `keycloak`, `openldap`, `pebble`, `*.email.test`, `127.0.0.1`
 
 To extract the cert for use with Stalwart:
 

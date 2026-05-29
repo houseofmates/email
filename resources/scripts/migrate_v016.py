@@ -478,7 +478,7 @@ def apply_path_patches(value: Any, patches: list[tuple[str, str]]) -> tuple[Any,
         return (new_dict, count)
     return (value, 0)
 
-def detect_legacy_paths(settings: dict[str, str], prefix: str = "/opt/stalwart") -> int:
+def detect_legacy_paths(settings: dict[str, str], prefix: str = "/opt/email") -> int:
 
     needle = prefix.rstrip("/") + "/"
     exact = prefix.rstrip("/")
@@ -2039,14 +2039,14 @@ def cmd_convert(args: argparse.Namespace) -> int:
 
     patches: list[tuple[str, str]] = list(args.patch_paths or [])
     if not patches and not args.keep_paths:
-        legacy = detect_legacy_paths(settings, "/opt/stalwart")
+        legacy = detect_legacy_paths(settings, "/opt/email")
         if legacy:
             print(
-                f"notice: detected legacy Docker paths under /opt/stalwart in "
+                f"notice: detected legacy Docker paths under /opt/email in "
                 f"{legacy} settings.\n"
                 f"        the v0.16 Docker image mounts persistent data at "
-                f"/var/lib/stalwart.\n"
-                f"        rerun with --patch-paths /opt/stalwart=/var/lib/stalwart "
+                f"/var/lib/email.\n"
+                f"        rerun with --patch-paths /opt/email=/var/lib/email "
                 f"to rewrite,\n"
                 f"        or pass --keep-paths to suppress this notice "
                 f"(e.g. for binary deployments).",
@@ -2126,7 +2126,7 @@ def build_parser() -> argparse.ArgumentParser:
                    help="Rewrite paths beginning with SOURCE to DEST in both "
                         "config.json and export.json. May be passed multiple "
                         "times. Use to migrate Docker deployments from "
-                        "/opt/stalwart to /var/lib/stalwart.")
+                        "/opt/email to /var/lib/email.")
     c.add_argument("--keep-paths", action="store_true",
                    help="Suppress the legacy-path detection notice. Use when "
                         "the on-disk paths in the v0.15 deployment are also "

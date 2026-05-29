@@ -1,4 +1,4 @@
-require ["variables", "envelope", "reject", "vnd.stalwart.expressions"];
+require ["variables", "envelope", "reject", "vnd.email.expressions"];
 
 if envelope :domain :is "to" "foobar.org" {
     eval "query('sql', 'CREATE TABLE IF NOT EXISTS greylist (addr TEXT PRIMARY KEY)', [])";

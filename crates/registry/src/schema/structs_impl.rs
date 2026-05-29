@@ -4100,7 +4100,7 @@ impl Default for Bootstrap {
             request_tls_certificate: true,
             generate_dkim_keys: true,
             data_store: DataStore::RocksDb(RocksDbStore {
-                path: "/var/lib/stalwart/".to_string(),
+                path: "/var/lib/email/".to_string(),
                 ..Default::default()
             }),
             blob_store: BlobStore::Default,
@@ -4108,7 +4108,7 @@ impl Default for Bootstrap {
             in_memory_store: InMemoryStore::Default,
             directory: DirectoryBootstrap::Internal,
             tracer: Tracer::Log(TracerLog {
-                path: "/var/log/stalwart/".to_string(),
+                path: "/var/log/email/".to_string(),
                 ..Default::default()
             }),
             dns_server: DnsServerBootstrap::Manual,
@@ -29090,8 +29090,8 @@ impl Default for MySqlSettings {
         Self {
             host: Default::default(),
             port: 3306u64,
-            database: "stalwart".to_string(),
-            auth_username: Some("stalwart".to_string()),
+            database: "email".to_string(),
+            auth_username: Some("email".to_string()),
             auth_secret: Default::default(),
         }
     }
@@ -29248,8 +29248,8 @@ impl Default for MySqlStore {
             read_replicas: Default::default(),
             host: Default::default(),
             port: 3306u64,
-            database: "stalwart".to_string(),
-            auth_username: Some("stalwart".to_string()),
+            database: "email".to_string(),
+            auth_username: Some("email".to_string()),
             auth_secret: Default::default(),
         }
     }
@@ -29410,7 +29410,7 @@ impl Default for NatsCoordinator {
             no_echo: true,
             use_tls: false,
             auth_secret: Default::default(),
-            auth_username: Some("stalwart".to_string()),
+            auth_username: Some("email".to_string()),
             credentials: Default::default(),
         }
     }
@@ -29975,7 +29975,7 @@ impl Default for OidcDirectory {
         Self {
             description: Default::default(),
             issuer_url: Default::default(),
-            require_audience: Some("stalwart".to_string()),
+            require_audience: Some("email".to_string()),
             require_scopes: Map::new(vec!["openid".to_string(), "email".to_string()]),
             claim_username: "preferred_username".to_string(),
             username_domain: Default::default(),
@@ -30590,8 +30590,8 @@ impl Default for PostgreSqlSettings {
         Self {
             host: Default::default(),
             port: 5432u64,
-            database: "stalwart".to_string(),
-            auth_username: Some("stalwart".to_string()),
+            database: "email".to_string(),
+            auth_username: Some("email".to_string()),
             auth_secret: Default::default(),
             options: Default::default(),
         }
@@ -30735,8 +30735,8 @@ impl Default for PostgreSqlStore {
             read_replicas: Default::default(),
             host: Default::default(),
             port: 5432u64,
-            database: "stalwart".to_string(),
-            auth_username: Some("stalwart".to_string()),
+            database: "email".to_string(),
+            auth_username: Some("email".to_string()),
             auth_secret: Default::default(),
             options: Default::default(),
         }
@@ -31859,7 +31859,7 @@ impl Default for RedisClusterStore {
         Self {
             urls: Map::new(vec!["redis://127.0.0.1".to_string()]),
             timeout: Duration::from_millis(10000),
-            auth_username: Some("stalwart".to_string()),
+            auth_username: Some("email".to_string()),
             auth_secret: Default::default(),
             max_retry_wait: Default::default(),
             min_retry_wait: Default::default(),
@@ -45357,7 +45357,7 @@ impl Default for TracerLog {
     fn default() -> Self {
         Self {
             path: Default::default(),
-            prefix: "stalwart".to_string(),
+            prefix: "email".to_string(),
             rotate: LogRotateFrequency::Daily,
             ansi: true,
             multiline: false,
