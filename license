@@ -233,3 +233,25 @@ Also add information on how to contact you by electronic and paper mail.
 If your software can interact with users remotely through a computer network, you should also make sure that it provides a way for users to get its source.  For example, if your program is a web application, its interface could display a "Source" link that leads users to an archive of the code.  There are many ways you could offer source, and different solutions will be better for different programs; see section 13 for the specific requirements.
 
 You should also get your employer (if you work as a programmer) or school, if any, to sign a "copyright disclaimer" for the program, if necessary. For more information on this, and how to apply and follow the GNU AGPL, see <http://www.gnu.org/licenses/>.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+all additions made to the original stalwart codebase (so as to be used by the house of mates system in particular) are subject to the following license: mates license
+
+copyright (c) 2026 house of mates
+
+permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "software"), to fork the existing 
+codebase or utilize the code from it in one's own projects so long as financial profit is 
+not to be gained by said code/software created by the code.
+
+EMAIL IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE HOUSE OF MATES
+SYSTEM BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF 
+CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+USE OR OTHER DEALINGS IN THE SOFTWARE. THE ADDITIONS MADE TO THE ORIGINAL STALWART CODEBASE 
+IN ORDER TO CREATE THE EMAIL FORK WERE ALL INITIALLY, AND ONLY MADE TO BE USED
+BY THE HOUSE OF MATES SYSTEM. OTHER USERS WERE NEVER IN MIND FOR THIS PARTICULAR FORK, AND YOU
+ARE EXPECTED TO CHANGE SIGNIFICANT PARTS OF THE CODEBASE TO ADAPT TO YOUR OWN PREFERENCES
+AND NEEDS BASED ON THE DIFFERENCES IN HOW YOUR BRAIN WORKS VS. THE HOUSE OF MATES SYSTEM'S.
