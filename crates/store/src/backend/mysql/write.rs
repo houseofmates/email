@@ -16,7 +16,7 @@ use crate::{
 };
 use ahash::AHashMap;
 use mysql_async::{Conn, Error, IsolationLevel, TxOpts, params, prelude::Queryable};
-use rand::Rng;
+use rand::{Rng, RngExt};
 use std::time::{Duration, Instant};
 
 #[derive(Debug)]
