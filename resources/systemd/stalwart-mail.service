@@ -11,10 +11,10 @@ KillMode=process
 KillSignal=SIGINT
 Restart=on-failure
 RestartSec=5
-ExecStart=__PATH__/bin/stalwart --config=__PATH__/etc/config.json
-SyslogIdentifier=stalwart
-User=stalwart
-Group=stalwart
+ExecStart=__PATH__/bin/email --config=__PATH__/etc/config.json
+SyslogIdentifier=email
+User=email
+Group=email
 AmbientCapabilities=CAP_NET_BIND_SERVICE
 
 [Install]

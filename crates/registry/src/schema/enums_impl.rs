@@ -10216,8 +10216,8 @@ impl EnumImpl for SieveCapability {
             b"spamtest" => SieveCapability::Spamtest,
             b"spamtestplus" => SieveCapability::Spamtestplus,
             b"virustest" => SieveCapability::Virustest,
-            b"vnd.stalwart.while" => SieveCapability::VndStalwartWhile,
-            b"vnd.stalwart.expressions" => SieveCapability::VndStalwartExpressions,
+            b"vnd.email.while" => SieveCapability::VndStalwartWhile,
+            b"vnd.email.expressions" => SieveCapability::VndStalwartExpressions,
         }
     }
 
@@ -10270,8 +10270,8 @@ impl EnumImpl for SieveCapability {
             SieveCapability::Spamtest => "spamtest",
             SieveCapability::Spamtestplus => "spamtestplus",
             SieveCapability::Virustest => "virustest",
-            SieveCapability::VndStalwartWhile => "vnd.stalwart.while",
-            SieveCapability::VndStalwartExpressions => "vnd.stalwart.expressions",
+            SieveCapability::VndStalwartWhile => "vnd.email.while",
+            SieveCapability::VndStalwartExpressions => "vnd.email.expressions",
         }
     }
 

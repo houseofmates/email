@@ -15,12 +15,12 @@ pub async fn test() {
     println!("Running OIDC directory tests...");
     let config = structs::OidcDirectory {
         description: "Test OIDC directory".to_string(),
-        issuer_url: "http://localhost:9080/realms/stalwart".to_string(),
+        issuer_url: "http://localhost:9080/realms/email".to_string(),
         claim_username: "preferred_username".to_string(),
         claim_name: Some("name".to_string()),
         claim_groups: Some("groups".to_string()),
         username_domain: None,
-        require_audience: Some("stalwart".to_string()),
+        require_audience: Some("email".to_string()),
         require_scopes: Map::new(vec![
             "email".to_string(),
             "profile".to_string(),
@@ -76,8 +76,8 @@ pub async fn test() {
     config_userinfo_fallback.require_scopes = Map::new(vec!["openid".to_string()]);
 
     let token_openid_only = get_token_for_client(
-        "stalwart-fallback",
-        "stalwart-fallback-secret",
+        "email-fallback",
+        "email-fallback-secret",
         "john.doe@example.org",
         "this is an OIDC password",
         "openid",
@@ -159,14 +159,14 @@ pub async fn test() {
         oidc.oidc_discovery_document()
             .as_ref()
             .map(|oidc| oidc.document.authorization_endpoint.as_str()),
-        Some("http://localhost:9080/realms/stalwart/protocol/openid-connect/auth")
+        Some("http://localhost:9080/realms/email/protocol/openid-connect/auth")
     );
 }
 
 async fn get_token(username: &str, password: &str) -> String {
     get_token_for_client(
-        "stalwart",
-        "stalwart-secret",
+        "email",
+        "email-secret",
         username,
         password,
         "openid email profile",
@@ -184,7 +184,7 @@ async fn get_token_for_client(
     let client = reqwest::Client::new();
 
     let response = client
-        .post("http://localhost:9080/realms/stalwart/protocol/openid-connect/token")
+        .post("http://localhost:9080/realms/email/protocol/openid-connect/token")
         .form(&[
             ("grant_type", "password"),
             ("client_id", client_id),

@@ -191,7 +191,7 @@ pub(crate) async fn bootstrap_set(
                         .with_description(concat!(
                             "The selected data store contains information from an older version. ",
                             "Please follow the upgrade instructions at ",
-                            "https://github.com/stalwartlabs/stalwart/blob/main/UPGRADING/v0_16.md"
+                            "https://github.com/stalwartlabs/email/blob/main/UPGRADING/v0_16.md"
                         )),
                 );
                 break;
@@ -644,7 +644,7 @@ fn build_default_bootstrap(server: &Server) -> Bootstrap {
 
     Bootstrap {
         data_store: DataStore::RocksDb(RocksDbStore {
-            path: "/var/lib/stalwart/".to_string(),
+            path: "/var/lib/email/".to_string(),
             ..Default::default()
         }),
         blob_store: BlobStore::Default,
@@ -652,8 +652,8 @@ fn build_default_bootstrap(server: &Server) -> Bootstrap {
         in_memory_store: InMemoryStore::Default,
         directory: DirectoryBootstrap::Internal,
         tracer: Tracer::Log(TracerLog {
-            path: "/var/log/stalwart/".to_string(),
-            prefix: "stalwart".to_string(),
+            path: "/var/log/email/".to_string(),
+            prefix: "email".to_string(),
             ansi: true,
             enable: true,
             ..Default::default()

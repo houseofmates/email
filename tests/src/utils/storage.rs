@@ -74,11 +74,11 @@ pub fn build_data_store(typ: DataStoreType, path: &str) -> DataStore {
         DataStoreType::PostgreSql => DataStore::PostgreSql(PostgreSqlStore {
             host: "localhost".into(),
             port: 5432,
-            auth_username: "stalwart".to_string().into(),
+            auth_username: "email".to_string().into(),
             auth_secret: SecretKeyOptional::Value(SecretKeyValue {
-                secret: "stalwart".into(),
+                secret: "email".into(),
             }),
-            database: "stalwart".into(),
+            database: "email".into(),
             use_tls: false,
             allow_invalid_certs: true,
             ..Default::default()
@@ -90,7 +90,7 @@ pub fn build_data_store(typ: DataStoreType, path: &str) -> DataStore {
             auth_secret: SecretKeyOptional::Value(SecretKeyValue {
                 secret: "password".into(),
             }),
-            database: "stalwart".into(),
+            database: "email".into(),
             use_tls: false,
             allow_invalid_certs: true,
             ..Default::default()
@@ -102,7 +102,7 @@ fn build_blob_store(typ: BlobStoreType, path: &str) -> BlobStore {
     match typ {
         BlobStoreType::S3 => BlobStore::S3(S3Store {
             access_key: "minioadmin".to_string().into(),
-            bucket: "stalwart".into(),
+            bucket: "email".into(),
             region: S3StoreRegion::Custom(S3StoreCustomRegion {
                 custom_endpoint: "http://localhost:9000".into(),
                 custom_region: "eu-central-1".into(),

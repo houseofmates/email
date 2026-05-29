@@ -2,7 +2,7 @@
 name = "email"
 description = "Personal email server forked from Stalwart"
 authors = [ "Stalwart Labs LLC <hello@stalw.art>"]
-repository = "https://github.com/stalwartlabs/stalwart"
+repository = "https://github.com/stalwartlabs/email"
 homepage = "https://stalw.art"
 keywords = ["imap", "jmap", "smtp", "email", "mail", "webdav", "server"]
 categories = ["email"]

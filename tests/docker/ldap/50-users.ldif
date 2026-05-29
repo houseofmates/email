@@ -1,8 +1,8 @@
-dn: ou=users,dc=stalwart,dc=test
+dn: ou=users,dc=email,dc=test
 objectClass: organizationalUnit
 ou: users
 
-dn: uid=john.doe,ou=users,dc=stalwart,dc=test
+dn: uid=john.doe,ou=users,dc=email,dc=test
 objectClass: inetOrgPerson
 objectClass: posixAccount
 objectClass: shadowAccount
@@ -20,7 +20,7 @@ gidNumber: 10001
 homeDirectory: /home/john.doe
 loginShell: /bin/bash
 
-dn: uid=jane.smith,ou=users,dc=stalwart,dc=test
+dn: uid=jane.smith,ou=users,dc=email,dc=test
 objectClass: inetOrgPerson
 objectClass: posixAccount
 objectClass: shadowAccount
@@ -36,7 +36,7 @@ gidNumber: 10002
 homeDirectory: /home/jane.smith
 loginShell: /bin/bash
 
-dn: uid=bill.foobar,ou=users,dc=stalwart,dc=test
+dn: uid=bill.foobar,ou=users,dc=email,dc=test
 objectClass: inetOrgPerson
 objectClass: posixAccount
 objectClass: shadowAccount
