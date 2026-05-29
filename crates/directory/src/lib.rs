@@ -7,7 +7,6 @@
 #![warn(clippy::large_futures)]
 
 use crate::backend::oidc::OpenIdDirectory;
-use backend::{ldap::LdapDirectory, sql::SqlDirectory};
 use deadpool::managed::PoolError;
 use std::{collections::HashMap, fmt::Debug, sync::Arc};
 
