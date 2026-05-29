@@ -89,9 +89,9 @@ async fn verify_hash_prefix(hashed_secret: &str, secret: &[u8]) -> trc::Result<b
                 let result = if is_argon {
                     Argon2::default().verify_password(&secret, &hash)
                 } else if is_pbkdf2 {
-                    Pbkdf2.verify_password(&secret, &hash)
+                    Pbkdf2::verify_password(&secret, &hash)
                 } else {
-                    Scrypt.verify_password(&secret, &hash)
+                    Scrypt::verify_password(&secret, &hash)
                 };
 
                 tx.send(Ok(result.is_ok())).ok();
@@ -266,11 +266,9 @@ pub async fn hash_secret(algorithm: PasswordHashAlgorithm, secret: Vec<u8>) -> t
                     .ok()
                     .unwrap_or(());
             }
-            PasswordHashAlgorithm::Scrypt => Scrypt
-                .hash_password(secret.as_slice(), &salt)
+            PasswordHashAlgorithm::Scrypt => Scrypt::hash_password(secret.as_slice(), &salt)
                 .map(|h| h.to_string()),
-            PasswordHashAlgorithm::Pbkdf2 => Pbkdf2
-                .hash_password(secret.as_slice(), &salt)
+            PasswordHashAlgorithm::Pbkdf2 => Pbkdf2::hash_password(secret.as_slice(), &salt)
                 .map(|h| h.to_string()),
         };
 
@@ -460,10 +458,10 @@ mod tests {
             .to_string();
         assert!(is_password_hash(&argon), "argon2 not detected: {argon}");
 
-        let pbkdf = Pbkdf2.hash_password(b"hello", &salt).unwrap().to_string();
+        let pbkdf = Pbkdf2::hash_password(b"hello", &salt).unwrap().to_string();
         assert!(is_password_hash(&pbkdf), "pbkdf2 not detected: {pbkdf}");
 
-        let scr = Scrypt.hash_password(b"hello", &salt).unwrap().to_string();
+        let scr = Scrypt::hash_password(b"hello", &salt).unwrap().to_string();
         assert!(is_password_hash(&scr), "scrypt not detected: {scr}");
     }
 
@@ -562,7 +560,7 @@ mod tests {
         assert!(is_password_hash(&format!("{{ARGON2}}{a}")));
         assert!(is_password_hash(&format!("{{ARGON2I}}{a}")));
 
-        let p = Pbkdf2.hash_password(b"hello", &salt).unwrap().to_string();
+        let p = Pbkdf2::hash_password(b"hello", &salt).unwrap().to_string();
         assert!(is_password_hash(&format!("{{PBKDF2}}{p}")));
 
         let mut h = Sha1::new();
