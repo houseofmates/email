@@ -89,9 +89,9 @@ async fn verify_hash_prefix(hashed_secret: &str, secret: &[u8]) -> trc::Result<b
                 let result = if is_argon {
                     Argon2::default().verify_password(&secret, &hash)
                 } else if is_pbkdf2 {
-                    Pbkdf2::verify_password(&secret, &hash)
+                    Pbkdf2.verify_password(&secret, &hash)
                 } else {
-                    Scrypt::verify_password(&secret, &hash)
+                    Scrypt::new().verify_password(&secret, &hash)
                 };
 
                 tx.send(Ok(result.is_ok())).ok();
@@ -266,9 +266,9 @@ pub async fn hash_secret(algorithm: PasswordHashAlgorithm, secret: Vec<u8>) -> t
                     .ok()
                     .unwrap_or(());
             }
-            PasswordHashAlgorithm::Scrypt => Scrypt::hash_password(secret.as_slice(), &salt)
+            PasswordHashAlgorithm::Scrypt => Scrypt::new().hash_password(secret.as_slice(), &salt)
                 .map(|h| h.to_string()),
-            PasswordHashAlgorithm::Pbkdf2 => Pbkdf2::hash_password(secret.as_slice(), &salt)
+            PasswordHashAlgorithm::Pbkdf2 => Pbkdf2.hash_password(secret.as_slice(), &salt)
                 .map(|h| h.to_string()),
         };
 
