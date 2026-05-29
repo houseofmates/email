@@ -34,4 +34,3 @@ impl DirectoryType {
     }
 }
 
-pub use self::core::secret::{verify_mfa_secret_hash, hash_secret};
