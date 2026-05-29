@@ -7,7 +7,6 @@
 #![warn(clippy::large_futures)]
 
 use crate::backend::oidc::OpenIdDirectory;
-use deadpool::managed::PoolError;
 use std::{collections::HashMap, fmt::Debug, sync::Arc};
 
 pub mod backend;
@@ -28,7 +27,6 @@ pub enum Credentials {
 
 #[allow(clippy::large_enum_variant)]
 pub enum Directory {
-    Ldap(LdapDirectory),
     Sql(SqlDirectory),
     OpenId(OpenIdDirectory),
 }
@@ -72,7 +70,6 @@ trait IntoError {
     fn into_error(self) -> trc::Error;
 }
 
-impl IntoError for PoolError<LdapError> {
     fn into_error(self) -> trc::Error {
         match self {
             PoolError::Backend(error) => error.into_error(),
@@ -84,7 +81,6 @@ impl IntoError for PoolError<LdapError> {
     }
 }
 
-impl IntoError for LdapError {
     fn into_error(self) -> trc::Error {
         if let LdapError::LdapResult { result } = &self {
             trc::StoreEvent::LdapError
