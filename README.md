@@ -109,13 +109,16 @@
   - log viewer with search and filtering capabilities.
   - self-service portal for password reset and encryption-at-rest key management.
 
-<p align="center">all documentation for the original stalwart code is available at <a href="[https://stalw.art/docs/install/](https://stalw.art/docs/install/)">https://stalw.art/docs/install/</a>.</p>
+<p align="center">
+  all documentation for the original stalwart code is available at
+  <a href="https://stalw.art/docs/install/">https://stalw.art/docs/install/</a>.
+</p>
 
 <hr>
 
 <h2 align="center" id="license">license</h2>
 
-<p align="center">the original code of the stalwart project is licensed under the <strong>gnu affero general public license v3.0</strong> (<a href="./LICENSE">agpl-3.0</a>). HOWEVER, all added code, including additions to the email suite, were made under the mates license, explicitly prohibiting use of the code under said license from being used to gain financial profit in any way, shape or form. the mates license also highly recommends for users to HIGHLY MODIFY and fork their own version of the software instead of using it as-is (because it was made for the house of mates system's mind, not for general use). for more details see the <a href="./LICENSE">license file</a>.</p>
+<p align="center">the original code of the stalwart project is licensed under the <strong>gnu affero general public license v3.0</strong> (<a href="https://github.com/stalwartlabs/stalwart/blob/main/LICENSES/AGPL-3.0-only.txt">agpl-3.0</a>). HOWEVER, all added code, including additions to the email suite, were made under the mates license, explicitly prohibiting use of the code under said license from being used to gain financial profit in any way, shape or form. the mates license also highly recommends for users to HIGHLY MODIFY and fork their own version of the software instead of using it as-is (because it was made for the house of mates system's mind, not for general use). for more details see the <a href="./LICENSE">license file</a>.</p>
 
 <hr>
 
