@@ -196,6 +196,43 @@ have brevo forward to an address your server pulls or receives over https.
 
 ---
 
+## 5b. infinite aliases (how aliases actually receive mail)
+
+important distinction: the **passwords/aliases list in the web ui + extension is
+a tracker** — creating an alias there stores a durable record (so you remember
+which alias you used where), but it does **not** by itself make stalwart accept
+mail at that address. there are two ways to make aliases actually deliver:
+
+### option a — catch-all (recommended, truly "infinite")
+
+enable a catch-all so **every** address at your domain lands in your mailbox,
+then invent aliases freely (and track them in the ui/extension):
+
+admin ui → **directory → your account → email addresses** → add
+`@example.com` (a bare `@domain` entry) as a catch-all alias of your account.
+
+now `anything@example.com` is delivered to you with zero per-alias setup — this
+is the simplest path to unlimited aliases, and the alias tracker stays useful
+for knowing who you handed each one to.
+
+### option b — explicit per-alias registration
+
+if you prefer each alias to be an explicit account address (so unknown
+addresses bounce), add them individually in **directory → account → email
+addresses**, or wire the `/api/aliases` create handler to register the address
+on the account's principal. the api path for that (for a future code change) is:
+
+```text
+access_token.account_id()                       // current account (u32)
+registry().object::<Account>(account_id)         // load the principal
+  .into_user() → push to email_aliases
+server.synchronize_account(account)               // persists + invalidates caches
+```
+this only works when the directory backend is the **internal** store (writable);
+external ldap/sql directories are read-only and would overwrite the change on
+next sync. it was intentionally left out of the current build because it must be
+compile-verified against the directory crate first.
+
 ## 6. zero-access / at-rest encryption
 
 this is **not** proton-style end-to-end zero-access encryption (see the status
