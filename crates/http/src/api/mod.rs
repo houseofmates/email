@@ -340,7 +340,8 @@ async fn handle_aliases_request(&self, access_token: &AccessToken, req: &HttpReq
             &Method::POST => {
                 // Create alias
                 let body = body.ok_or_else(|| trc::LimitEvent::SizeRequest.into_err())?;
-                let alias: Alias = serde_json::from_slice(&body)?;
+                let mut alias: Alias = serde_json::from_slice(&body)?;
+                alias.ensure_id();
                 let store = &self.inner.alias_state.as_ref().unwrap().store;
                 store.insert(alias.clone())?;
                 Ok(JsonResponse::with_status(StatusCode::CREATED, alias).into_http_response())
