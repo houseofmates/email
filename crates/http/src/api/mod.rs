@@ -324,51 +324,44 @@ impl ManagementApi for Server {
     }
 }
 
-async fn handle_aliases_request(&self, access_token: &AccessToken, req: &HttpRequest, method: Method, body: Option<Vec<u8>>, path: Vec<String>) -> trc::Result<HttpResponse> {
-    // For simplicity, we allow any authenticated user to manage aliases.
-    // In a real system, you might check permissions or tie aliases to the account.
-    let account_id = access_token.account_id();
+async fn handle_aliases_request(&self, _access_token: &AccessToken, _req: &HttpRequest, method: Method, body: Option<Vec<u8>>, path: Vec<String>) -> trc::Result<HttpResponse> {
+    // Any authenticated user may manage aliases. Records are persisted in the
+    // data store via common::suite (survives restarts).
+    use common::suite::{self, KIND_ALIAS};
+    let store = self.store();
 
     match path.as_slice() {
         ["aliases"] => match method {
             &Method::GET => {
-                // List aliases
-                let store = &self.inner.alias_state.as_ref().unwrap().store;
-                let aliases = store.list();
+                let aliases = suite::list::<Alias>(store, KIND_ALIAS).await?;
                 Ok(JsonResponse::new(aliases).into_http_response())
             }
             &Method::POST => {
-                // Create alias
                 let body = body.ok_or_else(|| trc::LimitEvent::SizeRequest.into_err())?;
                 let mut alias: Alias = serde_json::from_slice(&body)?;
                 alias.ensure_id();
-                let store = &self.inner.alias_state.as_ref().unwrap().store;
-                store.insert(alias.clone())?;
+                suite::put(store, KIND_ALIAS, &alias.id, &alias).await?;
                 Ok(JsonResponse::with_status(StatusCode::CREATED, alias).into_http_response())
             }
             _ => Err(trc::ResourceEvent::MethodNotAllowed.into_err()),
         },
         ["aliases", id] => match method {
             &Method::GET => {
-                // Get alias by id
-                let store = &self.inner.alias_state.as_ref().unwrap().store;
-                let alias = store.get(id).ok_or_else(|| trc::ResourceEvent::NotFound.into_err())?;
+                let alias = suite::get::<Alias>(store, KIND_ALIAS, id)
+                    .await?
+                    .ok_or_else(|| trc::ResourceEvent::NotFound.into_err())?;
                 Ok(JsonResponse::new(alias).into_http_response())
             }
             &Method::PUT => {
-                // Update alias
                 let body = body.ok_or_else(|| trc::LimitEvent::SizeRequest.into_err())?;
                 let mut alias: Alias = serde_json::from_slice(&body)?;
                 // Ensure the ID matches the path
                 alias.id = id.to_string();
-                let store = &self.inner.alias_state.as_ref().unwrap().store;
-                store.update(id, alias.clone())?;
+                suite::put(store, KIND_ALIAS, id, &alias).await?;
                 Ok(JsonResponse::new(alias).into_http_response())
             }
             &Method::DELETE => {
-                // Delete alias
-                let store = &self.inner.alias_state.as_ref().unwrap().store;
-                store.delete(id)?;
+                suite::delete(store, KIND_ALIAS, id).await?;
                 Ok(JsonResponse::with_status(StatusCode::NO_CONTENT, ()).into_http_response())
             }
             _ => Err(trc::ResourceEvent::MethodNotAllowed.into_err()),
@@ -377,49 +370,42 @@ async fn handle_aliases_request(&self, access_token: &AccessToken, req: &HttpReq
     }
 }
 
-async fn handle_identities_request(&self, access_token: &AccessToken, req: &HttpRequest, method: Method, body: Option<Vec<u8>>, path: Vec<String>) -> trc::Result<HttpResponse> {
+async fn handle_identities_request(&self, _access_token: &AccessToken, _req: &HttpRequest, method: Method, body: Option<Vec<u8>>, path: Vec<String>) -> trc::Result<HttpResponse> {
     // Authenticated users manage their sender identities (profiles).
-    let account_id = access_token.account_id();
+    use common::suite::{self, KIND_IDENTITY};
+    let store = self.store();
 
     match path.as_slice() {
         ["identities"] => match method {
             &Method::GET => {
-                // List identities
-                let store = &self.inner.identity_state.as_ref().unwrap().store;
-                let identities = store.list();
+                let identities = suite::list::<Identity>(store, KIND_IDENTITY).await?;
                 Ok(JsonResponse::new(identities).into_http_response())
             }
             &Method::POST => {
-                // Create identity
                 let body = body.ok_or_else(|| trc::LimitEvent::SizeRequest.into_err())?;
                 let mut identity: Identity = serde_json::from_slice(&body)?;
                 identity.ensure_id();
-                let store = &self.inner.identity_state.as_ref().unwrap().store;
-                store.insert(identity.clone())?;
+                suite::put(store, KIND_IDENTITY, &identity.id, &identity).await?;
                 Ok(JsonResponse::with_status(StatusCode::CREATED, identity).into_http_response())
             }
             _ => Err(trc::ResourceEvent::MethodNotAllowed.into_err()),
         },
         ["identities", id] => match method {
             &Method::GET => {
-                // Get identity by id
-                let store = &self.inner.identity_state.as_ref().unwrap().store;
-                let identity = store.get(id).ok_or_else(|| trc::ResourceEvent::NotFound.into_err())?;
+                let identity = suite::get::<Identity>(store, KIND_IDENTITY, id)
+                    .await?
+                    .ok_or_else(|| trc::ResourceEvent::NotFound.into_err())?;
                 Ok(JsonResponse::new(identity).into_http_response())
             }
             &Method::PUT => {
-                // Update identity
                 let body = body.ok_or_else(|| trc::LimitEvent::SizeRequest.into_err())?;
                 let mut identity: Identity = serde_json::from_slice(&body)?;
                 identity.id = id.to_string();
-                let store = &self.inner.identity_state.as_ref().unwrap().store;
-                store.update(id, identity.clone())?;
+                suite::put(store, KIND_IDENTITY, id, &identity).await?;
                 Ok(JsonResponse::new(identity).into_http_response())
             }
             &Method::DELETE => {
-                // Delete identity
-                let store = &self.inner.identity_state.as_ref().unwrap().store;
-                store.delete(id)?;
+                suite::delete(store, KIND_IDENTITY, id).await?;
                 Ok(JsonResponse::with_status(StatusCode::NO_CONTENT, ()).into_http_response())
             }
             _ => Err(trc::ResourceEvent::MethodNotAllowed.into_err()),
@@ -428,49 +414,42 @@ async fn handle_identities_request(&self, access_token: &AccessToken, req: &Http
     }
 }
 
-async fn handle_credentials_request(&self, access_token: &AccessToken, req: &HttpRequest, method: Method, body: Option<Vec<u8>>, path: Vec<String>) -> trc::Result<HttpResponse> {
+async fn handle_credentials_request(&self, _access_token: &AccessToken, _req: &HttpRequest, method: Method, body: Option<Vec<u8>>, path: Vec<String>) -> trc::Result<HttpResponse> {
     // Authenticated users manage their stored credentials (passwords).
-    let account_id = access_token.account_id();
+    use common::suite::{self, KIND_CREDENTIAL};
+    let store = self.store();
 
     match path.as_slice() {
         ["credentials"] => match method {
             &Method::GET => {
-                // List credentials
-                let store = &self.inner.credential_state.as_ref().unwrap().store;
-                let credentials = store.list();
+                let credentials = suite::list::<Credential>(store, KIND_CREDENTIAL).await?;
                 Ok(JsonResponse::new(credentials).into_http_response())
             }
             &Method::POST => {
-                // Create credential
                 let body = body.ok_or_else(|| trc::LimitEvent::SizeRequest.into_err())?;
                 let mut credential: Credential = serde_json::from_slice(&body)?;
                 credential.ensure_id();
-                let store = &self.inner.credential_state.as_ref().unwrap().store;
-                store.insert(credential.clone())?;
+                suite::put(store, KIND_CREDENTIAL, &credential.id, &credential).await?;
                 Ok(JsonResponse::with_status(StatusCode::CREATED, credential).into_http_response())
             }
             _ => Err(trc::ResourceEvent::MethodNotAllowed.into_err()),
         },
         ["credentials", id] => match method {
             &Method::GET => {
-                // Get credential by id
-                let store = &self.inner.credential_state.as_ref().unwrap().store;
-                let credential = store.get(id).ok_or_else(|| trc::ResourceEvent::NotFound.into_err())?;
+                let credential = suite::get::<Credential>(store, KIND_CREDENTIAL, id)
+                    .await?
+                    .ok_or_else(|| trc::ResourceEvent::NotFound.into_err())?;
                 Ok(JsonResponse::new(credential).into_http_response())
             }
             &Method::PUT => {
-                // Update credential
                 let body = body.ok_or_else(|| trc::LimitEvent::SizeRequest.into_err())?;
                 let mut credential: Credential = serde_json::from_slice(&body)?;
                 credential.id = id.to_string();
-                let store = &self.inner.credential_state.as_ref().unwrap().store;
-                store.update(id, credential.clone())?;
+                suite::put(store, KIND_CREDENTIAL, id, &credential).await?;
                 Ok(JsonResponse::new(credential).into_http_response())
             }
             &Method::DELETE => {
-                // Delete credential
-                let store = &self.inner.credential_state.as_ref().unwrap().store;
-                store.delete(id)?;
+                suite::delete(store, KIND_CREDENTIAL, id).await?;
                 Ok(JsonResponse::with_status(StatusCode::NO_CONTENT, ()).into_http_response())
             }
             _ => Err(trc::ResourceEvent::MethodNotAllowed.into_err()),

@@ -1,1 +1,1 @@
-pub use common::credential::{Credential, CredentialState, CredentialStore};
+pub use common::credential::Credential;
