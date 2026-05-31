@@ -136,13 +136,61 @@
     document.body.appendChild(box)
   }
 
-  // capture password values typed by the user so manual signups can be saved too
+  function fillLogin(field, cred) {
+    const form = field.closest("form") || document
+    const pw = form.querySelector('input[type="password"]')
+    const user = [...form.querySelectorAll("input")].find(looksLikeEmailField)
+    if (user && cred.username) setNativeValue(user, cred.username)
+    if (pw && cred.password) setNativeValue(pw, cred.password)
+    toast("login filled", "ok")
+  }
+
+  function placeFillChip(field, matches) {
+    removeChip()
+    const rect = field.getBoundingClientRect()
+    const chip = document.createElement("button")
+    chip.type = "button"
+    chip.className = "pw-chip"
+    chip.textContent =
+      matches.length > 1 ? `↳ fill login (${matches.length})` : "↳ fill login"
+    chip.style.top = `${window.scrollY + rect.top - 32}px`
+    chip.style.left = `${window.scrollX + rect.left}px`
+    chip.addEventListener("mousedown", (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+    })
+    chip.addEventListener("click", (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      fillLogin(field, matches[0])
+      removeChip()
+    })
+    document.body.appendChild(chip)
+    activeChip = chip
+  }
+
+  async function maybeOfferAutofill(field) {
+    try {
+      const resp = await chrome.runtime.sendMessage({
+        type: "MATCH_CREDENTIALS",
+        payload: { host: HOST },
+      })
+      if (resp?.ok && resp.matches?.length) placeFillChip(field, resp.matches)
+    } catch {
+      /* background unavailable */
+    }
+  }
+
+  // on focus: offer alias generation on signup pages, login autofill otherwise
   document.addEventListener(
     "focusin",
     (e) => {
       const el = e.target
-      if (looksLikeEmailField(el) && isSignupContext()) {
-        placeChip(el)
+      if (!(el instanceof HTMLInputElement)) return
+      if (isSignupContext()) {
+        if (looksLikeEmailField(el)) placeChip(el)
+      } else if (el.type === "password" || looksLikeEmailField(el)) {
+        maybeOfferAutofill(el)
       }
     },
     true

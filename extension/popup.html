@@ -15,27 +15,47 @@
   <body>
     <div class="wrap">
       <h1 class="title">passwords</h1>
-      <p class="sub">your email aliases</p>
+      <p class="sub" id="sub">your suite</p>
+
+      <div class="tabs">
+        <button class="tab active" id="tabPasswords" data-tab="passwords">passwords</button>
+        <button class="tab" id="tabAliases" data-tab="aliases">aliases</button>
+      </div>
 
       <p class="status" id="status"></p>
 
+      <input class="search" id="search" type="text" placeholder="search" />
+
       <div class="list" id="list"></div>
 
-      <button class="btn btn-gold wide" id="addBtn" style="margin-top: 14px">
-        add alias
-      </button>
+      <button class="btn btn-gold wide" id="addBtn" style="margin-top: 12px">add</button>
 
-      <!-- inline add form (hidden until "add alias") -->
+      <!-- inline add form -->
       <div class="form hidden" id="addForm">
         <div class="divider"></div>
-        <label class="label" for="email">email alias</label>
-        <input class="input" id="email" type="email" placeholder="you@yourdomain.com" />
+
+        <!-- passwords fields -->
+        <div id="pwFields">
+          <label class="label" for="site">site</label>
+          <input class="input" id="site" type="text" placeholder="example.com" />
+          <label class="label" for="purl">url <span class="opt">(optional)</span></label>
+          <input class="input" id="purl" type="text" placeholder="https://example.com" />
+        </div>
+
+        <!-- alias fields -->
+        <div id="aliasFields" class="hidden">
+          <label class="label" for="email">email alias</label>
+          <input class="input" id="email" type="email" placeholder="you@yourdomain.com" />
+        </div>
 
         <label class="label" for="username">username</label>
         <input class="input" id="username" type="text" placeholder="username" />
 
         <label class="label" for="password">password</label>
-        <input class="input" id="password" type="text" placeholder="leave blank to skip" />
+        <div class="row">
+          <input class="input grow" id="password" type="text" placeholder="password" />
+          <button class="gen" id="genBtn" type="button">generate</button>
+        </div>
 
         <label class="label" for="notes">notes <span class="opt">(optional)</span></label>
         <input class="input" id="notes" type="text" placeholder="notes" />
@@ -46,8 +66,11 @@
         </div>
       </div>
 
-      <div class="foot">
+      <div class="foot row" style="justify-content: center; gap: 14px">
+        <button class="link" id="exportBtn">export</button>
+        <button class="link" id="importBtn">import</button>
         <button class="link" id="optionsBtn">settings</button>
+        <input id="importFile" type="file" accept="application/json" class="hidden" />
       </div>
     </div>
 

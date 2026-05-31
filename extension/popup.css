@@ -213,3 +213,77 @@ body {
 .hidden {
   display: none !important;
 }
+
+.tabs {
+  display: flex;
+  gap: 6px;
+  margin: 4px 0 12px;
+}
+.tab {
+  flex: 1;
+  border-radius: 8px;
+  border: 1px solid #2a2a2a;
+  background: transparent;
+  color: #3c9fdd;
+  padding: 6px 0;
+  font-size: 13px;
+  cursor: pointer;
+}
+.tab.active {
+  border-color: #f6b012;
+  color: #f6b012;
+}
+
+.search {
+  width: 100%;
+  margin-bottom: 10px;
+  background-color: #141414;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 7px 10px;
+  font-size: 13px;
+  color: #ffffff;
+  outline: none;
+}
+.search:focus {
+  border-color: #f6b012;
+}
+.search::placeholder {
+  color: #3c9fdd;
+}
+
+.item-site {
+  font-size: 13px;
+  color: #ffffff;
+  word-break: break-all;
+}
+.item-pw {
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  color: #f6b012;
+  word-break: break-all;
+}
+
+.row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.grow {
+  flex: 1;
+  min-width: 0;
+}
+.gen {
+  border: 1px solid #2a2a2a;
+  background: transparent;
+  color: #3c9fdd;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.gen:hover {
+  border-color: #f6b012;
+  color: #f6b012;
+}
