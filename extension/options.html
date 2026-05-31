@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>passwords · settings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="popup.css" />
+    <style>
+      .wrap {
+        width: 420px;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1 class="title">passwords</h1>
+      <p class="sub">extension settings</p>
+
+      <div class="form">
+        <label class="label" for="apiBase">api base url</label>
+        <input
+          class="input"
+          id="apiBase"
+          type="url"
+          placeholder="http://localhost:8080/api"
+        />
+
+        <label class="label" for="aliasDomain">alias domain</label>
+        <input
+          class="input"
+          id="aliasDomain"
+          type="text"
+          placeholder="aliases.yourdomain.com"
+        />
+
+        <div class="divider"></div>
+
+        <label class="label" for="username">email <span class="opt">(for auth)</span></label>
+        <input class="input" id="username" type="text" placeholder="you@yourdomain.com" />
+
+        <label class="label" for="password">password</label>
+        <input class="input" id="password" type="password" placeholder="••••••••" />
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-gold wide" id="saveBtn">save settings</button>
+      </div>
+
+      <p class="status" id="status"></p>
+    </div>
+
+    <script src="options.js"></script>
+  </body>
+</html>

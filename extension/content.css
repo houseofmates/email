@@ -1,0 +1,126 @@
+@import url("https://fonts.googleapis.com/css2?family=Varela+Round&display=swap");
+
+.pw-chip,
+.pw-toast,
+.pw-save,
+.pw-save *,
+.pw-btn {
+  font-family: "Varela Round", ui-rounded, system-ui, sans-serif !important;
+  text-transform: lowercase !important;
+  box-sizing: border-box;
+  letter-spacing: 0.01em;
+}
+
+.pw-chip {
+  position: absolute;
+  z-index: 2147483646;
+  background-color: #050505;
+  color: #f6b012;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 12px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: border-color 150ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pw-chip:hover {
+  border-color: #3c9fdd;
+}
+.pw-chip:active {
+  transform: scale(0.98);
+}
+.pw-chip:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.pw-toast {
+  position: fixed;
+  z-index: 2147483647;
+  right: 16px;
+  bottom: 16px;
+  max-width: 320px;
+  background-color: #0d0d0d;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #ffffff;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pw-toast-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+.pw-toast-ok {
+  border-color: #2a2a2a;
+  color: #f6b012;
+}
+.pw-toast-err {
+  border-color: #5a2422;
+  color: #e0524f;
+}
+
+.pw-save {
+  position: fixed;
+  z-index: 2147483647;
+  right: 16px;
+  bottom: 16px;
+  width: 300px;
+  background-color: #050505;
+  border: 1px solid #2a2a2a;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.pw-save-title {
+  color: #f6b012;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+.pw-save-row {
+  color: #3c9fdd;
+  font-size: 12px;
+  word-break: break-all;
+}
+.pw-save-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+.pw-btn {
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  border: 1px solid #2a2a2a;
+  transition: border-color 150ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.pw-btn:active {
+  transform: scale(0.98);
+}
+.pw-btn-ghost {
+  background-color: transparent;
+  color: #3c9fdd;
+}
+.pw-btn-ghost:hover {
+  border-color: #3c9fdd;
+}
+.pw-btn-gold {
+  background-color: #f6b012;
+  color: #050505;
+  border-color: #f6b012;
+  font-weight: 600;
+}
+.pw-btn-gold:hover {
+  filter: brightness(1.1);
+}
