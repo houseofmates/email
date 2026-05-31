@@ -141,6 +141,8 @@ pub struct Inner {
     pub cache: Caches,
     pub ipc: Ipc,
     pub alias_state: Option<alias::AliasState>,
+    pub identity_state: Option<identity::IdentityState>,
+    pub credential_state: Option<credential::CredentialState>,
 }
 
 #[allow(clippy::type_complexity)]
