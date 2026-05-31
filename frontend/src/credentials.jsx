@@ -241,6 +241,12 @@ export default function Credentials({ onNavigate, onLogout, authHeader }) {
         <h1 className="text-lg text-gold lowercase tracking-wide">passwords</h1>
         <div className="flex items-center gap-3">
           <button
+            onClick={openAdd}
+            className="rounded-lg border border-gold px-3 py-1.5 text-xs text-gold transition hover:brightness-110 lowercase md:hidden"
+          >
+            add
+          </button>
+          <button
             onClick={() => onNavigate("dashboard")}
             className="rounded-lg border border-pkm-500 px-4 py-1.5 text-xs text-text-info transition hover:border-sky hover:text-sky lowercase"
           >
@@ -256,7 +262,7 @@ export default function Credentials({ onNavigate, onLogout, authHeader }) {
       </header>
 
       <div className="flex flex-1">
-        <aside className="w-72 shrink-0 border-r border-pkm-500 p-4">
+        <aside className="hidden w-72 shrink-0 border-r border-pkm-500 p-4 md:block">
           <button
             onClick={openAdd}
             className="mb-4 w-full rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-pkm-900 transition hover:brightness-110 active:scale-[0.98] lowercase"
