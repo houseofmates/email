@@ -2,12 +2,12 @@
 # shellcheck shell=dash
 
 #
-# SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+# SPDX-FileCopyrightText: 2020 email Labs LLC <hello@stalw.art>
 #
 # SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
 #
 
-# Stalwart install script -- based on the rustup installation script.
+# email install script -- based on the rustup installation script.
 
 set -e
 set -u
@@ -147,7 +147,7 @@ main() {
     say ""
     say "🎉 Installation complete!"
     say ""
-    say "Stalwart is running in bootstrap mode. A temporary administrator"
+    say "email is running in bootstrap mode. A temporary administrator"
     say "password was generated at startup and printed to the service logs."
     say ""
     say "👉 To find the password, inspect the service logs:"
@@ -177,13 +177,13 @@ print_usage() {
     cat <<'EOF'
 Usage: install.sh [--fdb] [PREFIX]
 
-Install Stalwart into standard FHS paths or under a custom prefix.
+Install email into standard FHS paths or under a custom prefix.
 
 Options:
   --fdb       Install the FoundationDB build.
   -h, --help  Show this help.
 
-With no PREFIX, Stalwart is installed under standard FHS paths:
+With no PREFIX, email is installed under standard FHS paths:
   binary   /usr/local/bin/email
   config   /etc/email/config.json      (created by the daemon on first run)
   env      /etc/email/email.env
@@ -201,7 +201,7 @@ EOF
 
 write_env_file() {
     cat > "$1" <<'EOF'
-# Environment variables for the Stalwart service.
+# Environment variables for the email service.
 # Uncomment and edit an entry to override its default.
 
 # Override the hostname used in HTTP responses
@@ -251,14 +251,14 @@ create_account() {
         ensure dscl /Local/Default -create Groups/_stalwart
         ensure dscl /Local/Default -create Groups/_stalwart Password \*
         ensure dscl /Local/Default -create Groups/_stalwart PrimaryGroupID $_gid
-        ensure dscl /Local/Default -create Groups/_stalwart RealName "Stalwart service"
+        ensure dscl /Local/Default -create Groups/_stalwart RealName "email service"
         ensure dscl /Local/Default -create Groups/_stalwart RecordName _stalwart email
 
         ensure dscl /Local/Default -create Users/_stalwart
         ensure dscl /Local/Default -create Users/_stalwart NFSHomeDirectory /var/empty
         ensure dscl /Local/Default -create Users/_stalwart Password \*
         ensure dscl /Local/Default -create Users/_stalwart PrimaryGroupID $_gid
-        ensure dscl /Local/Default -create Users/_stalwart RealName "Stalwart service"
+        ensure dscl /Local/Default -create Users/_stalwart RealName "email service"
         ensure dscl /Local/Default -create Users/_stalwart RecordName _stalwart email
         ensure dscl /Local/Default -create Users/_stalwart UniqueID $_uid
         ensure dscl /Local/Default -create Users/_stalwart UserShell /usr/bin/false
@@ -274,7 +274,7 @@ create_service_linux_systemd() {
     local _bin="$1" _config="$2" _env="$3" _user="$4"
     cat > /etc/systemd/system/email.service <<EOF
 [Unit]
-Description=Stalwart
+Description=email
 Conflicts=postfix.service sendmail.service exim4.service
 After=network-online.target
 
@@ -310,8 +310,8 @@ create_service_linux_initd() {
 # Required-Stop:     \$network
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Stalwart Server
-# Description:       Starts and stops the Stalwart Server
+# Short-Description: email Server
+# Description:       Starts and stops the email Server
 # Conflicts:         postfix sendmail
 ### END INIT INFO
 
@@ -359,7 +359,7 @@ do_stop()
 
 case "\$1" in
   start)
-    [ "\$VERBOSE" != no ] && log_daemon_msg "Starting Stalwart Server" "email"
+    [ "\$VERBOSE" != no ] && log_daemon_msg "Starting email Server" "email"
     do_start
     case "\$?" in
         0|1) [ "\$VERBOSE" != no ] && log_end_msg 0 ;;
@@ -367,7 +367,7 @@ case "\$1" in
     esac
     ;;
   stop)
-    [ "\$VERBOSE" != no ] && log_daemon_msg "Stopping Stalwart Server" "email"
+    [ "\$VERBOSE" != no ] && log_daemon_msg "Stopping email Server" "email"
     do_stop
     case "\$?" in
         0|1) [ "\$VERBOSE" != no ] && log_end_msg 0 ;;
@@ -378,7 +378,7 @@ case "\$1" in
     status_of_proc "\$DAEMON" "email" && exit 0 || exit \$?
     ;;
   restart)
-    log_daemon_msg "Restarting Stalwart Server" "email"
+    log_daemon_msg "Restarting email Server" "email"
     do_stop
     case "\$?" in
       0|1)
@@ -426,7 +426,7 @@ create_service_macos() {
         <key>Label</key>
         <string>email</string>
         <key>ServiceDescription</key>
-        <string>Stalwart</string>
+        <string>email</string>
         <key>UserName</key>
         <string>${_user}</string>
         <key>GroupName</key>

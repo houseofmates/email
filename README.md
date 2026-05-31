@@ -1,7 +1,7 @@
 <h1 align="center">email</h1>
 
 <p align="center">
-  personal email suite forked from stalwart — secure, scalable mail & collaboration server with alias management<br>
+  personal email suite forked from email — secure, scalable mail & collaboration server with alias management<br>
   (imap, jmap, smtp, caldav, carddav, webdav)
 </p>
 
@@ -11,13 +11,13 @@
 
 <h2 align="center" id="fork-notice">fork notice</h2>
 
-<p align="center">this is a personal fork of <a href="https://github.com/stalwartlabs/stalwart">stalwartlabs/stalwart</a> modified to create a personal email suite with integrated alias management, inspired by proton pass. the core mail server functionality remains, with additions for alias workflows and a personal frontend.</p>
+<p align="center">this is a personal fork of <a href="https://github.com/stalwartlabs/email">stalwartlabs/email</a> modified to create a personal email suite with integrated alias management, inspired by proton pass. the core mail server functionality remains, with additions for alias workflows and a personal frontend.</p>
 
 <hr>
 
 <h2 align="center" id="features">features</h2>
 
-<p align="center"><strong>email</strong> is a personal email server forked from stalwart with added alias management capabilities. it is written in rust and designed to be secure, fast, robust and scalable.</p>
+<p align="center"><strong>email</strong> is a personal email server forked from email with added alias management capabilities. it is written in rust and designed to be secure, fast, robust and scalable.</p>
 
 <p align="center">key features:</p>
 
@@ -110,7 +110,7 @@
   - self-service portal for password reset and encryption-at-rest key management.
 
 <p align="center">
-  all documentation for the original stalwart code is available at
+  all documentation for the original email code is available at
   <a href="https://stalw.art/docs/install/">https://stalw.art/docs/install/</a>.
 </p>
 
@@ -118,11 +118,11 @@
 
 <h2 align="center" id="license">license</h2>
 
-<p align="center">the original code of the stalwart project is licensed under the <strong>gnu affero general public license v3.0</strong> (<a href="https://github.com/stalwartlabs/stalwart/blob/main/LICENSES/AGPL-3.0-only.txt">agpl-3.0</a>). HOWEVER, all added code, including additions to the email suite, were made under the mates license, explicitly prohibiting use of the code under said license from being used to gain financial profit in any way, shape or form. the mates license also highly recommends for users to HIGHLY MODIFY and fork their own version of the software instead of using it as-is (because it was made for the house of mates system's mind, not for general use). for more details see the <a href="./LICENSE">license file</a>.</p>
+<p align="center">the original code of the email project is licensed under the <strong>gnu affero general public license v3.0</strong> (<a href="https://github.com/stalwartlabs/email/blob/main/LICENSES/AGPL-3.0-only.txt">agpl-3.0</a>). HOWEVER, all added code, including additions to the email suite, were made under the mates license, explicitly prohibiting use of the code under said license from being used to gain financial profit in any way, shape or form. the mates license also highly recommends for users to HIGHLY MODIFY and fork their own version of the software instead of using it as-is (because it was made for the house of mates system's mind, not for general use). for more details see the <a href="./LICENSE">license file</a>.</p>
 
 <hr>
 
 <h2 align="center" id="copyright">copyright</h2>
 
-<p align="center">copyright (c) 2026 stalwart labs llc<br>
+<p align="center">copyright (c) 2026 email labs llc<br>
 copyright (c) 2026 house of mates</p>

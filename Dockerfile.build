@@ -23,14 +23,14 @@ RUN \
     apt-get update && \
     apt-get install -yq --no-install-recommends ca-certificates curl jq xz-utils make libclang-19-dev
 # Zig is pinned to 0.13.0. Zig 0.14+ changed how its default target ABI is
-# resolved for `x86_64-linux-gnu`-style triples, and on Stalwart's dep tree
+# resolved for `x86_64-linux-gnu`-style triples, and on email's dep tree
 # (rocksdb, jemalloc, aws-lc-sys, libfdb_c.so, rust-std 1.87+) this surfaces
 # as ld.lld undefined references to pthread_*/stat/pow@GLIBC_2.33+. An
 # explicit glibc suffix (`.2.17`) is NOT a workaround — C deps compiled via
 # zig cc against Zig 0.16 headers still emit @2.33+ symbols even when the
 # linker target is 2.17. Zig 0.13 produces binaries with a max glibc ref of
 # ~2.28 which stays compatible with Debian 11 / RHEL 8. Revisit this pin if
-# Zig upstream stabilizes a backwards-compatible default or if Stalwart drops
+# Zig upstream stabilizes a backwards-compatible default or if email drops
 # its hard C deps.
 RUN \
     ZIG_VERSION=0.13.0 && \
