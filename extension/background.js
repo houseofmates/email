@@ -106,6 +106,28 @@ async function createAlias(host) {
   }
 }
 
+// Return saved credentials whose site/url matches the given host, so the
+// content script can offer to autofill a login form.
+async function matchCredentials(host) {
+  const cfg = await getConfig()
+  if (!cfg.authToken) return { ok: false, error: "not signed in" }
+  if (!host) return { ok: true, matches: [] }
+  try {
+    const list = (await apiFetch("/credentials", { method: "GET" }, cfg)) || []
+    const h = host.toLowerCase().replace(/^www\./, "")
+    const matches = list
+      .filter((c) => {
+        const hay = `${c.site || ""} ${c.url || ""}`.toLowerCase()
+        const site = (c.site || "").toLowerCase().replace(/^www\./, "")
+        return hay.includes(h) || (site && (h.includes(site) || site.includes(h)))
+      })
+      .map((c) => ({ username: c.username || "", password: c.password || "", site: c.site || "" }))
+    return { ok: true, matches }
+  } catch (e) {
+    return { ok: false, error: String(e.message || e) }
+  }
+}
+
 async function saveCredential(payload) {
   const cfg = await getConfig()
   if (!cfg.authToken) {
@@ -140,6 +162,9 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
       return true // async response
     case "SAVE_CREDENTIAL":
       saveCredential(request.payload || {}).then(sendResponse)
+      return true
+    case "MATCH_CREDENTIALS":
+      matchCredentials(request.payload?.host).then(sendResponse)
       return true
     default:
       return false
