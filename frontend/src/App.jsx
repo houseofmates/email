@@ -2,6 +2,9 @@ import { useState, useMemo } from "react"
 import Login from "./login"
 import Dashboard from "./dashboard"
 import Aliases from "./aliases"
+import Identities from "./identities"
+import Credentials from "./credentials"
+import Calendar from "./calendar"
 
 export default function App() {
   const [authed, setAuthed] = useState(false)
@@ -18,23 +21,27 @@ export default function App() {
     setAuthed(true)
   }
 
-  if (!authed) return <Login onLogin={handleLogin} />
-
-  if (page === "aliases") {
-    return (
-      <Aliases
-        onNavigate={setPage}
-        onLogout={() => setAuthed(false)}
-        authHeader={authHeader}
-      />
-    )
+  function handleLogout() {
+    setAuthed(false)
+    setCredentials(null)
+    setPage("dashboard")
   }
 
-  return (
-    <Dashboard
-      onNavigate={setPage}
-      onLogout={() => setAuthed(false)}
-      authHeader={authHeader}
-    />
-  )
+  if (!authed) return <Login onLogin={handleLogin} />
+
+  const shared = { onNavigate: setPage, onLogout: handleLogout, authHeader }
+
+  if (page === "aliases") return <Aliases {...shared} />
+  if (page === "identities") return <Identities {...shared} />
+  if (page === "passwords") return <Credentials {...shared} />
+  if (page === "calendar")
+    return (
+      <Calendar
+        onNavigate={setPage}
+        onLogout={handleLogout}
+        userEmail={credentials?.email || ""}
+      />
+    )
+
+  return <Dashboard {...shared} />
 }

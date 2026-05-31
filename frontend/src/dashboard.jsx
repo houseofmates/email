@@ -44,6 +44,24 @@ export default function Dashboard({ onLogout, onNavigate }) {
             >
               aliases
             </span>
+            <span
+              onClick={() => onNavigate?.("identities")}
+              className="rounded-md px-3 py-2 text-sm text-text-info transition hover:text-text-primary cursor-pointer lowercase"
+            >
+              identities
+            </span>
+            <span
+              onClick={() => onNavigate?.("passwords")}
+              className="rounded-md px-3 py-2 text-sm text-text-info transition hover:text-text-primary cursor-pointer lowercase"
+            >
+              passwords
+            </span>
+            <span
+              onClick={() => onNavigate?.("calendar")}
+              className="rounded-md px-3 py-2 text-sm text-text-info transition hover:text-text-primary cursor-pointer lowercase"
+            >
+              calendar
+            </span>
           </nav>
         </aside>
 
