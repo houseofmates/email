@@ -180,7 +180,7 @@ export default function Aliases({ onNavigate, onLogout, authHeader }) {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-pkm-900">
+      <div className="flex min-h-[100dvh] items-center justify-center bg-pkm-900">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-pkm-500 border-t-gold" />
           <p className="text-sm text-text-info lowercase">loading aliases...</p>
@@ -190,10 +190,16 @@ export default function Aliases({ onNavigate, onLogout, authHeader }) {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-pkm-900">
+    <div className="flex min-h-[100dvh] flex-col bg-pkm-900">
       <header className="flex items-center justify-between border-b border-pkm-500 px-6 py-3">
         <h1 className="text-lg text-gold lowercase tracking-wide">aliases</h1>
         <div className="flex items-center gap-3">
+          <button
+            onClick={openAdd}
+            className="rounded-lg border border-gold px-3 py-1.5 text-xs text-gold transition hover:brightness-110 lowercase md:hidden"
+          >
+            add
+          </button>
           <button
             onClick={() => onNavigate("dashboard")}
             className="rounded-lg border border-pkm-500 px-4 py-1.5 text-xs text-text-info transition hover:border-sky hover:text-sky lowercase"
@@ -210,7 +216,7 @@ export default function Aliases({ onNavigate, onLogout, authHeader }) {
       </header>
 
       <div className="flex flex-1">
-        <aside className="w-72 shrink-0 border-r border-pkm-500 p-4">
+        <aside className="hidden w-72 shrink-0 border-r border-pkm-500 p-4 md:block">
           <button
             onClick={openAdd}
             className="mb-4 w-full rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-pkm-900 transition hover:brightness-110 active:scale-[0.98] lowercase"

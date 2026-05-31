@@ -10,7 +10,7 @@ export default function Login({ onLogin }) {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-pkm-900 p-4">
+    <div className="flex min-h-[100dvh] items-center justify-center bg-pkm-900 p-4">
       <div className="w-full max-w-sm rounded-xl border border-pkm-500 bg-pkm-800 p-8">
         <div className="mb-6 text-center">
           <h1 className="text-2xl text-gold lowercase tracking-wide">email</h1>
