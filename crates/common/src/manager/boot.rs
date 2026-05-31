@@ -210,6 +210,8 @@ impl BootManager {
                     ipc,
                     cache,
                     alias_state: Some(crate::alias::AliasState::new()),
+                    identity_state: Some(crate::identity::IdentityState::new()),
+                    credential_state: Some(crate::credential::CredentialState::new()),
                 });
 
                 if !bootstrap.registry.is_recovery_mode() {
