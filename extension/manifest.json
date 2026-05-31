@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Email Alias Manager",
-  "description": "Manage your email aliases for the personal email suite",
+  "name": "passwords",
+  "description": "Generate email aliases and save site logins to your personal suite",
   "version": "1.0",
   "action": {
     "default_popup": "popup.html",
@@ -13,12 +13,7 @@
     }
   },
   "options_page": "options.html",
-  "permissions": [
-    "storage",
-    "tabs",
-    "http://localhost:8080/",
-    "https://localhost:8080/"
-  ],
+  "permissions": ["storage"],
   "host_permissions": [
     "http://localhost:8080/*",
     "https://localhost:8080/*"
@@ -26,5 +21,13 @@
   "background": {
     "service_worker": "background.js",
     "type": "module"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ]
 }
