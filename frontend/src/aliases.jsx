@@ -8,25 +8,25 @@ function AliasCard({ alias, onEdit, onDelete }) {
   return (
     <div className="group flex items-center justify-between rounded-lg border border-pkm-500 bg-pkm-800 p-4 transition hover:border-sky">
       <div className="flex flex-col gap-0.5">
-        <p className="text-sm text-white lowercase">{alias.alias}</p>
-        <p className="text-xs text-pkm-400 lowercase">username: {alias.username}</p>
-        <p className="text-xs text-pkm-400 lowercase">
-          password: {"\u2022".repeat(alias.password.length)}
+        <p className="text-sm text-text-primary lowercase">{alias.alias}</p>
+        <p className="text-xs text-text-info lowercase">username: {alias.username}</p>
+        <p className="text-xs text-text-info lowercase">
+          password: {"•".repeat(alias.password.length)}
         </p>
         {alias.notes && (
-          <p className="mt-1 text-xs text-pkm-400 lowercase">{alias.notes}</p>
+          <p className="mt-1 text-xs text-text-info lowercase">{alias.notes}</p>
         )}
       </div>
       <div className="flex items-center gap-2 opacity-0 transition group-hover:opacity-100">
         <button
           onClick={onEdit}
-          className="rounded-md border border-pkm-500 px-3 py-1 text-xs text-pkm-400 transition hover:border-sky hover:text-sky lowercase"
+          className="rounded-md border border-pkm-500 px-3 py-1 text-xs text-text-info transition hover:border-sky hover:text-sky lowercase"
         >
           edit
         </button>
         <button
           onClick={onDelete}
-          className="rounded-md border border-pkm-500 px-3 py-1 text-xs text-pkm-400 transition hover:border-red-400 hover:text-red-400 lowercase"
+          className="rounded-md border border-danger-border px-3 py-1 text-xs text-danger transition hover:bg-danger-dim lowercase"
         >
           delete
         </button>
@@ -183,7 +183,7 @@ export default function Aliases({ onNavigate, onLogout, authHeader }) {
       <div className="flex min-h-screen items-center justify-center bg-pkm-900">
         <div className="flex flex-col items-center gap-3">
           <div className="h-8 w-8 animate-spin rounded-full border-2 border-pkm-500 border-t-gold" />
-          <p className="text-sm text-pkm-400 lowercase">loading aliases...</p>
+          <p className="text-sm text-text-info lowercase">loading aliases...</p>
         </div>
       </div>
     )
@@ -191,18 +191,18 @@ export default function Aliases({ onNavigate, onLogout, authHeader }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-pkm-900">
-      <header className="flex items-center justify-between border-b border-pkm-600 px-6 py-3">
-        <h1 className="text-lg text-white lowercase tracking-wide">aliases</h1>
+      <header className="flex items-center justify-between border-b border-pkm-500 px-6 py-3">
+        <h1 className="text-lg text-gold lowercase tracking-wide">aliases</h1>
         <div className="flex items-center gap-3">
           <button
             onClick={() => onNavigate("dashboard")}
-            className="rounded-lg border border-pkm-500 px-4 py-1.5 text-xs text-pkm-400 transition hover:border-sky hover:text-sky lowercase"
+            className="rounded-lg border border-pkm-500 px-4 py-1.5 text-xs text-text-info transition hover:border-sky hover:text-sky lowercase"
           >
             inbox
           </button>
           <button
             onClick={onLogout}
-            className="rounded-lg border border-pkm-500 px-4 py-1.5 text-xs text-pkm-400 transition hover:border-sky hover:text-sky lowercase"
+            className="rounded-lg border border-pkm-500 px-4 py-1.5 text-xs text-text-info transition hover:border-sky hover:text-sky lowercase"
           >
             sign out
           </button>
@@ -210,7 +210,7 @@ export default function Aliases({ onNavigate, onLogout, authHeader }) {
       </header>
 
       <div className="flex flex-1">
-        <aside className="w-72 shrink-0 border-r border-pkm-600 p-4">
+        <aside className="w-72 shrink-0 border-r border-pkm-500 p-4">
           <button
             onClick={openAdd}
             className="mb-4 w-full rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-pkm-900 transition hover:brightness-110 active:scale-[0.98] lowercase"
@@ -219,7 +219,7 @@ export default function Aliases({ onNavigate, onLogout, authHeader }) {
           </button>
 
           <nav className="flex flex-col gap-1">
-            <span className="rounded-md bg-pkm-600 px-3 py-2 text-sm text-white lowercase">
+            <span className="rounded-md bg-pkm-600 px-3 py-2 text-sm text-text-primary lowercase">
               all aliases
             </span>
           </nav>
@@ -227,11 +227,11 @@ export default function Aliases({ onNavigate, onLogout, authHeader }) {
 
         <div className="flex-1 overflow-y-auto p-6">
           {error && (
-            <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400 lowercase">
+            <div className="mb-4 rounded-lg border border-danger-border bg-danger-dim px-4 py-3 text-sm text-danger lowercase">
               {error}
               <button
                 onClick={() => setError(null)}
-                className="ml-2 text-red-400 underline"
+                className="ml-2 text-danger underline"
               >
                 dismiss
               </button>
@@ -239,7 +239,7 @@ export default function Aliases({ onNavigate, onLogout, authHeader }) {
           )}
 
           {aliases.length === 0 ? (
-            <p className="text-sm text-pkm-400 lowercase">
+            <p className="text-sm text-text-info lowercase">
               no aliases yet. create one to get started.
             </p>
           ) : (
@@ -259,61 +259,59 @@ export default function Aliases({ onNavigate, onLogout, authHeader }) {
 
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="w-full max-w-md rounded-xl border border-pkm-500 bg-pkm-800 p-6 shadow-lg">
-            <h2 className="mb-4 text-base text-white lowercase tracking-wide">
+          <div className="w-full max-w-md rounded-xl border border-pkm-500 bg-pkm-800 p-6">
+            <h2 className="mb-4 text-base text-text-primary lowercase tracking-wide">
               {editing ? "edit alias" : "add alias"}
             </h2>
             <form onSubmit={handleSave} className="flex flex-col gap-4">
               <div>
-                <label htmlFor="alias" className="sr-only">
+                <label htmlFor="alias" className="block mb-1.5 text-sm font-semibold text-text-primary lowercase">
                   email alias
                 </label>
                 <input
                   id="alias"
                   type="text"
-                  placeholder="email alias"
                   value={form.alias}
                   onChange={(e) => handleChange("alias", e.target.value)}
-                  className={`w-full rounded-lg border bg-pkm-700 px-4 py-2.5 text-sm text-white placeholder-pkm-400 outline-none transition focus:ring-1 lowercase ${
+                  className={`w-full rounded-lg border bg-pkm-700 px-4 py-2.5 text-sm text-text-primary placeholder:text-text-info outline-none transition focus:ring-1 lowercase ${
                     formErrors.alias
-                      ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                      ? "border-danger focus:border-danger focus:ring-danger"
                       : "border-pkm-500 focus:border-gold focus:ring-gold"
                   }`}
                   required
                 />
                 {formErrors.alias && (
-                  <p className="mt-1 text-xs text-red-400 lowercase">
+                  <p className="mt-1 text-xs text-danger lowercase">
                     {formErrors.alias}
                   </p>
                 )}
               </div>
 
               <div>
-                <label htmlFor="username" className="sr-only">
+                <label htmlFor="username" className="block mb-1.5 text-sm font-semibold text-text-primary lowercase">
                   username
                 </label>
                 <input
                   id="username"
                   type="text"
-                  placeholder="username"
                   value={form.username}
                   onChange={(e) => handleChange("username", e.target.value)}
-                  className={`w-full rounded-lg border bg-pkm-700 px-4 py-2.5 text-sm text-white placeholder-pkm-400 outline-none transition focus:ring-1 lowercase ${
+                  className={`w-full rounded-lg border bg-pkm-700 px-4 py-2.5 text-sm text-text-primary placeholder:text-text-info outline-none transition focus:ring-1 lowercase ${
                     formErrors.username
-                      ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                      ? "border-danger focus:border-danger focus:ring-danger"
                       : "border-pkm-500 focus:border-gold focus:ring-gold"
                   }`}
                   required
                 />
                 {formErrors.username && (
-                  <p className="mt-1 text-xs text-red-400 lowercase">
+                  <p className="mt-1 text-xs text-danger lowercase">
                     {formErrors.username}
                   </p>
                 )}
               </div>
 
               <div>
-                <label htmlFor="password" className="sr-only">
+                <label htmlFor="password" className="block mb-1.5 text-sm font-semibold text-text-primary lowercase">
                   password
                 </label>
                 <input
@@ -322,22 +320,22 @@ export default function Aliases({ onNavigate, onLogout, authHeader }) {
                   placeholder={editing ? "password (leave blank to keep)" : "password"}
                   value={form.password}
                   onChange={(e) => handleChange("password", e.target.value)}
-                  className={`w-full rounded-lg border bg-pkm-700 px-4 py-2.5 text-sm text-white placeholder-pkm-400 outline-none transition focus:ring-1 lowercase ${
+                  className={`w-full rounded-lg border bg-pkm-700 px-4 py-2.5 text-sm text-text-primary placeholder:text-text-info outline-none transition focus:ring-1 lowercase ${
                     formErrors.password
-                      ? "border-red-400 focus:border-red-400 focus:ring-red-400"
+                      ? "border-danger focus:border-danger focus:ring-danger"
                       : "border-pkm-500 focus:border-gold focus:ring-gold"
                   }`}
                   required={!editing}
                 />
                 {formErrors.password && (
-                  <p className="mt-1 text-xs text-red-400 lowercase">
+                  <p className="mt-1 text-xs text-danger lowercase">
                     {formErrors.password}
                   </p>
                 )}
               </div>
 
               <div>
-                <label htmlFor="notes" className="sr-only">
+                <label htmlFor="notes" className="block mb-1.5 text-sm font-semibold text-text-primary lowercase">
                   notes
                 </label>
                 <textarea
@@ -346,7 +344,7 @@ export default function Aliases({ onNavigate, onLogout, authHeader }) {
                   value={form.notes}
                   onChange={(e) => handleChange("notes", e.target.value)}
                   rows={3}
-                  className="w-full resize-none rounded-lg border border-pkm-500 bg-pkm-700 px-4 py-2.5 text-sm text-white placeholder-pkm-400 outline-none transition focus:border-gold focus:ring-1 focus:ring-gold lowercase"
+                  className="w-full resize-none rounded-lg border border-pkm-500 bg-pkm-700 px-4 py-2.5 text-sm text-text-primary placeholder:text-text-info outline-none transition focus:border-gold focus:ring-1 focus:ring-gold lowercase"
                 />
               </div>
 
@@ -358,7 +356,7 @@ export default function Aliases({ onNavigate, onLogout, authHeader }) {
                     setEditing(null)
                     setFormErrors({})
                   }}
-                  className="rounded-lg border border-pkm-500 px-4 py-2 text-sm text-pkm-400 transition hover:text-white lowercase"
+                  className="rounded-lg border border-pkm-500 px-4 py-2 text-sm text-text-info transition hover:text-text-primary lowercase"
                   disabled={saving}
                 >
                   cancel
@@ -381,13 +379,13 @@ export default function Aliases({ onNavigate, onLogout, authHeader }) {
 
       {confirmDelete !== null && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="w-full max-w-sm rounded-xl border border-pkm-500 bg-pkm-800 p-6 shadow-lg">
-            <h3 className="mb-2 text-base text-white lowercase tracking-wide">
+          <div className="w-full max-w-sm rounded-xl border border-pkm-500 bg-pkm-800 p-6">
+            <h3 className="mb-2 text-base text-text-primary lowercase tracking-wide">
               delete alias
             </h3>
-            <p className="mb-5 text-sm text-pkm-400 lowercase">
+            <p className="mb-5 text-sm text-text-info lowercase">
               are you sure you want to delete{" "}
-              <span className="text-white">
+              <span className="text-text-primary">
                 {aliases.find((a) => a.id === confirmDelete)?.alias}
               </span>
               ? this cannot be undone.
@@ -395,7 +393,7 @@ export default function Aliases({ onNavigate, onLogout, authHeader }) {
             <div className="flex items-center justify-end gap-3">
               <button
                 onClick={() => setConfirmDelete(null)}
-                className="rounded-lg border border-pkm-500 px-4 py-2 text-sm text-pkm-400 transition hover:text-white lowercase"
+                className="rounded-lg border border-pkm-500 px-4 py-2 text-sm text-text-info transition hover:text-text-primary lowercase"
                 disabled={deleting}
               >
                 cancel
@@ -403,7 +401,7 @@ export default function Aliases({ onNavigate, onLogout, authHeader }) {
               <button
                 onClick={() => handleDelete(confirmDelete)}
                 disabled={deleting}
-                className="flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white transition hover:brightness-110 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 lowercase"
+                className="flex items-center gap-2 rounded-lg bg-danger px-4 py-2 text-sm font-semibold text-white transition hover:brightness-110 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 lowercase"
               >
                 {deleting && (
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />

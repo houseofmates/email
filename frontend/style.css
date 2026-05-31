@@ -1,0 +1,344 @@
+:root {
+    --bg-primary: #050505;
+    --bg-surface: #121212;
+    --bg-card: #1A1A1A;
+    --accent-yellow: #FFD700;
+    --accent-blue: #1E90FF;
+    --text-primary: #ffffff;
+    --text-accent: #FFD700;
+    --text-info: #1E90FF;
+    --font-base: 'Varela Round', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    min-height: 100dvh;
+    font-family: var(--font-base);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    text-transform: lowercase;
+}
+
+body {
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+header h1 {
+    font-size: 2rem;
+    color: var(--text-accent);
+    font-weight: 600;
+}
+
+nav ul {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--text-primary);
+    font-weight: 500;
+    transition: color 0.2s ease;
+    padding: 5px 0;
+    position: relative;
+}
+
+nav a:hover {
+    color: var(--text-accent);
+}
+
+nav a.active {
+    color: var(--text-accent);
+}
+
+nav a.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--text-accent);
+}
+
+main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+}
+
+.panel {
+    background-color: var(--bg-surface);
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.panel h2 {
+    color: var(--text-accent);
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.email-list, .alias-list, .identity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.email-item, .alias-item, .identity-item {
+    background-color: var(--bg-card);
+    border-radius: 6px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.email-item h3 {
+    margin: 0 0 8px 0;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.email-item p {
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    flex: 1;
+    min-width: 200px;
+}
+
+.email-item time {
+    font-size: 0.9rem;
+    color: var(--text-info);
+    font-weight: 500;
+}
+
+.checkbox-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.checkbox-row input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent-yellow);
+}
+
+.alias-item .alias {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.alias-item .alias-tag {
+    background-color: var(--accent-blue);
+    color: var(--bg-primary);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.identity-item {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.identity-item h3 {
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.identity-item .identity-meta {
+    color: var(--text-info);
+    font-size: 0.9rem;
+}
+
+.settings-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.setting {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.setting span:first-child {
+    color: var(--text-accent);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.setting input,
+.setting select {
+    background-color: var(--bg-card);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 4px;
+    padding: 12px;
+    color: var(--text-primary);
+    font-family: var(--font-base);
+    font-size: 1rem;
+    text-transform: none;
+}
+
+.setting input:focus,
+.setting select:focus {
+    border-color: var(--accent-yellow);
+    outline: 2px solid var(--accent-yellow);
+    outline-offset: 2px;
+}
+
+button, .button {
+    background-color: var(--accent-yellow);
+    color: var(--bg-primary);
+    border: none;
+    border-radius: 4px;
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+    font-family: var(--font-base);
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button:hover {
+    background-color: #e6c200;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+button.secondary {
+    background-color: transparent;
+    border: 1px solid var(--accent-blue);
+    color: var(--accent-blue);
+}
+
+button.secondary:hover {
+    background-color: rgba(30, 144, 255, 0.1);
+}
+
+button.danger {
+    background-color: transparent;
+    border: 1px solid #ff4444;
+    color: #ff4444;
+}
+
+button.danger:hover {
+    background-color: rgba(255, 68, 68, 0.1);
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+
+input, textarea {
+    background-color: var(--bg-card);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 4px;
+    padding: 12px;
+    color: var(--text-primary);
+    font-family: var(--font-base);
+    font-size: 1rem;
+}
+
+input::placeholder, textarea::placeholder {
+    color: var(--text-info);
+}
+
+input:focus, textarea:focus {
+    border-color: var(--accent-yellow);
+    outline: 2px solid var(--accent-yellow);
+    outline-offset: 2px;
+}
+
+@media (min-width: 768px) {
+    main {
+        grid-template-columns: 1fr 300px;
+    }
+
+    .panel {
+        height: fit-content;
+    }
+}
+
+@media (min-width: 1024px) {
+    main {
+        grid-template-columns: 200px 1fr 300px;
+    }
+
+    nav ul {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+}
