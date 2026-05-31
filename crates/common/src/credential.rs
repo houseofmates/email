@@ -1,51 +1,4 @@
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-use std::sync::{Arc, RwLock};
-
-/// In-memory credential (passwords) store. Replace with persistent storage later.
-#[derive(Clone, Default)]
-pub struct CredentialStore {
-    inner: Arc<RwLock<HashMap<String, Credential>>>,
-}
-
-impl CredentialStore {
-    pub fn new() -> Self {
-        Default::default()
-    }
-
-    pub fn list(&self) -> Vec<Credential> {
-        self.inner.read().unwrap().values().cloned().collect()
-    }
-
-    pub fn get(&self, id: &str) -> Option<Credential> {
-        self.inner.read().unwrap().get(id).cloned()
-    }
-
-    pub fn insert(&self, credential: Credential) -> Result<(), ()> {
-        let mut inner = self.inner.write().unwrap();
-        inner.insert(credential.id.clone(), credential);
-        Ok(())
-    }
-
-    pub fn update(&self, id: &str, credential: Credential) -> Result<(), ()> {
-        let mut inner = self.inner.write().unwrap();
-        if inner.contains_key(id) {
-            inner.insert(id.to_string(), credential);
-            Ok(())
-        } else {
-            Err(())
-        }
-    }
-
-    pub fn delete(&self, id: &str) -> Result<(), ()> {
-        let mut inner = self.inner.write().unwrap();
-        if inner.remove(id).is_some() {
-            Ok(())
-        } else {
-            Err(())
-        }
-    }
-}
 
 fn gen_id() -> String {
     use rand::distributions::Alphanumeric;
@@ -79,22 +32,22 @@ impl Credential {
     }
 }
 
-/// HTTP handler state that gets injected into routes
-#[derive(Clone)]
-pub struct CredentialState {
-    pub store: CredentialStore,
-}
-
-impl CredentialState {
-    pub fn new() -> Self {
-        Self {
-            store: CredentialStore::new(),
-        }
+impl store::Serialize for Credential {
+    fn serialize(&self) -> trc::Result<Vec<u8>> {
+        serde_json::to_vec(self).map_err(|err| {
+            trc::StoreEvent::UnexpectedError
+                .caused_by(trc::location!())
+                .reason(err)
+        })
     }
 }
 
-impl Default for CredentialState {
-    fn default() -> Self {
-        Self::new()
+impl store::Deserialize for Credential {
+    fn deserialize(bytes: &[u8]) -> trc::Result<Self> {
+        serde_json::from_slice(bytes).map_err(|err| {
+            trc::StoreEvent::DeserializeError
+                .caused_by(trc::location!())
+                .reason(err)
+        })
     }
 }
