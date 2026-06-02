@@ -17,7 +17,7 @@ mail-builder = { version = "0.4" }
 mail-auth = { version = "0.9" }
 tokio = { version = "1.47", features = ["net", "macros"] }
 psl = "2"
-hyper = { version = "1.0.1", features = ["server", "http1", "http2"] }
+hyper = { version = "1.10.1", features = ["server", "http1", "http2"] }
 idna = "1.0"
 reqwest = { version = "0.13", default-features = false, features = ["rustls", "http2", "stream"]}
 decancer = "3.0.1"
