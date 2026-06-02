@@ -75,7 +75,7 @@ BODYSTRUCTURE (
 BODY[] {1457}
 From: Art Vandelay <art@vandelay.com> (Vandelay Industries)
 To: "Colleagues": "James Smythe" <james@vandelay.com>; Friends:
-    jane@example.com, =?UTF-8?Q?John_Sm=C3=AEth?= <john@example.com>;
+    jane@{{alias_domain}}, =?UTF-8?Q?John_Sm=C3=AEth?= <john@{{alias_domain}}>;
 Date: Sat, 20 Nov 2021 14:22:01 -0800
 Subject: Why not both importing AND exporting? =?utf-8?b?4pi6?=
 Content-Type: multipart/mixed; boundary="festivus";
@@ -116,7 +116,7 @@ R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7
 BINARY[] {1457}
 From: Art Vandelay <art@vandelay.com> (Vandelay Industries)
 To: "Colleagues": "James Smythe" <james@vandelay.com>; Friends:
-    jane@example.com, =?UTF-8?Q?John_Sm=C3=AEth?= <john@example.com>;
+    jane@{{alias_domain}}, =?UTF-8?Q?John_Sm=C3=AEth?= <john@{{alias_domain}}>;
 Date: Sat, 20 Nov 2021 14:22:01 -0800
 Subject: Why not both importing AND exporting? =?utf-8?b?4pi6?=
 Content-Type: multipart/mixed; boundary="festivus";
@@ -159,7 +159,7 @@ BINARY.SIZE[] 1457
 BODY[HEADER] {349}
 From: Art Vandelay <art@vandelay.com> (Vandelay Industries)
 To: "Colleagues": "James Smythe" <james@vandelay.com>; Friends:
-    jane@example.com, =?UTF-8?Q?John_Sm=C3=AEth?= <john@example.com>;
+    jane@{{alias_domain}}, =?UTF-8?Q?John_Sm=C3=AEth?= <john@{{alias_domain}}>;
 Date: Sat, 20 Nov 2021 14:22:01 -0800
 Subject: Why not both importing AND exporting? =?utf-8?b?4pi6?=
 Content-Type: multipart/mixed; boundary="festivus";
@@ -386,7 +386,7 @@ BINARY.SIZE[2.2.1] 42
 BODY[HEADER.FIELDS (FROM TO)] {196}
 From: Art Vandelay <art@vandelay.com> (Vandelay Industries)
 To: "Colleagues": "James Smythe" <james@vandelay.com>; Friends:
-    jane@example.com, =?UTF-8?Q?John_Sm=C3=AEth?= <john@example.com>;
+    jane@{{alias_domain}}, =?UTF-8?Q?John_Sm=C3=AEth?= <john@{{alias_domain}}>;
 
 
 ----------------------------------
@@ -396,7 +396,7 @@ Vandelay <art@vandelay.co
 BODY[HEADER.FIELDS.NOT (SUBJECT CC)] {286}
 From: Art Vandelay <art@vandelay.com> (Vandelay Industries)
 To: "Colleagues": "James Smythe" <james@vandelay.com>; Friends:
-    jane@example.com, =?UTF-8?Q?John_Sm=C3=AEth?= <john@example.com>;
+    jane@{{alias_domain}}, =?UTF-8?Q?John_Sm=C3=AEth?= <john@{{alias_domain}}>;
 Date: Sat, 20 Nov 2021 14:22:01 -0800
 Content-Type: multipart/mixed; boundary="festivus";
 

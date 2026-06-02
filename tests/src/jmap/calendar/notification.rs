@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -20,9 +20,9 @@ use types::id::Id;
 
 pub async fn test(test: &TestServer) {
     println!("Running Calendar Event Notification tests...");
-    let john = test.account("jdoe@example.com");
-    let jane = test.account("jane.smith@example.com");
-    let bill = test.account("bill@example.com");
+    let john = test.account("jdoe@{{alias_domain}}");
+    let jane = test.account("jane.smith@{{alias_domain}}");
+    let bill = test.account("bill@{{alias_domain}}");
 
     let john_id = john.id_string().to_string();
     let jane_id = jane.id_string().to_string();
@@ -119,7 +119,7 @@ pub async fn test(test: &TestServer) {
           "created": &notification.text_field("created"),
           "changedBy": {
             "name": "John Doe",
-            "email": "jdoe@example.com",
+            "email": "jdoe@{{alias_domain}}",
             "principalId": &john_id
           },
           "type": "created",
@@ -205,13 +205,13 @@ pub async fn test(test: &TestServer) {
         let changed_by = if i == 0 {
             json!({
                 "name": "Jane Smith",
-                "email": "jane.smith@example.com",
+                "email": "jane.smith@{{alias_domain}}",
                 "principalId": &jane_id,
             })
         } else {
             json!({
                 "name": "Bill Foobar",
-                "email": "bill@example.com",
+                "email": "bill@{{alias_domain}}",
                 "principalId": &bill_id,
             })
         };
@@ -240,7 +240,7 @@ pub async fn test(test: &TestServer) {
     response.list()[0].assert_is_equal(json!({
         "participants": {
         "8584f8f9-5414-55e3-8a1c-ad6fc2f3ffb6": {
-            "calendarAddress": "mailto:jdoe@example.com",
+            "calendarAddress": "mailto:jdoe@{{alias_domain}}",
             "@type": "Participant",
             "roles": {
                 "chair": true
@@ -248,13 +248,13 @@ pub async fn test(test: &TestServer) {
             "participationStatus": "accepted"
         },
         "a0171748-fe8d-57d8-879e-56036a5251d1": {
-            "calendarAddress": "mailto:jane.smith@example.com",
+            "calendarAddress": "mailto:jane.smith@{{alias_domain}}",
             "@type": "Participant",
             "participationStatus": "accepted",
             "kind": "individual"
         },
         "86720268-d67c-58c3-9217-03df7d7ee4d8": {
-            "calendarAddress": "mailto:bill@example.com",
+            "calendarAddress": "mailto:bill@{{alias_domain}}",
             "@type": "Participant",
             "kind": "individual",
             "participationStatus": "accepted"
@@ -295,7 +295,7 @@ pub async fn test(test: &TestServer) {
     response.list()[0].assert_is_equal(json!({
         "participants": {
         "8584f8f9-5414-55e3-8a1c-ad6fc2f3ffb6": {
-            "calendarAddress": "mailto:jdoe@example.com",
+            "calendarAddress": "mailto:jdoe@{{alias_domain}}",
             "@type": "Participant",
             "roles": {
                 "chair": true
@@ -303,13 +303,13 @@ pub async fn test(test: &TestServer) {
             "participationStatus": "accepted"
         },
         "a0171748-fe8d-57d8-879e-56036a5251d1": {
-            "calendarAddress": "mailto:jane.smith@example.com",
+            "calendarAddress": "mailto:jane.smith@{{alias_domain}}",
             "@type": "Participant",
             "participationStatus": "declined",
             "kind": "individual"
         },
         "86720268-d67c-58c3-9217-03df7d7ee4d8": {
-            "calendarAddress": "mailto:bill@example.com",
+            "calendarAddress": "mailto:bill@{{alias_domain}}",
             "@type": "Participant",
             "kind": "individual",
             "participationStatus": "accepted"
@@ -359,7 +359,7 @@ pub async fn test(test: &TestServer) {
         "id": &notification_id,
         "changedBy": {
             "name": "John Doe",
-            "email": "jdoe@example.com",
+            "email": "jdoe@{{alias_domain}}",
             "principalId": &john_id
         },
         "type": "updated",
@@ -408,7 +408,7 @@ fn test_event() -> Value {
       "@type": "Event",
       "participants": {
         "8584f8f9-5414-55e3-8a1c-ad6fc2f3ffb6": {
-          "calendarAddress": "mailto:jdoe@example.com",
+          "calendarAddress": "mailto:jdoe@{{alias_domain}}",
           "participationStatus": "accepted",
           "roles": {
             "chair": true
@@ -416,18 +416,18 @@ fn test_event() -> Value {
           "@type": "Participant"
         },
         "a0171748-fe8d-57d8-879e-56036a5251d1": {
-          "calendarAddress": "mailto:jane.smith@example.com",
+          "calendarAddress": "mailto:jane.smith@{{alias_domain}}",
           "@type": "Participant",
           "participationStatus": "needs-action",
           "kind": "individual"
         },
         "86720268-d67c-58c3-9217-03df7d7ee4d8": {
-          "calendarAddress": "mailto:bill@example.com",
+          "calendarAddress": "mailto:bill@{{alias_domain}}",
           "participationStatus": "needs-action",
           "@type": "Participant",
           "kind": "individual"
         }
       },
-      "organizerCalendarAddress": "mailto:jdoe@example.com"
+      "organizerCalendarAddress": "mailto:jdoe@{{alias_domain}}"
     })
 }

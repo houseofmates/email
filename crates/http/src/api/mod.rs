@@ -1,11 +1,11 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
 
 // SPDX-SnippetBegin
-// SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+// SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
 // SPDX-License-Identifier: LicenseRef-SEL
 #[cfg(feature = "enterprise")]
 pub mod telemetry;
@@ -118,7 +118,7 @@ impl ManagementApi for Server {
                 let account_id = access_token.account_id();
                 match path.get(1).copied() {
                     // SPDX-SnippetBegin
-                    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+                    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
                     // SPDX-License-Identifier: LicenseRef-SEL
                     #[cfg(feature = "enterprise")]
                     Some("tracing") if self.core.is_enterprise_edition() => {
@@ -221,7 +221,7 @@ impl ManagementApi for Server {
                             ))))
                     }
                     // SPDX-SnippetBegin
-                    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+                    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
                     // SPDX-License-Identifier: LicenseRef-SEL
                     #[cfg(feature = "enterprise")]
                     ("tracing", _, &Method::GET) if self.core.is_enterprise_edition() => {
@@ -282,7 +282,7 @@ impl ManagementApi for Server {
                 Some((GrantType::LiveDelivery, Permission::LiveDeliveryTest))
             } else {
                 // SPDX-SnippetBegin
-                // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+                // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
                 // SPDX-License-Identifier: LicenseRef-SEL
                 #[cfg(feature = "enterprise")]
                 {

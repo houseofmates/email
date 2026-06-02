@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -30,17 +30,17 @@ pub async fn test(test: &TestServer) {
 
 async fn test_single_thread(test_server: &TestServer) {
     println!("Running Email Merge Threads tests...");
-    let account = test_server.account("admin@example.com");
+    let account = test_server.account("admin@{{alias_domain}}");
     let mut client = account.jmap_client().await;
 
     let mut account_ids = Vec::new();
     for name in [
-        "admin@example.com",
-        "jdoe@example.com",
-        "jane.smith@example.com",
-        "bill@example.com",
-        "robert@example.com",
-        "sales@example.com",
+        "admin@{{alias_domain}}",
+        "jdoe@{{alias_domain}}",
+        "jane.smith@{{alias_domain}}",
+        "bill@{{alias_domain}}",
+        "robert@{{alias_domain}}",
+        "sales@{{alias_domain}}",
     ] {
         account_ids.push(test_server.account(name).id_string());
     }
@@ -208,7 +208,7 @@ async fn test_single_thread(test_server: &TestServer) {
 async fn test_multi_thread(test: &TestServer) {
     println!("Running Email Merge Threads tests (multi-threaded)...");
     let mut handles = vec![];
-    let account = test.account("jdoe@example.com");
+    let account = test.account("jdoe@{{alias_domain}}");
     let account_id = account.id().document_id();
     let mailbox_id = INBOX_ID;
 

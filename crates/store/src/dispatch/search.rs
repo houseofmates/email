@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -208,7 +208,7 @@ impl SearchStore {
                 #[cfg(feature = "mysql")]
                 Store::MySQL(store) => store.query(index, filters, sort).await,
                 // SPDX-SnippetBegin
-                // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+                // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
                 // SPDX-License-Identifier: LicenseRef-SEL
                 #[cfg(all(feature = "enterprise", any(feature = "postgres", feature = "mysql")))]
                 Store::SQLReadReplica(store) => store.query(index, filters, sort).await,
@@ -236,7 +236,7 @@ impl SearchStore {
                         .await
                 }
                 // SPDX-SnippetBegin
-                // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+                // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
                 // SPDX-License-Identifier: LicenseRef-SEL
                 #[cfg(all(feature = "enterprise", any(feature = "postgres", feature = "mysql")))]
                 Store::SQLReadReplica(store) => {
@@ -268,7 +268,7 @@ impl SearchStore {
                 #[cfg(feature = "mysql")]
                 Store::MySQL(store) => store.index(documents).await,
                 // SPDX-SnippetBegin
-                // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+                // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
                 // SPDX-License-Identifier: LicenseRef-SEL
                 #[cfg(all(feature = "enterprise", any(feature = "postgres", feature = "mysql")))]
                 Store::SQLReadReplica(store) => store.index(documents).await,
@@ -288,7 +288,7 @@ impl SearchStore {
                 #[cfg(feature = "mysql")]
                 Store::MySQL(store) => store.unindex(query).await,
                 // SPDX-SnippetBegin
-                // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+                // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
                 // SPDX-License-Identifier: LicenseRef-SEL
                 #[cfg(all(feature = "enterprise", any(feature = "postgres", feature = "mysql")))]
                 Store::SQLReadReplica(store) => store.unindex(query).await,
@@ -308,7 +308,7 @@ impl SearchStore {
                 #[cfg(feature = "mysql")]
                 Store::MySQL(_) => None,
                 // SPDX-SnippetBegin
-                // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+                // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
                 // SPDX-License-Identifier: LicenseRef-SEL
                 #[cfg(all(feature = "enterprise", any(feature = "postgres", feature = "mysql")))]
                 Store::SQLReadReplica(_) => None,
@@ -351,7 +351,7 @@ impl SearchStore {
                 #[cfg(feature = "mysql")]
                 Store::MySQL(store) => store.create_search_tables().await,
                 // SPDX-SnippetBegin
-                // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+                // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
                 // SPDX-License-Identifier: LicenseRef-SEL
                 #[cfg(all(feature = "enterprise", any(feature = "postgres", feature = "mysql")))]
                 Store::SQLReadReplica(store) => match store.primary_store() {

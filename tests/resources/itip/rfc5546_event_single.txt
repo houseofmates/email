@@ -1,33 +1,33 @@
 # RFC5546 - Group Event Request
 
 # A sample meeting request is sent from "A" to "B", "C", and "D".
-> put a@example.com calsrv.example.com-873970198738777@example.com
+> put a@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Example/ExampleCalendarClient//EN
 VERSION:2.0
 BEGIN:VEVENT
-ORGANIZER:mailto:a@example.com
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED;CN=A:mailto:a@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=B:mailto:b@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=C:mailto:c@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal:mailto:d@example.com
-ATTENDEE;RSVP=FALSE;CUTYPE=ROOM:conf_big@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE:mailto:e@example.com
+ORGANIZER:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED;CN=A:mailto:a@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=B:mailto:b@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=C:mailto:c@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal:mailto:d@{{alias_domain}}
+ATTENDEE;RSVP=FALSE;CUTYPE=ROOM:conf_big@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE:mailto:e@{{alias_domain}}
 DTSTAMP:19970611T190000Z
 DTSTART:19970701T200000Z
 DTEND:19970701T2100000Z
 SUMMARY:Conference
-UID:calsrv.example.com-873970198738777@example.com
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 SEQUENCE:0
 STATUS:CONFIRMED
 END:VEVENT
 END:VCALENDAR
 
 > expect
-from: a@example.com
-to: b@example.com, c@example.com, d@example.com
+from: a@{{alias_domain}}
+to: b@{{alias_domain}}, c@{{alias_domain}}, d@{{alias_domain}}
 summary: invite
-summary.attendee: Participants([ItipParticipant { email: "a@example.com", name: None, is_organizer: true }, ItipParticipant { email: "b@example.com", name: Some("B"), is_organizer: false }, ItipParticipant { email: "c@example.com", name: Some("C"), is_organizer: false }, ItipParticipant { email: "conf_big@example.com", name: None, is_organizer: false }, ItipParticipant { email: "d@example.com", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@example.com", name: None, is_organizer: false }])
+summary.attendee: Participants([ItipParticipant { email: "a@{{alias_domain}}", name: None, is_organizer: true }, ItipParticipant { email: "b@{{alias_domain}}", name: Some("B"), is_organizer: false }, ItipParticipant { email: "c@{{alias_domain}}", name: Some("C"), is_organizer: false }, ItipParticipant { email: "conf_big@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "d@{{alias_domain}}", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@{{alias_domain}}", name: None, is_organizer: false }])
 summary.dtstart: Time(ItipTime { start: 867787200, tz_id: 32768 })
 summary.summary: Text("Conference")
 BEGIN:VCALENDAR
@@ -39,17 +39,17 @@ STATUS:CONFIRMED
 SUMMARY:Conference
 DTEND:19970701T2100000Z
 DTSTART:19970701T200000Z
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED;CN=A:mailto:a@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE:mailto:e@example.com
-ATTENDEE;RSVP=FALSE;CUTYPE=ROOM:conf_big@example.com
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED;CN=A:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE:mailto:e@{{alias_domain}}
+ATTENDEE;RSVP=FALSE;CUTYPE=ROOM:conf_big@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=B;PARTSTAT=NEEDS-ACTION:mailto:b@exa
  mple.com
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=C;PARTSTAT=NEEDS-ACTION:mailto:c@exa
  mple.com
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal;PARTSTAT=NEEDS-ACTION:mailto:d@e
  xample.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:1
 END:VEVENT
@@ -59,7 +59,7 @@ END:VCALENDAR
 > send
 
 # Make sure B receives the request
-> get b@example.com calsrv.example.com-873970198738777@example.com
+> get b@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Stalwart Labs LLC//Stalwart Server//EN
 VERSION:2.0
@@ -68,41 +68,41 @@ STATUS:CONFIRMED
 SUMMARY:Conference
 DTEND:19970701T2100000Z
 DTSTART:19970701T200000Z
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED;CN=A:mailto:a@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE:mailto:e@example.com
-ATTENDEE;RSVP=FALSE;CUTYPE=ROOM:conf_big@example.com
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED;CN=A:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE:mailto:e@{{alias_domain}}
+ATTENDEE;RSVP=FALSE;CUTYPE=ROOM:conf_big@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=B;PARTSTAT=NEEDS-ACTION:mailto:b@exa
  mple.com
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=C;PARTSTAT=NEEDS-ACTION:mailto:c@exa
  mple.com
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal;PARTSTAT=NEEDS-ACTION:mailto:d@e
  xample.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:1
 END:VEVENT
 END:VCALENDAR
 
 # B accepts the request
-> put b@example.com calsrv.example.com-873970198738777@example.com
+> put b@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Stalwart Labs LLC//Stalwart Server//EN
 BEGIN:VEVENT
 DTSTAMP:19970701T200000Z
 SEQUENCE:1
-UID:calsrv.example.com-873970198738777@example.com
-ORGANIZER:mailto:a@example.com
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED;CN=A:mailto:a@example.com
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED;CN=A:mailto:a@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=B;PARTSTAT=ACCEPTED:mailto:b@exa
  mple.com
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=C;PARTSTAT=NEEDS-ACTION:mailto:c@exa
  mple.com
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal;PARTSTAT=NEEDS-ACTION:mailto:d@e
  xample.com
-ATTENDEE;RSVP=FALSE;CUTYPE=ROOM:conf_big@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE:mailto:e@example.com
+ATTENDEE;RSVP=FALSE;CUTYPE=ROOM:conf_big@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE:mailto:e@{{alias_domain}}
 DTSTART:19970701T200000Z
 DTEND:19970701T2100000Z
 SUMMARY:Conference
@@ -111,10 +111,10 @@ END:VEVENT
 END:VCALENDAR
 
 > expect
-from: b@example.com
-to: a@example.com
+from: b@{{alias_domain}}
+to: a@{{alias_domain}}
 summary: rsvp ACCEPTED
-summary.attendee: Participants([ItipParticipant { email: "a@example.com", name: None, is_organizer: true }, ItipParticipant { email: "b@example.com", name: Some("B"), is_organizer: false }, ItipParticipant { email: "c@example.com", name: Some("C"), is_organizer: false }, ItipParticipant { email: "conf_big@example.com", name: None, is_organizer: false }, ItipParticipant { email: "d@example.com", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@example.com", name: None, is_organizer: false }])
+summary.attendee: Participants([ItipParticipant { email: "a@{{alias_domain}}", name: None, is_organizer: true }, ItipParticipant { email: "b@{{alias_domain}}", name: Some("B"), is_organizer: false }, ItipParticipant { email: "c@{{alias_domain}}", name: Some("C"), is_organizer: false }, ItipParticipant { email: "conf_big@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "d@{{alias_domain}}", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@{{alias_domain}}", name: None, is_organizer: false }])
 summary.dtstart: Time(ItipTime { start: 867787200, tz_id: 32768 })
 summary.summary: Text("Conference")
 BEGIN:VCALENDAR
@@ -127,8 +127,8 @@ DTEND:19970701T2100000Z
 DTSTART:19970701T200000Z
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=B;PARTSTAT=ACCEPTED:mailto:b@example
  .com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:1
 REQUEST-STATUS:2.0;Success
@@ -139,7 +139,7 @@ END:VCALENDAR
 > send
 
 # Make sure A receives the reply
-> get a@example.com calsrv.example.com-873970198738777@example.com
+> get a@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Example/ExampleCalendarClient//EN
 VERSION:2.0
@@ -148,37 +148,37 @@ STATUS:CONFIRMED
 SUMMARY:Conference
 DTEND:19970701T2100000Z
 DTSTART:19970701T200000Z
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED;CN=A:mailto:a@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE:mailto:e@example.com
-ATTENDEE;RSVP=FALSE;CUTYPE=ROOM:conf_big@example.com
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED;CN=A:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE:mailto:e@{{alias_domain}}
+ATTENDEE;RSVP=FALSE;CUTYPE=ROOM:conf_big@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=B;PARTSTAT=ACCEPTED;SCHEDULE-STATUS=
- 2.0:mailto:b@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=C:mailto:c@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal:mailto:d@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ 2.0:mailto:b@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=C:mailto:c@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal:mailto:d@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:1
 SEQUENCE:1
 END:VEVENT
 END:VCALENDAR
 
 # A moved the event to a new time
-> put a@example.com calsrv.example.com-873970198738777@example.com
+> put a@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Example/ExampleCalendarClient//EN
 VERSION:2.0
 BEGIN:VEVENT
-ORGANIZER:mailto:a@example.com
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:b@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:c@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal:mailto:d@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE:mailto:e@example.com
+ORGANIZER:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:b@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:c@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal:mailto:d@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE:mailto:e@{{alias_domain}}
 DTSTART:19970701T180000Z
 DTEND:19970701T190000Z
 SUMMARY:Phone Conference
-UID:calsrv.example.com-873970198738777@example.com
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 SEQUENCE:1
 DTSTAMP:19970613T190000Z
 STATUS:CONFIRMED
@@ -186,13 +186,13 @@ END:VEVENT
 END:VCALENDAR
 
 > expect
-from: a@example.com
-to: b@example.com, c@example.com, d@example.com
+from: a@{{alias_domain}}
+to: b@{{alias_domain}}, c@{{alias_domain}}, d@{{alias_domain}}
 summary: update REQUEST
-summary.attendee: Participants([ItipParticipant { email: "a@example.com", name: None, is_organizer: true }, ItipParticipant { email: "b@example.com", name: None, is_organizer: false }, ItipParticipant { email: "c@example.com", name: None, is_organizer: false }, ItipParticipant { email: "conf@example.com", name: None, is_organizer: false }, ItipParticipant { email: "d@example.com", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@example.com", name: None, is_organizer: false }])
+summary.attendee: Participants([ItipParticipant { email: "a@{{alias_domain}}", name: None, is_organizer: true }, ItipParticipant { email: "b@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "c@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "conf@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "d@{{alias_domain}}", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@{{alias_domain}}", name: None, is_organizer: false }])
 summary.dtstart: Time(ItipTime { start: 867780000, tz_id: 32768 })
 summary.summary: Text("Phone Conference")
-~summary.attendee: Participants([ItipParticipant { email: "a@example.com", name: None, is_organizer: true }, ItipParticipant { email: "b@example.com", name: Some("B"), is_organizer: false }, ItipParticipant { email: "c@example.com", name: Some("C"), is_organizer: false }, ItipParticipant { email: "conf_big@example.com", name: None, is_organizer: false }, ItipParticipant { email: "d@example.com", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@example.com", name: None, is_organizer: false }])
+~summary.attendee: Participants([ItipParticipant { email: "a@{{alias_domain}}", name: None, is_organizer: true }, ItipParticipant { email: "b@{{alias_domain}}", name: Some("B"), is_organizer: false }, ItipParticipant { email: "c@{{alias_domain}}", name: Some("C"), is_organizer: false }, ItipParticipant { email: "conf_big@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "d@{{alias_domain}}", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@{{alias_domain}}", name: None, is_organizer: false }])
 ~summary.dtstart: Time(ItipTime { start: 867787200, tz_id: 32768 })
 ~summary.summary: Text("Conference")
 BEGIN:VCALENDAR
@@ -204,17 +204,17 @@ STATUS:CONFIRMED
 SUMMARY:Phone Conference
 DTEND:19970701T190000Z
 DTSTART:19970701T180000Z
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE:mailto:e@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@example.com
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE:mailto:e@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal;PARTSTAT=NEEDS-ACTION:mailto:d@e
  xample.com
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;PARTSTAT=NEEDS-ACTION:mailto:b@example.
  com
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;PARTSTAT=NEEDS-ACTION:mailto:c@example.
  com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:2
 END:VEVENT
@@ -224,7 +224,7 @@ END:VCALENDAR
 > send
 
 # Make sure C receives the request
-> get c@example.com calsrv.example.com-873970198738777@example.com
+> get c@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Stalwart Labs LLC//Stalwart Server//EN
 VERSION:2.0
@@ -233,41 +233,41 @@ STATUS:CONFIRMED
 SUMMARY:Phone Conference
 DTEND:19970701T190000Z
 DTSTART:19970701T180000Z
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE:mailto:e@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@example.com
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE:mailto:e@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal;PARTSTAT=NEEDS-ACTION:mailto:d@e
  xample.com
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;PARTSTAT=NEEDS-ACTION:mailto:b@example.
  com
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;PARTSTAT=NEEDS-ACTION:mailto:c@example.
  com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:2
 END:VEVENT
 END:VCALENDAR
 
 # "C" delegates presence at the meeting to "E".
-> put c@example.com calsrv.example.com-873970198738777@example.com
+> put c@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Stalwart Labs LLC//Stalwart Server//EN
 BEGIN:VEVENT
 DTSTAMP:19970701T180000Z
-UID:calsrv.example.com-873970198738777@example.com
-ORGANIZER:mailto:a@example.com
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
 STATUS:CONFIRMED
 SEQUENCE:2
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@example.com
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;PARTSTAT=NEEDS-ACTION:mailto:b@example.
  com
-ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@example.com":mailto:c@example.com
-ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@example.com":mailto:e@example.com
+ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@{{alias_domain}}":mailto:c@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@{{alias_domain}}":mailto:e@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal;PARTSTAT=NEEDS-ACTION:mailto:d@e
  xample.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@example.com
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@{{alias_domain}}
 DTSTART:19970701T180000Z
 DTEND:19970701T190000Z
 SUMMARY:Phone Conference
@@ -275,10 +275,10 @@ END:VEVENT
 END:VCALENDAR
 
 > expect
-from: c@example.com
-to: a@example.com
+from: c@{{alias_domain}}
+to: a@{{alias_domain}}
 summary: rsvp DELEGATED
-summary.attendee: Participants([ItipParticipant { email: "a@example.com", name: None, is_organizer: true }, ItipParticipant { email: "b@example.com", name: None, is_organizer: false }, ItipParticipant { email: "c@example.com", name: None, is_organizer: false }, ItipParticipant { email: "conf@example.com", name: None, is_organizer: false }, ItipParticipant { email: "d@example.com", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@example.com", name: None, is_organizer: false }])
+summary.attendee: Participants([ItipParticipant { email: "a@{{alias_domain}}", name: None, is_organizer: true }, ItipParticipant { email: "b@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "c@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "conf@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "d@{{alias_domain}}", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@{{alias_domain}}", name: None, is_organizer: false }])
 summary.dtstart: Time(ItipTime { start: 867780000, tz_id: 32768 })
 summary.summary: Text("Phone Conference")
 BEGIN:VCALENDAR
@@ -289,21 +289,21 @@ BEGIN:VEVENT
 SUMMARY:Phone Conference
 DTEND:19970701T190000Z
 DTSTART:19970701T180000Z
-ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@example.com":mailto:c@examp
+ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@{{alias_domain}}":mailto:c@examp
  le.com
-ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@example.com":mailto:e@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@{{alias_domain}}":mailto:e@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:2
 REQUEST-STATUS:2.0;Success
 END:VEVENT
 END:VCALENDAR
 ================================
-from: c@example.com
-to: e@example.com
+from: c@{{alias_domain}}
+to: e@{{alias_domain}}
 summary: invite
-summary.attendee: Participants([ItipParticipant { email: "a@example.com", name: None, is_organizer: true }, ItipParticipant { email: "b@example.com", name: None, is_organizer: false }, ItipParticipant { email: "c@example.com", name: None, is_organizer: false }, ItipParticipant { email: "conf@example.com", name: None, is_organizer: false }, ItipParticipant { email: "d@example.com", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@example.com", name: None, is_organizer: false }])
+summary.attendee: Participants([ItipParticipant { email: "a@{{alias_domain}}", name: None, is_organizer: true }, ItipParticipant { email: "b@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "c@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "conf@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "d@{{alias_domain}}", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@{{alias_domain}}", name: None, is_organizer: false }])
 summary.dtstart: Time(ItipTime { start: 867780000, tz_id: 32768 })
 summary.summary: Text("Phone Conference")
 BEGIN:VCALENDAR
@@ -315,18 +315,18 @@ STATUS:CONFIRMED
 SUMMARY:Phone Conference
 DTEND:19970701T190000Z
 DTSTART:19970701T180000Z
-ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@example.com":mailto:c@examp
+ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@{{alias_domain}}":mailto:c@examp
  le.com
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@example.com
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal;PARTSTAT=NEEDS-ACTION:mailto:d@e
  xample.com
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;PARTSTAT=NEEDS-ACTION:mailto:b@example.
  com
-ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@example.com";PARTSTAT=NEEDS-ACTIO
- N:mailto:e@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@{{alias_domain}}";PARTSTAT=NEEDS-ACTIO
+ N:mailto:e@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:2
 END:VEVENT
@@ -335,7 +335,7 @@ END:VCALENDAR
 > send
 
 # Make sure E receives the request
-> get e@example.com calsrv.example.com-873970198738777@example.com
+> get e@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Stalwart Labs LLC//Stalwart Server//EN
 VERSION:2.0
@@ -344,25 +344,25 @@ STATUS:CONFIRMED
 SUMMARY:Phone Conference
 DTEND:19970701T190000Z
 DTSTART:19970701T180000Z
-ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@example.com":mailto:c@ex
+ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@{{alias_domain}}":mailto:c@ex
  ample.com
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@example.com
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal;PARTSTAT=NEEDS-ACTION:mailto:d@e
  xample.com
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;PARTSTAT=NEEDS-ACTION:mailto:b@example.
  com
-ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@example.com";PARTSTAT=NEEDS-AC
- TION:mailto:e@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@{{alias_domain}}";PARTSTAT=NEEDS-AC
+ TION:mailto:e@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:2
 END:VEVENT
 END:VCALENDAR
 
 # Make sure A receives the request
-> get a@example.com calsrv.example.com-873970198738777@example.com
+> get a@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Example/ExampleCalendarClient//EN
 VERSION:2.0
@@ -372,40 +372,40 @@ SUMMARY:Phone Conference
 DTEND:19970701T190000Z
 DTSTART:19970701T180000Z
 ATTENDEE;CUTYPE=INDIVIDUAL;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@exam
- ple.com";SCHEDULE-STATUS=2.0:mailto:c@example.com
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:b@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal:mailto:d@example.com
-ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@example.com":mailto:e@example.c
+ ple.com";SCHEDULE-STATUS=2.0:mailto:c@{{alias_domain}}
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:b@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal:mailto:d@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@{{alias_domain}}":mailto:e@example.c
  om
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:2
 SEQUENCE:2
 END:VEVENT
 END:VCALENDAR
 
 # Delegate E accepts the request
-> put e@example.com calsrv.example.com-873970198738777@example.com
+> put e@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Stalwart Labs LLC//Stalwart Server//EN
 BEGIN:VEVENT
 DTSTAMP:19970701T180000Z
 SEQUENCE:2
-UID:calsrv.example.com-873970198738777@example.com
-ORGANIZER:mailto:a@example.com
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
 STATUS:CONFIRMED
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@example.com
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;PARTSTAT=NEEDS-ACTION:mailto:b@example.
  com
-ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@example.com":mailto:c@ex
+ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@{{alias_domain}}":mailto:c@ex
  ample.com
-ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@example.com";PARTSTAT=ACCEPTED:mailto:e@example.com
+ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@{{alias_domain}}";PARTSTAT=ACCEPTED:mailto:e@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal;PARTSTAT=NEEDS-ACTION:mailto:d@e
  xample.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@example.com
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@{{alias_domain}}
 DTSTART:19970701T180000Z
 DTEND:19970701T190000Z
 SUMMARY:Phone Conference
@@ -413,10 +413,10 @@ END:VEVENT
 END:VCALENDAR
 
 > expect
-from: e@example.com
-to: a@example.com, c@example.com
+from: e@{{alias_domain}}
+to: a@{{alias_domain}}, c@{{alias_domain}}
 summary: rsvp ACCEPTED
-summary.attendee: Participants([ItipParticipant { email: "a@example.com", name: None, is_organizer: true }, ItipParticipant { email: "b@example.com", name: None, is_organizer: false }, ItipParticipant { email: "c@example.com", name: None, is_organizer: false }, ItipParticipant { email: "conf@example.com", name: None, is_organizer: false }, ItipParticipant { email: "d@example.com", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@example.com", name: None, is_organizer: false }])
+summary.attendee: Participants([ItipParticipant { email: "a@{{alias_domain}}", name: None, is_organizer: true }, ItipParticipant { email: "b@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "c@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "conf@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "d@{{alias_domain}}", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@{{alias_domain}}", name: None, is_organizer: false }])
 summary.dtstart: Time(ItipTime { start: 867780000, tz_id: 32768 })
 summary.summary: Text("Phone Conference")
 BEGIN:VCALENDAR
@@ -427,12 +427,12 @@ BEGIN:VEVENT
 SUMMARY:Phone Conference
 DTEND:19970701T190000Z
 DTSTART:19970701T180000Z
-ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@example.com":mailto:c@examp
+ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@{{alias_domain}}":mailto:c@examp
  le.com
-ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@example.com";PARTSTAT=ACCEPTED:mai
- lto:e@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@{{alias_domain}}";PARTSTAT=ACCEPTED:mai
+ lto:e@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:2
 REQUEST-STATUS:2.0;Success
@@ -442,7 +442,7 @@ END:VCALENDAR
 > send
 
 # Make sure A receives the reply
-> get a@example.com calsrv.example.com-873970198738777@example.com
+> get a@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Example/ExampleCalendarClient//EN
 VERSION:2.0
@@ -452,22 +452,22 @@ SUMMARY:Phone Conference
 DTEND:19970701T190000Z
 DTSTART:19970701T180000Z
 ATTENDEE;CUTYPE=INDIVIDUAL;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@exam
- ple.com";SCHEDULE-STATUS=2.0:mailto:c@example.com
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:b@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal:mailto:d@example.com
-ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@example.com";PARTSTAT=ACCEPTED;
- SCHEDULE-STATUS=2.0:mailto:e@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ ple.com";SCHEDULE-STATUS=2.0:mailto:c@{{alias_domain}}
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:b@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal:mailto:d@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@{{alias_domain}}";PARTSTAT=ACCEPTED;
+ SCHEDULE-STATUS=2.0:mailto:e@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:2
 SEQUENCE:2
 END:VEVENT
 END:VCALENDAR
 
 # Make sure C receives the reply
-> get c@example.com calsrv.example.com-873970198738777@example.com
+> get c@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Stalwart Labs LLC//Stalwart Server//EN
 VERSION:2.0
@@ -476,43 +476,43 @@ STATUS:CONFIRMED
 SUMMARY:Phone Conference
 DTEND:19970701T190000Z
 DTSTART:19970701T180000Z
-ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@example.com":mailto:c@ex
+ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@{{alias_domain}}":mailto:c@ex
  ample.com
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@example.com
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal;PARTSTAT=NEEDS-ACTION:mailto:d@e
  xample.com
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;PARTSTAT=NEEDS-ACTION:mailto:b@example.
  com
-ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@example.com";PARTSTAT=ACCEPTED;
- SCHEDULE-STATUS=2.0:mailto:e@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@{{alias_domain}}";PARTSTAT=ACCEPTED;
+ SCHEDULE-STATUS=2.0:mailto:e@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:3
 SEQUENCE:2
 END:VEVENT
 END:VCALENDAR
 
 # Delegate E declines the request
-> put e@example.com calsrv.example.com-873970198738777@example.com
+> put e@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Stalwart Labs LLC//Stalwart Server//EN
 BEGIN:VEVENT
 DTSTAMP:19970701T180000Z
 SEQUENCE:2
-UID:calsrv.example.com-873970198738777@example.com
-ORGANIZER:mailto:a@example.com
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
 STATUS:CONFIRMED
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@example.com
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;PARTSTAT=NEEDS-ACTION:mailto:b@example.
  com
-ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@example.com":mailto:c@ex
+ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@{{alias_domain}}":mailto:c@ex
  ample.com
-ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@example.com";PARTSTAT=DECLINED:mailto:e@example.com
+ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@{{alias_domain}}";PARTSTAT=DECLINED:mailto:e@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal;PARTSTAT=NEEDS-ACTION:mailto:d@e
  xample.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@example.com
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@{{alias_domain}}
 DTSTART:19970701T180000Z
 DTEND:19970701T190000Z
 SUMMARY:Phone Conference
@@ -520,10 +520,10 @@ END:VEVENT
 END:VCALENDAR
 
 > expect
-from: e@example.com
-to: a@example.com, c@example.com
+from: e@{{alias_domain}}
+to: a@{{alias_domain}}, c@{{alias_domain}}
 summary: rsvp DECLINED
-summary.attendee: Participants([ItipParticipant { email: "a@example.com", name: None, is_organizer: true }, ItipParticipant { email: "b@example.com", name: None, is_organizer: false }, ItipParticipant { email: "c@example.com", name: None, is_organizer: false }, ItipParticipant { email: "conf@example.com", name: None, is_organizer: false }, ItipParticipant { email: "d@example.com", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@example.com", name: None, is_organizer: false }])
+summary.attendee: Participants([ItipParticipant { email: "a@{{alias_domain}}", name: None, is_organizer: true }, ItipParticipant { email: "b@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "c@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "conf@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "d@{{alias_domain}}", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@{{alias_domain}}", name: None, is_organizer: false }])
 summary.dtstart: Time(ItipTime { start: 867780000, tz_id: 32768 })
 summary.summary: Text("Phone Conference")
 BEGIN:VCALENDAR
@@ -534,12 +534,12 @@ BEGIN:VEVENT
 SUMMARY:Phone Conference
 DTEND:19970701T190000Z
 DTSTART:19970701T180000Z
-ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@example.com":mailto:c@examp
+ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@{{alias_domain}}":mailto:c@examp
  le.com
-ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@example.com";PARTSTAT=DECLINED:mai
- lto:e@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@{{alias_domain}}";PARTSTAT=DECLINED:mai
+ lto:e@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:2
 REQUEST-STATUS:2.0;Success
@@ -550,7 +550,7 @@ END:VCALENDAR
 > send
 
 # Make sure C receives the reply
-> get c@example.com calsrv.example.com-873970198738777@example.com
+> get c@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Stalwart Labs LLC//Stalwart Server//EN
 VERSION:2.0
@@ -559,25 +559,25 @@ STATUS:CONFIRMED
 SUMMARY:Phone Conference
 DTEND:19970701T190000Z
 DTSTART:19970701T180000Z
-ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@example.com":mailto:c@ex
+ATTENDEE;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@{{alias_domain}}":mailto:c@ex
  ample.com
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@example.com
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal;PARTSTAT=NEEDS-ACTION:mailto:d@e
  xample.com
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;PARTSTAT=NEEDS-ACTION:mailto:b@example.
  com
-ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@example.com";PARTSTAT=DECLINED;
- SCHEDULE-STATUS=2.0:mailto:e@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@{{alias_domain}}";PARTSTAT=DECLINED;
+ SCHEDULE-STATUS=2.0:mailto:e@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:3
 SEQUENCE:2
 END:VEVENT
 END:VCALENDAR
 
 # Make sure A receives the reply
-> get a@example.com calsrv.example.com-873970198738777@example.com
+> get a@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Example/ExampleCalendarClient//EN
 VERSION:2.0
@@ -587,38 +587,38 @@ SUMMARY:Phone Conference
 DTEND:19970701T190000Z
 DTSTART:19970701T180000Z
 ATTENDEE;CUTYPE=INDIVIDUAL;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@exam
- ple.com";SCHEDULE-STATUS=2.0:mailto:c@example.com
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:b@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal:mailto:d@example.com
-ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@example.com";PARTSTAT=DECLINED;
- SCHEDULE-STATUS=2.0:mailto:e@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ ple.com";SCHEDULE-STATUS=2.0:mailto:c@{{alias_domain}}
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:b@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal:mailto:d@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@{{alias_domain}}";PARTSTAT=DECLINED;
+ SCHEDULE-STATUS=2.0:mailto:e@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:2
 SEQUENCE:2
 END:VEVENT
 END:VCALENDAR
 
 # Remove B and expect an iTIP cancelation
-> put a@example.com calsrv.example.com-873970198738777@example.com
+> put a@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Example/ExampleCalendarClient//EN
 VERSION:2.0
 BEGIN:VEVENT
-ORGANIZER:mailto:a@example.com
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@example.com
+ORGANIZER:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@{{alias_domain}}
 ATTENDEE;CUTYPE=INDIVIDUAL;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@exam
- ple.com";SCHEDULE-STATUS=2.0:mailto:c@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal:mailto:d@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@example.com
-ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@example.com";PARTSTAT=DECLINED;
- SCHEDULE-STATUS=2.0:mailto:e@example.com
+ ple.com";SCHEDULE-STATUS=2.0:mailto:c@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal:mailto:d@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@{{alias_domain}}";PARTSTAT=DECLINED;
+ SCHEDULE-STATUS=2.0:mailto:e@{{alias_domain}}
 DTSTART:19970701T180000Z
 DTEND:19970701T190000Z
 SUMMARY:Phone Conference
-UID:calsrv.example.com-873970198738777@example.com
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 SEQUENCE:2
 DTSTAMP:19970701T180000Z
 STATUS:CONFIRMED
@@ -626,13 +626,13 @@ END:VEVENT
 END:VCALENDAR
 
 > expect
-from: a@example.com
-to: c@example.com, d@example.com
+from: a@{{alias_domain}}
+to: c@{{alias_domain}}, d@{{alias_domain}}
 summary: update REQUEST
-summary.attendee: Participants([ItipParticipant { email: "a@example.com", name: None, is_organizer: true }, ItipParticipant { email: "c@example.com", name: None, is_organizer: false }, ItipParticipant { email: "conf@example.com", name: None, is_organizer: false }, ItipParticipant { email: "d@example.com", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@example.com", name: None, is_organizer: false }])
+summary.attendee: Participants([ItipParticipant { email: "a@{{alias_domain}}", name: None, is_organizer: true }, ItipParticipant { email: "c@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "conf@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "d@{{alias_domain}}", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@{{alias_domain}}", name: None, is_organizer: false }])
 summary.dtstart: Time(ItipTime { start: 867780000, tz_id: 32768 })
 summary.summary: Text("Phone Conference")
-~summary.attendee: Participants([ItipParticipant { email: "a@example.com", name: None, is_organizer: true }, ItipParticipant { email: "b@example.com", name: None, is_organizer: false }, ItipParticipant { email: "c@example.com", name: None, is_organizer: false }, ItipParticipant { email: "conf@example.com", name: None, is_organizer: false }, ItipParticipant { email: "d@example.com", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@example.com", name: None, is_organizer: false }])
+~summary.attendee: Participants([ItipParticipant { email: "a@{{alias_domain}}", name: None, is_organizer: true }, ItipParticipant { email: "b@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "c@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "conf@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "d@{{alias_domain}}", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@{{alias_domain}}", name: None, is_organizer: false }])
 BEGIN:VCALENDAR
 METHOD:REQUEST
 PRODID:-//Stalwart Labs LLC//Stalwart Server//EN
@@ -643,24 +643,24 @@ SUMMARY:Phone Conference
 DTEND:19970701T190000Z
 DTSTART:19970701T180000Z
 ATTENDEE;CUTYPE=INDIVIDUAL;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@example
- .com":mailto:c@example.com
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@example.com
+ .com":mailto:c@{{alias_domain}}
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal;PARTSTAT=NEEDS-ACTION:mailto:d@e
  xample.com
-ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@example.com";PARTSTAT=DECLINED:mai
- lto:e@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@{{alias_domain}}";PARTSTAT=DECLINED:mai
+ lto:e@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:3
 END:VEVENT
 END:VCALENDAR
 ================================
-from: a@example.com
-to: b@example.com
+from: a@{{alias_domain}}
+to: b@{{alias_domain}}
 summary: cancel
-summary.attendee: Participants([ItipParticipant { email: "a@example.com", name: None, is_organizer: true }, ItipParticipant { email: "b@example.com", name: None, is_organizer: false }, ItipParticipant { email: "c@example.com", name: None, is_organizer: false }, ItipParticipant { email: "conf@example.com", name: None, is_organizer: false }, ItipParticipant { email: "d@example.com", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@example.com", name: None, is_organizer: false }])
+summary.attendee: Participants([ItipParticipant { email: "a@{{alias_domain}}", name: None, is_organizer: true }, ItipParticipant { email: "b@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "c@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "conf@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "d@{{alias_domain}}", name: Some("Hal"), is_organizer: false }, ItipParticipant { email: "e@{{alias_domain}}", name: None, is_organizer: false }])
 summary.dtstart: Time(ItipTime { start: 867780000, tz_id: 32768 })
 summary.summary: Text("Phone Conference")
 BEGIN:VCALENDAR
@@ -672,9 +672,9 @@ STATUS:CANCELLED
 SUMMARY:Phone Conference
 DTEND:19970701T190000Z
 DTSTART:19970701T180000Z
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:b@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:b@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:3
 END:VEVENT
@@ -684,7 +684,7 @@ END:VCALENDAR
 > send
 
 # Make sure B receives the cancelation
-> get b@example.com calsrv.example.com-873970198738777@example.com
+> get b@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Stalwart Labs LLC//Stalwart Server//EN
 VERSION:2.0
@@ -693,19 +693,19 @@ STATUS:CANCELLED
 SUMMARY:Phone Conference
 DTEND:19970701T190000Z
 DTSTART:19970701T180000Z
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:b@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:b@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:0
 END:VEVENT
 END:VCALENDAR
 
 # Delete the event from A's calendar and expect an iTIP cancelation
-> delete a@example.com calsrv.example.com-873970198738777@example.com
+> delete a@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 
 > expect
-from: a@example.com
-to: c@example.com, d@example.com
+from: a@{{alias_domain}}
+to: c@{{alias_domain}}, d@{{alias_domain}}
 summary: cancel
 summary.dtstart: Time(ItipTime { start: 867780000, tz_id: 32768 })
 summary.summary: Text("Phone Conference")
@@ -719,14 +719,14 @@ SUMMARY:Phone Conference
 DTEND:19970701T190000Z
 DTSTART:19970701T180000Z
 ATTENDEE;CUTYPE=INDIVIDUAL;PARTSTAT=DELEGATED;DELEGATED-TO="mailto:e@example
- .com";SCHEDULE-STATUS=2.0:mailto:c@example.com
-ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@example.com
-ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal:mailto:d@example.com
-ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@example.com";PARTSTAT=DECLINED;
- SCHEDULE-STATUS=2.0:mailto:e@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777@example.com
+ .com";SCHEDULE-STATUS=2.0:mailto:c@{{alias_domain}}
+ATTENDEE;ROLE=CHAIR;PARTSTAT=ACCEPTED:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=NON-PARTICIPANT;RSVP=FALSE;CUTYPE=ROOM:mailto:conf@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;CN=Hal:mailto:d@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;DELEGATED-FROM="mailto:c@{{alias_domain}}";PARTSTAT=DECLINED;
+ SCHEDULE-STATUS=2.0:mailto:e@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:4
 END:VEVENT

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -31,9 +31,9 @@ use types::collection::SyncCollection;
 
 pub async fn test(test: &TestServer) {
     println!("Running calendar scheduling tests...");
-    let bill = test.account("bill@example.com");
-    let jane = test.account("jane@example.com");
-    let john = test.account("john@example.com");
+    let bill = test.account("bill@{{alias_domain}}");
+    let jane = test.account("jane@{{alias_domain}}");
+    let john = test.account("john@{{alias_domain}}");
     let bill_client = bill.webdav_client();
     let jane_client = jane.webdav_client();
     let john_client = john.webdav_client();
@@ -41,18 +41,18 @@ pub async fn test(test: &TestServer) {
     // Validate hierarchy of scheduling resources
     let response = jane_client
         .propfind_with_headers(
-            "/dav/itip/jane%40example.com/",
+            "/dav/itip/jane%40{{alias_domain}}/",
             ALL_DAV_PROPERTIES,
             [("depth", "1")],
         )
         .await;
     let properties = response
         .with_hrefs([
-            "/dav/itip/jane%40example.com/",
-            "/dav/itip/jane%40example.com/inbox/",
-            "/dav/itip/jane%40example.com/outbox/",
+            "/dav/itip/jane%40{{alias_domain}}/",
+            "/dav/itip/jane%40{{alias_domain}}/inbox/",
+            "/dav/itip/jane%40{{alias_domain}}/outbox/",
         ])
-        .properties("/dav/itip/jane%40example.com/inbox/");
+        .properties("/dav/itip/jane%40{{alias_domain}}/inbox/");
 
     // Validate schedule inbox properties
     properties
@@ -62,7 +62,7 @@ pub async fn test(test: &TestServer) {
         .get(DavProperty::CalDav(
             CalDavProperty::ScheduleDefaultCalendarURL,
         ))
-        .with_values(["D:href:/dav/cal/jane%40example.com/default/"])
+        .with_values(["D:href:/dav/cal/jane%40{{alias_domain}}/default/"])
         .with_status(StatusCode::OK);
     properties
         .get(DavProperty::WebDav(WebDavProperty::SupportedPrivilegeSet))
@@ -107,7 +107,7 @@ pub async fn test(test: &TestServer) {
         ]);
 
     // Validate schedule outbox properties
-    let properties = response.properties("/dav/itip/jane%40example.com/outbox/");
+    let properties = response.properties("/dav/itip/jane%40{{alias_domain}}/outbox/");
     properties
         .get(DavProperty::WebDav(WebDavProperty::ResourceType))
         .with_values(["D:collection", "A:schedule-outbox"]);
@@ -170,7 +170,7 @@ pub async fn test(test: &TestServer) {
     john_client
         .request_with_headers(
             "PUT",
-            "/dav/cal/john%40example.com/default/itip.ics",
+            "/dav/cal/john%40{{alias_domain}}/default/itip.ics",
             [("content-type", "text/calendar; charset=utf-8")],
             &test_itip,
         )
@@ -389,7 +389,7 @@ pub async fn test(test: &TestServer) {
     let response = john_client
         .request_with_headers(
             "POST",
-            "/dav/itip/john%40example.com/outbox/",
+            "/dav/itip/john%40{{alias_domain}}/outbox/",
             [("content-type", "text/calendar; charset=utf-8")],
             &test_outbox,
         )
@@ -403,7 +403,7 @@ pub async fn test(test: &TestServer) {
                 account = value.strip_prefix("mailto:").unwrap();
             }
             "A:schedule-response.A:response.A:request-status" => {
-                if account == "unknown@example.com" {
+                if account == "unknown@{{alias_domain}}" {
                     assert_eq!(
                         value,
                         "3.7;Invalid calendar user or insufficient permissions"
@@ -417,7 +417,7 @@ pub async fn test(test: &TestServer) {
                     value.contains("BEGIN:VFREEBUSY"),
                     "missing freebusy data in response: {response:?}"
                 );
-                if account == "jdoe@example.com" {
+                if account == "jdoe@{{alias_domain}}" {
                     assert!(
                         value.contains("FREEBUSY;FBTYPE=BUSY:"),
                         "missing freebusy data in response: {response:?}"
@@ -605,7 +605,7 @@ impl DummyWebDavClient {
 }
 
 pub async fn test_build_itip_templates(test: &TestServer) {
-    let account = test.account("john@example.com");
+    let account = test.account("john@{{alias_domain}}");
     let account_id = account.id().document_id();
     let account_info = test.server.account_info(account_id).await.unwrap();
 
@@ -825,9 +825,9 @@ DTEND:$END
 DTSTAMP:20090602T170000Z
 TRANSP:OPAQUE
 SUMMARY:Lunch
-ORGANIZER:mailto:jdoe@example.com
-ATTENDEE;CUTYPE=INDIVIDUAL:mailto:jane.smith@example.com
-ATTENDEE;CUTYPE=INDIVIDUAL:mailto:bill@example.com
+ORGANIZER:mailto:jdoe@{{alias_domain}}
+ATTENDEE;CUTYPE=INDIVIDUAL:mailto:jane.smith@{{alias_domain}}
+ATTENDEE;CUTYPE=INDIVIDUAL:mailto:bill@{{alias_domain}}
 END:VEVENT
 END:VCALENDAR
 "#;
@@ -841,11 +841,11 @@ UID:4FD3AD926350
 DTSTAMP:20090602T190420Z
 DTSTART:$START
 DTEND:$END
-ORGANIZER:mailto:jdoe@example.com
-ATTENDEE:mailto:jdoe@example.com
-ATTENDEE:mailto:jane.smith@example.com
-ATTENDEE:mailto:bill@example.com
-ATTENDEE:mailto:unknown@example.com
+ORGANIZER:mailto:jdoe@{{alias_domain}}
+ATTENDEE:mailto:jdoe@{{alias_domain}}
+ATTENDEE:mailto:jane.smith@{{alias_domain}}
+ATTENDEE:mailto:bill@{{alias_domain}}
+ATTENDEE:mailto:unknown@{{alias_domain}}
 END:VFREEBUSY
 END:VCALENDAR
 "#;

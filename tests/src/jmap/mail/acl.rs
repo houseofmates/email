@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -28,11 +28,11 @@ pub async fn test(test: &TestServer) {
     let inbox_id = Id::new(INBOX_ID as u64).to_string();
     let trash_id = Id::new(TRASH_ID as u64).to_string();
 
-    let admin = test.account("admin@example.com");
-    let john = test.account("jdoe@example.com");
-    let jane = test.account("jane.smith@example.com");
-    let bill = test.account("bill@example.com");
-    let sales = test.account("sales@example.com");
+    let admin = test.account("admin@{{alias_domain}}");
+    let john = test.account("jdoe@{{alias_domain}}");
+    let jane = test.account("jane.smith@{{alias_domain}}");
+    let bill = test.account("bill@{{alias_domain}}");
+    let sales = test.account("sales@{{alias_domain}}");
 
     // Authenticate all accounts
     let mut john_client = john.jmap_client().await;
@@ -56,7 +56,7 @@ pub async fn test(test: &TestServer) {
                     .email_import(
                         format!(
                             concat!(
-                                "From: acl_test@example.com\r\n",
+                                "From: acl_test@{{alias_domain}}\r\n",
                                 "To: {}\r\n",
                                 "Subject: Owned by {} in {}\r\n",
                                 "\r\n",
@@ -167,7 +167,7 @@ pub async fn test(test: &TestServer) {
             .account(jane.id_string())
             .unwrap()
             .name(),
-        "jane.smith@example.com"
+        "jane.smith@{{alias_domain}}"
     );
 
     // John should not have access to emails in Jane's Trash folder
@@ -238,8 +238,8 @@ pub async fn test(test: &TestServer) {
         .upload(
             Some(john.id_string()),
             concat!(
-                "From: acl_test@example.com\r\n",
-                "To: jane.smith@example.com\r\n",
+                "From: acl_test@{{alias_domain}}\r\n",
+                "To: jane.smith@{{alias_domain}}\r\n",
                 "Subject: Created by john in jane's inbox\r\n",
                 "\r\n",
                 "This message is owned by jane.",
@@ -591,8 +591,8 @@ pub async fn test(test: &TestServer) {
     );
 
     // Add John and Jane to the Sales group
-    let sales_id = test.account("sales@example.com").id();
-    for name in ["jdoe@example.com", "jane.smith@example.com"] {
+    let sales_id = test.account("sales@{{alias_domain}}").id();
+    for name in ["jdoe@{{alias_domain}}", "jane.smith@{{alias_domain}}"] {
         admin
             .registry_update_object(
                 ObjectType::Account,
@@ -612,7 +612,7 @@ pub async fn test(test: &TestServer) {
             .account(sales.id_string())
             .unwrap()
             .name(),
-        "sales@example.com"
+        "sales@{{alias_domain}}"
     );
     assert!(
         !john_client
@@ -627,7 +627,7 @@ pub async fn test(test: &TestServer) {
             .account(sales.id_string())
             .unwrap()
             .name(),
-        "sales@example.com"
+        "sales@{{alias_domain}}"
     );
     assert!(bill_client.session().account(sales.id_string()).is_none());
 
@@ -637,8 +637,8 @@ pub async fn test(test: &TestServer) {
         .upload(
             Some(sales.id_string()),
             concat!(
-                "From: acl_test@example.com\r\n",
-                "To: sales@example.com\r\n",
+                "From: acl_test@{{alias_domain}}\r\n",
+                "To: sales@{{alias_domain}}\r\n",
                 "Subject: Created by john in sales\r\n",
                 "\r\n",
                 "This message is owned by sales.",
@@ -698,7 +698,7 @@ pub async fn test(test: &TestServer) {
     admin
         .registry_update_object(
             ObjectType::Account,
-            test.account("jdoe@example.com").id(),
+            test.account("jdoe@{{alias_domain}}").id(),
             json!({
                 "memberGroupIds": { sales_id: false },
             }),

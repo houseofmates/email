@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -21,7 +21,7 @@ use types::id::Id;
 
 pub async fn test(test: &TestServer) {
     println!("Running Mailbox tests...");
-    let account = test.account("admin@example.com");
+    let account = test.account("admin@{{alias_domain}}");
     let client = account.jmap_client().await;
 
     // Create test mailboxes

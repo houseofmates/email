@@ -6,7 +6,7 @@
     "from": [
         {
             "name": "Joe Bloggs",
-            "email": "joe@example.com"
+            "email": "joe@{{alias_domain}}"
         }
     ],
     "subject": "RFC 8621 Section 4.1.4 test",

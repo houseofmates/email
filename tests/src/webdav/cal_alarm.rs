@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -12,12 +12,12 @@ use store::write::now;
 
 pub async fn test(test: &TestServer) {
     println!("Running calendar e-mail alarms tests...");
-    let account = test.account("john@example.com");
+    let account = test.account("john@{{alias_domain}}");
     let client = account.webdav_client();
     client
         .request_with_headers(
             "PUT",
-            "/dav/cal/john%40example.com/default/its-alarming-how-charming-i-feel.ics",
+            "/dav/cal/john%40{{alias_domain}}/default/its-alarming-how-charming-i-feel.ics",
             [("content-type", "text/calendar; charset=utf-8")],
             TEST_ALARM_1.replace(
                 "$START",
@@ -74,7 +74,7 @@ pub async fn test(test: &TestServer) {
         }
         assert!(
             contents.contains(concat!(
-                "/dav/cal/john%40example.com/default/",
+                "/dav/cal/john%40{{alias_domain}}/default/",
                 "its-alarming-how-charming-i-feel.ics"
             )),
             "failed for {contents}"

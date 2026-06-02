@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -22,7 +22,7 @@ pub async fn test(test: &TestServer) {
     println!("Running EventSource tests...");
 
     // Create test account
-    let account = test.account("jdoe@example.com");
+    let account = test.account("jdoe@{{alias_domain}}");
     let client = account.jmap_client().await;
 
     let mut changes = client
@@ -70,11 +70,11 @@ pub async fn test(test: &TestServer) {
     // Ingest email and expect state change
     let mut lmtp = SmtpConnection::connect().await;
     lmtp.ingest(
-        "bill@example.com",
-        &["jdoe@example.com"],
+        "bill@{{alias_domain}}",
+        &["jdoe@{{alias_domain}}"],
         concat!(
-            "From: bill@example.com\r\n",
-            "To: jdoe@example.com\r\n",
+            "From: bill@{{alias_domain}}\r\n",
+            "To: jdoe@{{alias_domain}}\r\n",
             "Subject: TPS Report\r\n",
             "\r\n",
             "I'm going to need those TPS reports ASAP. ",

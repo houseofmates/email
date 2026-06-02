@@ -1,5 +1,5 @@
-From: bill@example.com
-To: jdoe@example.com
+From: bill@{{alias_domain}}
+To: jdoe@{{alias_domain}}
 Subject: TPS Report
 
 I'm going to need those TPS reports ASAP. So, if you could do that, that'd be great.
@@ -39,16 +39,16 @@ I'm going to need those TPS reports ASAP. So, if you could do that, that'd be gr
   },
   {
     "type": "sender",
-    "value": "bill@example.com"
+    "value": "bill@{{alias_domain}}"
   },
   {
     "type": "sender",
-    "value": "example.com"
+    "value": "{{alias_domain}}"
   }
 ]
 <!-- NEXT TEST -->
-From: Hendrik <hendrik@example.com>
-To: Harrie <harrie@example.com>
+From: Hendrik <hendrik@{{alias_domain}}>
+To: Harrie <harrie@{{alias_domain}}>
 Date: Sat, 11 Oct 2010 00:31:44 +0200
 Subject: One Two Three Four
 Content-Type: multipart/mixed; boundary=AA
@@ -138,11 +138,11 @@ This is the end of  MIME multipart.
   },
   {
     "type": "sender",
-    "value": "example.com"
+    "value": "{{alias_domain}}"
   },
   {
     "type": "sender",
-    "value": "hendrik@example.com"
+    "value": "hendrik@{{alias_domain}}"
   },
   {
     "type": "mime_type",

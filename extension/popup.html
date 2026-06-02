@@ -1,79 +1,69 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>passwords</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="popup.css" />
-  </head>
-  <body>
-    <div class="wrap">
-      <h1 class="title">passwords</h1>
-      <p class="sub" id="sub">your suite</p>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=380" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="popup.css" />
+  <title>passwords</title>
+</head>
+<body>
+  <div id="app">
+    <!-- tabs -->
+    <div class="tabs">
+      <button id="tabPasswords" class="tab active">passwords</button>
+      <button id="tabAliases" class="tab">aliases</button>
+    </div>
 
-      <div class="tabs">
-        <button class="tab active" id="tabPasswords" data-tab="passwords">passwords</button>
-        <button class="tab" id="tabAliases" data-tab="aliases">aliases</button>
+    <div id="sub" class="subtitle">your logins</div>
+
+    <!-- search -->
+    <div class="search">
+      <input type="text" id="search" placeholder="search..." />
+    </div>
+
+    <!-- list area -->
+    <div id="list" class="list"></div>
+
+    <!-- status -->
+    <div id="status" class="status"></div>
+
+    <!-- add form -->
+    <div id="addForm" class="form hidden">
+      <!-- passwords fields -->
+      <div id="pwFields">
+        <input type="text" id="site" placeholder="site" />
+        <input type="text" id="purl" placeholder="url" />
       </div>
-
-      <p class="status" id="status"></p>
-
-      <input class="search" id="search" type="text" placeholder="search" />
-
-      <div class="list" id="list"></div>
-
-      <button class="btn btn-gold wide" id="addBtn" style="margin-top: 12px">add</button>
-
-      <!-- inline add form -->
-      <div class="form hidden" id="addForm">
-        <div class="divider"></div>
-
-        <!-- passwords fields -->
-        <div id="pwFields">
-          <label class="label" for="site">site</label>
-          <input class="input" id="site" type="text" placeholder="example.com" />
-          <label class="label" for="purl">url <span class="opt">(optional)</span></label>
-          <input class="input" id="purl" type="text" placeholder="https://example.com" />
-        </div>
-
-        <!-- alias fields -->
-        <div id="aliasFields" class="hidden">
-          <label class="label" for="email">email alias</label>
-          <input class="input" id="email" type="email" placeholder="you@yourdomain.com" />
-        </div>
-
-        <label class="label" for="username">username</label>
-        <input class="input" id="username" type="text" placeholder="username" />
-
-        <label class="label" for="password">password</label>
-        <div class="row">
-          <input class="input grow" id="password" type="text" placeholder="password" />
-          <button class="gen" id="genBtn" type="button">generate</button>
-        </div>
-
-        <label class="label" for="notes">notes <span class="opt">(optional)</span></label>
-        <input class="input" id="notes" type="text" placeholder="notes" />
-
-        <div class="actions">
-          <button class="btn btn-ghost" id="cancelBtn" type="button">cancel</button>
-          <button class="btn btn-gold" id="saveBtn" type="button">save</button>
-        </div>
+      <!-- alias fields -->
+      <div id="aliasFields" class="hidden">
+        <input type="email" id="email" placeholder="alias@domain" />
       </div>
-
-      <div class="foot row" style="justify-content: center; gap: 14px">
-        <button class="link" id="exportBtn">export</button>
-        <button class="link" id="importBtn">import</button>
-        <button class="link" id="optionsBtn">settings</button>
-        <input id="importFile" type="file" accept="application/json" class="hidden" />
+      <input type="text" id="username" placeholder="username" />
+      <input type="text" id="password" placeholder="password" />
+      <div class="pw-row">
+        <button id="genBtn" class="btn-sm">generate</button>
+      </div>
+      <input type="text" id="notes" placeholder="notes" />
+      <div class="form-actions">
+        <button id="saveBtn" class="btn btn-gold">save</button>
+        <button id="cancelBtn" class="btn btn-ghost">cancel</button>
       </div>
     </div>
 
-    <script src="popup.js"></script>
-  </body>
+    <!-- bottom bar -->
+    <div class="bottom-bar">
+      <button id="addBtn" class="btn btn-gold">add</button>
+      <div class="bottom-right">
+        <button id="exportBtn" class="btn-sm">export</button>
+        <input type="file" id="importFile" accept=".json" hidden />
+        <button id="importBtn" class="btn-sm">import</button>
+        <button id="optionsBtn" class="btn-sm" title="settings">⚙</button>
+      </div>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
 </html>

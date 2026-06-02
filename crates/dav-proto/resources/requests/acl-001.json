@@ -2,7 +2,7 @@
   "aces": [
     {
       "principal": {
-        "Href": "http://www.example.com/users/friends"
+        "Href": "http://www.{{alias_domain}}/users/friends"
       },
       "invert": false,
       "grant_deny": {
@@ -15,7 +15,7 @@
     },
     {
       "principal": {
-        "Href": "http://www.example.com/users/ygoland-so"
+        "Href": "http://www.{{alias_domain}}/users/ygoland-so"
       },
       "invert": false,
       "grant_deny": {

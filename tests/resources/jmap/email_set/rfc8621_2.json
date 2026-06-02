@@ -6,13 +6,13 @@
     "from": [
         {
             "name": "Joe Bloggs",
-            "email": "joe@example.com"
+            "email": "joe@{{alias_domain}}"
         }
     ],
     "to": [
         {
             "name": "John",
-            "email": "john@example.com"
+            "email": "john@{{alias_domain}}"
         }
     ],
     "messageId": [

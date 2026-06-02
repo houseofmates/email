@@ -16,7 +16,7 @@ prologue
 
 --foo 
 
-From: m1@example.com
+From: m1@{{alias_domain}}
 Subject: m1
 
 m1 body
@@ -24,7 +24,7 @@ m1 body
 --foo 
 Content-Custom: m2 header
 
-From: m2@example.com
+From: m2@{{alias_domain}}
 Subject: m2
 
 m2 body
@@ -45,7 +45,7 @@ prologue
 
 --foo 
 
-From: m1@example.com
+From: m1@{{alias_domain}}
 Subject: m1
 
 m1 body
@@ -53,7 +53,7 @@ m1 body
 --foo 
 Content-Custom: m2 header
 
-From: m2@example.com
+From: m2@{{alias_domain}}
 Subject: m2
 
 m2 body
@@ -74,7 +74,7 @@ prologue
 
 --foo 
 
-From: m1@example.com
+From: m1@{{alias_domain}}
 Subject: m1
 
 m1 body
@@ -82,7 +82,7 @@ m1 body
 --foo 
 Content-Custom: m2 header
 
-From: m2@example.com
+From: m2@{{alias_domain}}
 Subject: m2
 
 m2 body
@@ -108,7 +108,7 @@ prologue
 
 --foo 
 
-From: m1@example.com
+From: m1@{{alias_domain}}
 Subject: m1
 
 m1 body
@@ -116,7 +116,7 @@ m1 body
 --foo 
 Content-Custom: m2 header
 
-From: m2@example.com
+From: m2@{{alias_domain}}
 Subject: m2
 
 m2 body
@@ -126,7 +126,7 @@ m2 body
 
 ok fetch 1 (body.peek[1.1])
 * 1 fetch (body[1.1] {{{
-From: m1@example.com
+From: m1@{{alias_domain}}
 Subject: m1
 
 m1 body
@@ -141,7 +141,7 @@ ok fetch 1 (body.peek[1.1.MIME])
 
 ok fetch 1 (body.peek[1.1.HEADER])
 * 1 fetch (body[1.1.HEADER] {{{
-From: m1@example.com
+From: m1@{{alias_domain}}
 Subject: m1
 
 
@@ -155,7 +155,7 @@ m1 body
 
 ok fetch 1 (body.peek[1.2])
 * 1 fetch (body[1.2] {{{
-From: m2@example.com
+From: m2@{{alias_domain}}
 Subject: m2
 
 m2 body
@@ -171,7 +171,7 @@ Content-Custom: m2 header
 
 ok fetch 1 (body.peek[1.2.HEADER])
 * 1 fetch (body[1.2.HEADER] {{{
-From: m2@example.com
+From: m2@{{alias_domain}}
 Subject: m2
 
 

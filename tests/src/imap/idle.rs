@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -165,11 +165,11 @@ pub async fn test(
     // Test SMTP delivery notifications
     let mut lmtp = SmtpConnection::connect().await;
     lmtp.ingest(
-        "bill@example.com",
-        &["jdoe@example.com"],
+        "bill@{{alias_domain}}",
+        &["jdoe@{{alias_domain}}"],
         concat!(
-            "From: bill@example.com\r\n",
-            "To: jdoe@example.com\r\n",
+            "From: bill@{{alias_domain}}\r\n",
+            "To: jdoe@{{alias_domain}}\r\n",
             "Subject: TPS Report\r\n",
             "X-Spam-Status: No\r\n",
             "\r\n",

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -12,7 +12,7 @@ use crate::utils::server::TestServer;
 
 pub async fn test(test: &TestServer) {
     println!("Running MKCOL tests...");
-    let client = test.account("john@example.com").webdav_client();
+    let client = test.account("john@{{alias_domain}}").webdav_client();
 
     // Creating collections in root elements is not allowed
     for path in [
@@ -29,9 +29,9 @@ pub async fn test(test: &TestServer) {
 
     // Create collections using MKCOL (empty body)
     for path in [
-        "/dav/file/john%40example.com/my-files",
-        "/dav/card/john%40example.com/my-cards",
-        "/dav/cal/john%40example.com/my-events",
+        "/dav/file/john%40{{alias_domain}}/my-files",
+        "/dav/card/john%40{{alias_domain}}/my-cards",
+        "/dav/cal/john%40{{alias_domain}}/my-events",
     ] {
         client
             .request("MKCOL", path, "")
@@ -42,15 +42,15 @@ pub async fn test(test: &TestServer) {
     // Create resources under the newly created collections
     for (path, content) in [
         (
-            "/dav/file/john%40example.com/my-files/file1.txt",
+            "/dav/file/john%40{{alias_domain}}/my-files/file1.txt",
             TEST_FILE_1,
         ),
         (
-            "/dav/card/john%40example.com/my-cards/card1.vcf",
+            "/dav/card/john%40{{alias_domain}}/my-cards/card1.vcf",
             TEST_VCARD_1,
         ),
         (
-            "/dav/cal/john%40example.com/my-events/event1.ics",
+            "/dav/cal/john%40{{alias_domain}}/my-events/event1.ics",
             TEST_ICAL_1,
         ),
     ] {
@@ -62,12 +62,12 @@ pub async fn test(test: &TestServer) {
 
     // Creating a collection on a mapped resource should fail
     for path in [
-        "/dav/file/john%40example.com/my-files",
-        "/dav/card/john%40example.com/my-cards",
-        "/dav/cal/john%40example.com/my-events",
-        "/dav/file/john%40example.com/my-files/file1.txt",
-        "/dav/card/john%40example.com/my-cards/card1.vcf",
-        "/dav/cal/john%40example.com/my-events/event1.ics",
+        "/dav/file/john%40{{alias_domain}}/my-files",
+        "/dav/card/john%40{{alias_domain}}/my-cards",
+        "/dav/cal/john%40{{alias_domain}}/my-events",
+        "/dav/file/john%40{{alias_domain}}/my-files/file1.txt",
+        "/dav/card/john%40{{alias_domain}}/my-cards/card1.vcf",
+        "/dav/cal/john%40{{alias_domain}}/my-events/event1.ics",
     ] {
         client
             .request("MKCOL", path, "")
@@ -78,15 +78,15 @@ pub async fn test(test: &TestServer) {
     // Creating a sub-collections is allowed in FileDAV but in CalDAV and CardDAV
     for (path, expected_status) in [
         (
-            "/dav/file/john%40example.com/my-files/my-sub-files",
+            "/dav/file/john%40{{alias_domain}}/my-files/my-sub-files",
             StatusCode::CREATED,
         ),
         (
-            "/dav/card/john%40example.com/my-cards/my-sub-cards",
+            "/dav/card/john%40{{alias_domain}}/my-cards/my-sub-cards",
             StatusCode::METHOD_NOT_ALLOWED,
         ),
         (
-            "/dav/cal/john%40example.com/my-events/my-sub-events",
+            "/dav/cal/john%40{{alias_domain}}/my-events/my-sub-events",
             StatusCode::METHOD_NOT_ALLOWED,
         ),
     ] {
@@ -99,12 +99,12 @@ pub async fn test(test: &TestServer) {
     // Extended MKCOL with an unsupported resource types should fail
     for (path, resource_type) in [
         (
-            "/dav/file/john%40example.com/my-named-files",
+            "/dav/file/john%40{{alias_domain}}/my-named-files",
             "B:addressbook",
         ),
-        ("/dav/card/john%40example.com/my-named-cards", "A:calendar"),
+        ("/dav/card/john%40{{alias_domain}}/my-named-cards", "A:calendar"),
         (
-            "/dav/cal/john%40example.com/my-named-events",
+            "/dav/cal/john%40{{alias_domain}}/my-named-events",
             "B:addressbook",
         ),
     ] {
@@ -122,12 +122,12 @@ pub async fn test(test: &TestServer) {
     // Create using extended MKCOL
     for (path, expected_properties, resource_types) in [
         (
-            "/dav/file/john%40example.com/my-named-files/",
+            "/dav/file/john%40{{alias_domain}}/my-named-files/",
             [("D:displayname", "Named Files")].as_slice(),
             ["D:collection"].as_slice(),
         ),
         (
-            "/dav/card/john%40example.com/my-named-cards/",
+            "/dav/card/john%40{{alias_domain}}/my-named-cards/",
             [
                 ("D:displayname", "Named Cards"),
                 ("B:addressbook-description", "Some amazing contacts"),
@@ -136,7 +136,7 @@ pub async fn test(test: &TestServer) {
             ["D:collection", "B:addressbook"].as_slice(),
         ),
         (
-            "/dav/cal/john%40example.com/my-named-events/",
+            "/dav/cal/john%40{{alias_domain}}/my-named-events/",
             [
                 ("D:displayname", "Named Events"),
                 ("A:calendar-description", "Some amazing events"),
@@ -184,7 +184,7 @@ pub async fn test(test: &TestServer) {
     client
         .mkcol(
             "MKCALENDAR",
-            "/dav/cal/john%40example.com/my-named-events2",
+            "/dav/cal/john%40{{alias_domain}}/my-named-events2",
             [],
             [
                 ("D:displayname", "Named Events 2"),
@@ -201,7 +201,7 @@ pub async fn test(test: &TestServer) {
     client
         .mkcol(
             "MKCALENDAR",
-            "/dav/cal/john%40example.com/my-named-events3",
+            "/dav/cal/john%40{{alias_domain}}/my-named-events3",
             [],
             [
                 ("D:displayname", "Named Events 3"),
@@ -221,11 +221,11 @@ pub async fn test(test: &TestServer) {
     // Check the properties of the created calendars
     client
         .propfind(
-            "/dav/cal/john%40example.com/my-named-events2/",
+            "/dav/cal/john%40{{alias_domain}}/my-named-events2/",
             ["A:supported-calendar-component-set"],
         )
         .await
-        .properties("/dav/cal/john%40example.com/my-named-events2/")
+        .properties("/dav/cal/john%40{{alias_domain}}/my-named-events2/")
         .get("A:supported-calendar-component-set")
         .with_status(StatusCode::OK)
         .with_values([
@@ -245,25 +245,25 @@ pub async fn test(test: &TestServer) {
         ]);
     client
         .propfind(
-            "/dav/cal/john%40example.com/my-named-events3/",
+            "/dav/cal/john%40{{alias_domain}}/my-named-events3/",
             ["A:supported-calendar-component-set"],
         )
         .await
-        .properties("/dav/cal/john%40example.com/my-named-events3/")
+        .properties("/dav/cal/john%40{{alias_domain}}/my-named-events3/")
         .get("A:supported-calendar-component-set")
         .with_status(StatusCode::OK)
         .with_values(["A:comp.[name]:VEVENT", "A:comp.[name]:VTODO"]);
 
     // Delete everything
     for path in [
-        "/dav/file/john%40example.com/my-files",
-        "/dav/card/john%40example.com/my-cards",
-        "/dav/cal/john%40example.com/my-events",
-        "/dav/file/john%40example.com/my-named-files",
-        "/dav/card/john%40example.com/my-named-cards",
-        "/dav/cal/john%40example.com/my-named-events",
-        "/dav/cal/john%40example.com/my-named-events2",
-        "/dav/cal/john%40example.com/my-named-events3",
+        "/dav/file/john%40{{alias_domain}}/my-files",
+        "/dav/card/john%40{{alias_domain}}/my-cards",
+        "/dav/cal/john%40{{alias_domain}}/my-events",
+        "/dav/file/john%40{{alias_domain}}/my-named-files",
+        "/dav/card/john%40{{alias_domain}}/my-named-cards",
+        "/dav/cal/john%40{{alias_domain}}/my-named-events",
+        "/dav/cal/john%40{{alias_domain}}/my-named-events2",
+        "/dav/cal/john%40{{alias_domain}}/my-named-events3",
     ] {
         client
             .request("DELETE", path, "")

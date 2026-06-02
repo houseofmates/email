@@ -8,18 +8,18 @@
   "size": 2527,
   "receivedAt": "2050-01-28T16:26:40Z",
   "messageId": [
-    "NDBBIAKOPKHFGPLCODIGKEKECHAA.doug@example.com"
+    "NDBBIAKOPKHFGPLCODIGKEKECHAA.doug@{{alias_domain}}"
   ],
   "from": [
     {
       "name": "Doug Sauder",
-      "email": "doug@example.com"
+      "email": "doug@{{alias_domain}}"
     }
   ],
   "to": [
     {
       "name": "Joe Blow",
-      "email": "jblow@example.com"
+      "email": "jblow@{{alias_domain}}"
     }
   ],
   "subject": "Test message from Microsoft Outlook 00",
@@ -31,11 +31,11 @@
     "headers": [
       {
         "name": "From",
-        "value": " \"Doug Sauder\" <doug@example.com>"
+        "value": " \"Doug Sauder\" <doug@{{alias_domain}}>"
       },
       {
         "name": "To",
-        "value": " \"Joe Blow\" <jblow@example.com>"
+        "value": " \"Joe Blow\" <jblow@{{alias_domain}}>"
       },
       {
         "name": "Subject",
@@ -47,7 +47,7 @@
       },
       {
         "name": "Message-ID",
-        "value": " <NDBBIAKOPKHFGPLCODIGKEKECHAA.doug@example.com>"
+        "value": " <NDBBIAKOPKHFGPLCODIGKEKECHAA.doug@{{alias_domain}}>"
       },
       {
         "name": "MIME-Version",
@@ -101,11 +101,11 @@
       "headers": [
         {
           "name": "From",
-          "value": " \"Doug Sauder\" <doug@example.com>"
+          "value": " \"Doug Sauder\" <doug@{{alias_domain}}>"
         },
         {
           "name": "To",
-          "value": " \"Joe Blow\" <jblow@example.com>"
+          "value": " \"Joe Blow\" <jblow@{{alias_domain}}>"
         },
         {
           "name": "Subject",
@@ -117,7 +117,7 @@
         },
         {
           "name": "Message-ID",
-          "value": " <NDBBIAKOPKHFGPLCODIGKEKECHAA.doug@example.com>"
+          "value": " <NDBBIAKOPKHFGPLCODIGKEKECHAA.doug@{{alias_domain}}>"
         },
         {
           "name": "MIME-Version",

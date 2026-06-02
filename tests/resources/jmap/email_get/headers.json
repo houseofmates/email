@@ -8,7 +8,7 @@
   "size": 4535,
   "receivedAt": "2113-09-16T10:13:20Z",
   "messageId": [
-    "5678.21-Nov-1997@example.com"
+    "5678.21-Nov-1997@{{alias_domain}}"
   ],
   "references": [
     "789@local.machine.example",
@@ -23,15 +23,15 @@
   "to": [
     {
       "name": "  James Smythe",
-      "email": "james@example.com"
+      "email": "james@{{alias_domain}}"
     },
     {
       "name": null,
-      "email": "jane@example.com"
+      "email": "jane@{{alias_domain}}"
     },
     {
       "name": "John Smîth",
-      "email": "john@example.com"
+      "email": "john@{{alias_domain}}"
     }
   ],
   "cc": [
@@ -536,16 +536,16 @@
       "mailto:list-manager@host.com?body=unsubscribe%20list"
     ]
   ],
-  "header:Message-ID": " <5678.21-Nov-1997@example.com>",
+  "header:Message-ID": " <5678.21-Nov-1997@{{alias_domain}}>",
   "header:Message-ID:all": [
-    " <5678.21-Nov-1997@example.com>"
+    " <5678.21-Nov-1997@{{alias_domain}}>"
   ],
   "header:Message-ID:asMessageIds": [
-    "5678.21-Nov-1997@example.com"
+    "5678.21-Nov-1997@{{alias_domain}}"
   ],
   "header:Message-ID:asMessageIds:all": [
     [
-      "5678.21-Nov-1997@example.com"
+      "5678.21-Nov-1997@{{alias_domain}}"
     ]
   ],
   "header:References": " <789@local.machine.example>\n            <abcd@example.net>",
@@ -587,37 +587,37 @@
   "header:Subject:asText:all": [
     "Why not both importing AND exporting? ☺"
   ],
-  "header:To": " \"  James Smythe\" <james@example.com>, Friends:\n      jane@example.com, =?UTF-8?Q?John_Sm=C3=AEth?=\n      <john@example.com>;",
+  "header:To": " \"  James Smythe\" <james@{{alias_domain}}>, Friends:\n      jane@{{alias_domain}}, =?UTF-8?Q?John_Sm=C3=AEth?=\n      <john@{{alias_domain}}>;",
   "header:To:all": [
-    " \"  James Smythe\" <james@example.com>, Friends:\n      jane@example.com, =?UTF-8?Q?John_Sm=C3=AEth?=\n      <john@example.com>;"
+    " \"  James Smythe\" <james@{{alias_domain}}>, Friends:\n      jane@{{alias_domain}}, =?UTF-8?Q?John_Sm=C3=AEth?=\n      <john@{{alias_domain}}>;"
   ],
   "header:To:asAddresses": [
     {
       "name": "  James Smythe",
-      "email": "james@example.com"
+      "email": "james@{{alias_domain}}"
     },
     {
       "name": null,
-      "email": "jane@example.com"
+      "email": "jane@{{alias_domain}}"
     },
     {
       "name": "John Smîth",
-      "email": "john@example.com"
+      "email": "john@{{alias_domain}}"
     }
   ],
   "header:To:asAddresses:all": [
     [
       {
         "name": "  James Smythe",
-        "email": "james@example.com"
+        "email": "james@{{alias_domain}}"
       },
       {
         "name": null,
-        "email": "jane@example.com"
+        "email": "jane@{{alias_domain}}"
       },
       {
         "name": "John Smîth",
-        "email": "john@example.com"
+        "email": "john@{{alias_domain}}"
       }
     ]
   ],
@@ -627,7 +627,7 @@
       "addresses": [
         {
           "name": "  James Smythe",
-          "email": "james@example.com"
+          "email": "james@{{alias_domain}}"
         }
       ]
     },
@@ -636,11 +636,11 @@
       "addresses": [
         {
           "name": null,
-          "email": "jane@example.com"
+          "email": "jane@{{alias_domain}}"
         },
         {
           "name": "John Smîth",
-          "email": "john@example.com"
+          "email": "john@{{alias_domain}}"
         }
       ]
     }
@@ -652,7 +652,7 @@
         "addresses": [
           {
             "name": "  James Smythe",
-            "email": "james@example.com"
+            "email": "james@{{alias_domain}}"
           }
         ]
       },
@@ -661,11 +661,11 @@
         "addresses": [
           {
             "name": null,
-            "email": "jane@example.com"
+            "email": "jane@{{alias_domain}}"
           },
           {
             "name": "John Smîth",
-            "email": "john@example.com"
+            "email": "john@{{alias_domain}}"
           }
         ]
       }
@@ -1225,36 +1225,36 @@
   "header:X-Date-Single:asDate:all": [
     "2006-07-05T18:52:37Z"
   ],
-  "header:X-Id": " <myid4@example.com> <myid5@example.com>",
+  "header:X-Id": " <myid4@{{alias_domain}}> <myid5@{{alias_domain}}>",
   "header:X-Id:all": [
-    " <myid3@example.com>",
-    " <myid4@example.com> <myid5@example.com>"
+    " <myid3@{{alias_domain}}>",
+    " <myid4@{{alias_domain}}> <myid5@{{alias_domain}}>"
   ],
   "header:X-Id:asMessageIds": [
-    "myid4@example.com",
-    "myid5@example.com"
+    "myid4@{{alias_domain}}",
+    "myid5@{{alias_domain}}"
   ],
   "header:X-Id:asMessageIds:all": [
     [
-      "myid3@example.com"
+      "myid3@{{alias_domain}}"
     ],
     [
-      "myid4@example.com",
-      "myid5@example.com"
+      "myid4@{{alias_domain}}",
+      "myid5@{{alias_domain}}"
     ]
   ],
-  "header:X-Id-Single": " <myid@example.com> <myid2@example.com>",
+  "header:X-Id-Single": " <myid@{{alias_domain}}> <myid2@{{alias_domain}}>",
   "header:X-Id-Single:all": [
-    " <myid@example.com> <myid2@example.com>"
+    " <myid@{{alias_domain}}> <myid2@{{alias_domain}}>"
   ],
   "header:X-Id-Single:asMessageIds": [
-    "myid@example.com",
-    "myid2@example.com"
+    "myid@{{alias_domain}}",
+    "myid2@{{alias_domain}}"
   ],
   "header:X-Id-Single:asMessageIds:all": [
     [
-      "myid@example.com",
-      "myid2@example.com"
+      "myid@{{alias_domain}}",
+      "myid2@{{alias_domain}}"
     ]
   ],
   "header:X-List": " <http://www.mylist2.com/list2>,\n       <mailto:list2@mylist2.com>",

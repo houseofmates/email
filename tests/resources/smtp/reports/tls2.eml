@@ -1,11 +1,11 @@
-From: tlsrpt@mail.sender.example.com
+From: tlsrpt@mail.sender.{{alias_domain}}
 Date: Fri, May 09 2017 16:54:30 -0800
 To: mts-sts-tlsrpt@example.net
 Subject: Report Domain: example.net
-    Submitter: mail.sender.example.com
+    Submitter: mail.sender.{{alias_domain}}
     Report-ID: <735ff.e317+bf22029@example.net>
 TLS-Report-Domain: example.net
-TLS-Report-Submitter: mail.sender.example.com
+TLS-Report-Submitter: mail.sender.{{alias_domain}}
 MIME-Version: 1.0
 Content-Type: multipart/report; report-type="tlsrpt";
     boundary="----=_NextPart_000_024E_01CC9B0A.AFE54C00"
@@ -17,15 +17,15 @@ This is a multipart message in MIME format.
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
-This is an aggregate TLS report from mail.sender.example.com
+This is an aggregate TLS report from mail.sender.{{alias_domain}}
 
 ------=_NextPart_000_024E_01CC9B0A.AFE54C00
 Content-Type: application/tlsrpt
 Content-Disposition: attachment;
-    filename="mail.sender.example!example.com!1013662812!1013749130.json"
+    filename="mail.sender.example!{{alias_domain}}!1013662812!1013749130.json"
 
 {
-    "report-id": "2020-01-01T00:00:00Z_example.com",
+    "report-id": "2020-01-01T00:00:00Z_{{alias_domain}}",
     "date-range": {
         "start-datetime": "2020-01-01T00:00:00Z",
         "end-datetime": "2020-01-07T23:59:59Z"
@@ -39,10 +39,10 @@ Content-Disposition: attachment;
                 "policy-string": [
                     "version: STSv1",
                     "mode: enforce",
-                    "mx: demo.example.com",
+                    "mx: demo.{{alias_domain}}",
                     "max_age: 604800"
                 ],
-                "policy-domain": "example.com"
+                "policy-domain": "{{alias_domain}}"
             },
             "summary": {
                 "total-successful-session-count": 23,
@@ -53,7 +53,7 @@ Content-Disposition: attachment;
                     "result-type": "certificate-host-mismatch",
                     "sending-mta-ip": "123.123.123.123",
                     "receiving-ip": "234.234.234.234",
-                    "receiving-mx-hostname": "demo.example.com",
+                    "receiving-mx-hostname": "demo.{{alias_domain}}",
                     "failed-session-count": 1
                 }
             ]

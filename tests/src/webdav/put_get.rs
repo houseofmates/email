@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -13,38 +13,38 @@ use crate::webdav::*;
 
 pub async fn test(test: &TestServer) {
     println!("Running PUT/GET tests...");
-    let client = test.account("john@example.com").webdav_client();
+    let client = test.account("john@{{alias_domain}}").webdav_client();
 
     // Simple PUT
     let mut files = AHashMap::new();
     for (path, ct, content) in [
         (
-            "/dav/file/john%40example.com/file1.txt",
+            "/dav/file/john%40{{alias_domain}}/file1.txt",
             "text/plain",
             TEST_FILE_1,
         ),
         (
-            "/dav/file/john%40example.com/file2.txt",
+            "/dav/file/john%40{{alias_domain}}/file2.txt",
             "text/x-other",
             TEST_FILE_2,
         ),
         (
-            "/dav/card/john%40example.com/default/card1.vcf",
+            "/dav/card/john%40{{alias_domain}}/default/card1.vcf",
             "text/vcard; charset=utf-8",
             TEST_VCARD_1,
         ),
         (
-            "/dav/card/john%40example.com/default/card2.vcf",
+            "/dav/card/john%40{{alias_domain}}/default/card2.vcf",
             "text/vcard; charset=utf-8",
             TEST_VCARD_2,
         ),
         (
-            "/dav/cal/john%40example.com/default/event1.ics",
+            "/dav/cal/john%40{{alias_domain}}/default/event1.ics",
             "text/calendar; charset=utf-8",
             TEST_ICAL_1,
         ),
         (
-            "/dav/cal/john%40example.com/default/event2.ics",
+            "/dav/cal/john%40{{alias_domain}}/default/event2.ics",
             "text/calendar; charset=utf-8",
             TEST_ICAL_2,
         ),
@@ -72,9 +72,9 @@ pub async fn test(test: &TestServer) {
 
     // PUT under a non-existing parent should fail
     for (path, contents) in [
-        ("/dav/file/john%40example.com/foo/file1.txt", TEST_FILE_1),
-        ("/dav/card/john%40example.com/foo/card1.vcf", TEST_VCARD_1),
-        ("/dav/cal/john%40example.com/foo/event1.ics", TEST_ICAL_1),
+        ("/dav/file/john%40{{alias_domain}}/foo/file1.txt", TEST_FILE_1),
+        ("/dav/card/john%40{{alias_domain}}/foo/card1.vcf", TEST_VCARD_1),
+        ("/dav/cal/john%40{{alias_domain}}/foo/event1.ics", TEST_ICAL_1),
     ] {
         client
             .request("PUT", path, contents)
@@ -85,15 +85,15 @@ pub async fn test(test: &TestServer) {
     // PUT under resources should fail
     for (path, contents) in [
         (
-            "/dav/file/john%40example.com/file1.txt/other-file.txt",
+            "/dav/file/john%40{{alias_domain}}/file1.txt/other-file.txt",
             TEST_FILE_1,
         ),
         (
-            "/dav/card/john%40example.com/default/card1.vcf/other-file.vcf",
+            "/dav/card/john%40{{alias_domain}}/default/card1.vcf/other-file.vcf",
             TEST_VCARD_1,
         ),
         (
-            "/dav/cal/john%40example.com/default/event1.ics/other-file.ical",
+            "/dav/cal/john%40{{alias_domain}}/default/event1.ics/other-file.ical",
             TEST_ICAL_1,
         ),
     ] {
@@ -106,13 +106,13 @@ pub async fn test(test: &TestServer) {
     // PUT a non-vCard/iCalendar file should fail
     for (path, ct, content, precondition) in [
         (
-            "/dav/card/john%40example.com/card3.vcf",
+            "/dav/card/john%40{{alias_domain}}/card3.vcf",
             "text/vcard; charset=utf-8",
             TEST_FILE_1,
             "B:supported-address-data",
         ),
         (
-            "/dav/cal/john%40example.com/event3.ics",
+            "/dav/cal/john%40{{alias_domain}}/event3.ics",
             "text/calendar; charset=utf-8",
             TEST_FILE_2,
             "A:supported-calendar-data",
@@ -129,19 +129,19 @@ pub async fn test(test: &TestServer) {
     let conf = &test.server.core.groupware;
     for (path, contents, max_size, expect) in [
         (
-            "/dav/file/john%40example.com/chunky-file1.txt",
+            "/dav/file/john%40{{alias_domain}}/chunky-file1.txt",
             TEST_FILE_1,
             conf.max_file_size,
             None,
         ),
         (
-            "/dav/card/john%40example.com/chunky-card1.vcf",
+            "/dav/card/john%40{{alias_domain}}/chunky-card1.vcf",
             TEST_VCARD_1,
             conf.max_vcard_size,
             Some("B:max-resource-size"),
         ),
         (
-            "/dav/cal/john%40example.com/chunky-event1.ics",
+            "/dav/cal/john%40{{alias_domain}}/chunky-event1.ics",
             TEST_ICAL_1,
             conf.max_ical_size,
             Some("A:max-resource-size"),
@@ -165,14 +165,14 @@ pub async fn test(test: &TestServer) {
     }
 
     // PUT requests cannot exceed quota
-    let mike_noquota = test.account("mike@example.com").webdav_client();
+    let mike_noquota = test.account("mike@{{alias_domain}}").webdav_client();
     for resource_type in [
         DavResourceName::File,
         DavResourceName::Card,
         DavResourceName::Cal,
     ] {
         let path = format!(
-            "{}/mike%40example.com/quota-test/",
+            "{}/mike%40{{alias_domain}}/quota-test/",
             resource_type.base_path()
         );
         mike_noquota
@@ -215,29 +215,29 @@ pub async fn test(test: &TestServer) {
 
     // PUT precondition enforcement
     let modseq = [
-        test.resources("john@example.com", Collection::FileNode)
+        test.resources("john@{{alias_domain}}", Collection::FileNode)
             .await
             .highest_change_id,
-        test.resources("john@example.com", Collection::Calendar)
+        test.resources("john@{{alias_domain}}", Collection::Calendar)
             .await
             .highest_change_id,
-        test.resources("john@example.com", Collection::AddressBook)
+        test.resources("john@{{alias_domain}}", Collection::AddressBook)
             .await
             .highest_change_id,
     ];
     for (path, ct, content) in [
         (
-            "/dav/file/john%40example.com/file1.txt",
+            "/dav/file/john%40{{alias_domain}}/file1.txt",
             "text/plain",
             TEST_FILE_1,
         ),
         (
-            "/dav/card/john%40example.com/default/card1.vcf",
+            "/dav/card/john%40{{alias_domain}}/default/card1.vcf",
             "text/vcard; charset=utf-8",
             TEST_VCARD_1,
         ),
         (
-            "/dav/cal/john%40example.com/default/event1.ics",
+            "/dav/cal/john%40{{alias_domain}}/default/event1.ics",
             "text/calendar; charset=utf-8",
             TEST_ICAL_1,
         ),
@@ -291,13 +291,13 @@ pub async fn test(test: &TestServer) {
     }
     assert_eq!(
         [
-            test.resources("john@example.com", Collection::FileNode)
+            test.resources("john@{{alias_domain}}", Collection::FileNode)
                 .await
                 .highest_change_id,
-            test.resources("john@example.com", Collection::Calendar)
+            test.resources("john@{{alias_domain}}", Collection::Calendar)
                 .await
                 .highest_change_id,
-            test.resources("john@example.com", Collection::AddressBook)
+            test.resources("john@{{alias_domain}}", Collection::AddressBook)
                 .await
                 .highest_change_id,
         ],
@@ -335,18 +335,18 @@ pub async fn test(test: &TestServer) {
     // PUT requests require unique UIDs
     for (path, ct, content, precond_key, precond_value) in [
         (
-            "/dav/card/john%40example.com/default/card5.vcf",
+            "/dav/card/john%40{{alias_domain}}/default/card5.vcf",
             "text/vcard; charset=utf-8",
             TEST_VCARD_1,
             "B:no-uid-conflict.D:href",
-            "/dav/card/john%40example.com/default/card1.vcf",
+            "/dav/card/john%40{{alias_domain}}/default/card1.vcf",
         ),
         (
-            "/dav/cal/john%40example.com/default/event5.ics",
+            "/dav/cal/john%40{{alias_domain}}/default/event5.ics",
             "text/calendar; charset=utf-8",
             TEST_ICAL_1,
             "A:no-uid-conflict.D:href",
-            "/dav/cal/john%40example.com/default/event1.ics",
+            "/dav/cal/john%40{{alias_domain}}/default/event1.ics",
         ),
     ] {
         client
@@ -365,7 +365,7 @@ pub async fn test(test: &TestServer) {
     client
         .request_with_headers(
             "PUT",
-            "/dav/cal/john%40example.com/default/invalid.ics",
+            "/dav/cal/john%40{{alias_domain}}/default/invalid.ics",
             [
                 ("content-type", "text/calendar; charset=utf-8"),
                 ("if-none-match", "*"),
@@ -395,7 +395,7 @@ END:VCALENDAR
     client
         .request_with_headers(
             "PUT",
-            "/dav/cal/john%40example.com/default/invalid.ics",
+            "/dav/cal/john%40{{alias_domain}}/default/invalid.ics",
             [
                 ("content-type", "text/calendar; charset=utf-8"),
                 ("if-none-match", "*"),
@@ -424,22 +424,22 @@ END:VCALENDAR
     // Deleting unknown/invalid destinations should fail
     for (path, expect) in [
         (
-            "/dav/file/john%40example.com/unknown.txt",
+            "/dav/file/john%40{{alias_domain}}/unknown.txt",
             StatusCode::NOT_FOUND,
         ),
         (
-            "/dav/card/john%40example.com/default/unknown.txt",
+            "/dav/card/john%40{{alias_domain}}/default/unknown.txt",
             StatusCode::NOT_FOUND,
         ),
         (
-            "/dav/cal/john%40example.com/default/unknown.txt",
+            "/dav/cal/john%40{{alias_domain}}/default/unknown.txt",
             StatusCode::NOT_FOUND,
         ),
-        ("/dav/file/john%40example.com", StatusCode::FORBIDDEN),
-        ("/dav/cal/john%40example.com", StatusCode::FORBIDDEN),
-        ("/dav/card/john%40example.com", StatusCode::FORBIDDEN),
+        ("/dav/file/john%40{{alias_domain}}", StatusCode::FORBIDDEN),
+        ("/dav/cal/john%40{{alias_domain}}", StatusCode::FORBIDDEN),
+        ("/dav/card/john%40{{alias_domain}}", StatusCode::FORBIDDEN),
         (
-            "/dav/pal/john%40example.com",
+            "/dav/pal/john%40{{alias_domain}}",
             StatusCode::METHOD_NOT_ALLOWED,
         ),
         ("/dav/file", StatusCode::FORBIDDEN),

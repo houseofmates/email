@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -13,7 +13,7 @@ use types::id::Id;
 
 pub async fn test(test: &TestServer) {
     println!("Running SearchSnippet tests...");
-    let account = test.account("jdoe@example.com");
+    let account = test.account("jdoe@{{alias_domain}}");
     let client = account.jmap_client().await;
     let mailbox_id = Id::from(INBOX_ID).to_string();
 

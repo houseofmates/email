@@ -2,7 +2,7 @@
    <D:acl xmlns:D="DAV:">
      <D:ace>
        <D:principal>
-         <D:href>http://www.example.com/users/esedlar</D:href>
+         <D:href>http://www.{{alias_domain}}/users/esedlar</D:href>
        </D:principal>
        <D:grant>
          <D:privilege><D:read/></D:privilege>

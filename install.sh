@@ -205,11 +205,11 @@ write_env_file() {
 # Uncomment and edit an entry to override its default.
 
 # Override the hostname used in HTTP responses
-#STALWART_HOSTNAME=mail.example.com
+#STALWART_HOSTNAME=mail.{{alias_domain}}
 
 # Override the public base URL published in OAuth, OIDC, and JMAP discovery
 # documents. Accepts scheme, host, optional port, and optional path prefix.
-#STALWART_PUBLIC_URL=https://mail.example.com
+#STALWART_PUBLIC_URL=https://mail.{{alias_domain}}
 
 # Enable bootstrap / recovery mode on startup. Accepted: 1, true. Default: false.
 #STALWART_RECOVERY_MODE=true

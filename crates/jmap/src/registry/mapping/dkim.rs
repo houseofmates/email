@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -28,7 +28,7 @@ pub(crate) async fn validate_dkim_signature(
     };
 
     if old_key.is_none_or(|old_key| old_key.private_key() != key.private_key())
-        && let Err(err) = DkimSigner::new("example.com".to_string(), key.clone()).await
+        && let Err(err) = DkimSigner::new("{{alias_domain}}".to_string(), key.clone()).await
     {
         return Ok(Err(SetError::invalid_properties().with_description(
             format!("Failed to validate DKIM signature: {err}"),

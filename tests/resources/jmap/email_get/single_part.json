@@ -8,18 +8,18 @@
   "size": 1378,
   "receivedAt": "2013-09-01T01:46:40Z",
   "messageId": [
-    "NDBBIAKOPKHFGPLCODIGIEKCCHAA.doug@example.com"
+    "NDBBIAKOPKHFGPLCODIGIEKCCHAA.doug@{{alias_domain}}"
   ],
   "from": [
     {
       "name": "Doug Sauder",
-      "email": "doug@example.com"
+      "email": "doug@{{alias_domain}}"
     }
   ],
   "to": [
     {
       "name": "Jürgen Schmürgen",
-      "email": "schmuergen@example.com"
+      "email": "schmuergen@{{alias_domain}}"
     }
   ],
   "subject": "Die Hasen und die Frösche (Microsoft Outlook 00)",
@@ -31,11 +31,11 @@
     "headers": [
       {
         "name": "From",
-        "value": " \"Doug Sauder\" <doug@example.com>"
+        "value": " \"Doug Sauder\" <doug@{{alias_domain}}>"
       },
       {
         "name": "To",
-        "value": " =?iso-8859-1?B?SvxyZ2VuIFNjaG38cmdlbg==?= <schmuergen@example.com>"
+        "value": " =?iso-8859-1?B?SvxyZ2VuIFNjaG38cmdlbg==?= <schmuergen@{{alias_domain}}>"
       },
       {
         "name": "Subject",
@@ -47,7 +47,7 @@
       },
       {
         "name": "Message-ID",
-        "value": " <NDBBIAKOPKHFGPLCODIGIEKCCHAA.doug@example.com>"
+        "value": " <NDBBIAKOPKHFGPLCODIGIEKCCHAA.doug@{{alias_domain}}>"
       },
       {
         "name": "MIME-Version",
@@ -100,11 +100,11 @@
       "headers": [
         {
           "name": "From",
-          "value": " \"Doug Sauder\" <doug@example.com>"
+          "value": " \"Doug Sauder\" <doug@{{alias_domain}}>"
         },
         {
           "name": "To",
-          "value": " =?iso-8859-1?B?SvxyZ2VuIFNjaG38cmdlbg==?= <schmuergen@example.com>"
+          "value": " =?iso-8859-1?B?SvxyZ2VuIFNjaG38cmdlbg==?= <schmuergen@{{alias_domain}}>"
         },
         {
           "name": "Subject",
@@ -116,7 +116,7 @@
         },
         {
           "name": "Message-ID",
-          "value": " <NDBBIAKOPKHFGPLCODIGIEKCCHAA.doug@example.com>"
+          "value": " <NDBBIAKOPKHFGPLCODIGIEKCCHAA.doug@{{alias_domain}}>"
         },
         {
           "name": "MIME-Version",
@@ -163,11 +163,11 @@
       "headers": [
         {
           "name": "From",
-          "value": " \"Doug Sauder\" <doug@example.com>"
+          "value": " \"Doug Sauder\" <doug@{{alias_domain}}>"
         },
         {
           "name": "To",
-          "value": " =?iso-8859-1?B?SvxyZ2VuIFNjaG38cmdlbg==?= <schmuergen@example.com>"
+          "value": " =?iso-8859-1?B?SvxyZ2VuIFNjaG38cmdlbg==?= <schmuergen@{{alias_domain}}>"
         },
         {
           "name": "Subject",
@@ -179,7 +179,7 @@
         },
         {
           "name": "Message-ID",
-          "value": " <NDBBIAKOPKHFGPLCODIGIEKCCHAA.doug@example.com>"
+          "value": " <NDBBIAKOPKHFGPLCODIGIEKCCHAA.doug@{{alias_domain}}>"
         },
         {
           "name": "MIME-Version",

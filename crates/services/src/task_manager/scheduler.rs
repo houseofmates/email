@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -41,7 +41,7 @@ enum Event {
     TrainSpamClassifier,
     RenewNodeIdLease,
     // SPDX-SnippetBegin
-    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
     // SPDX-License-Identifier: LicenseRef-SEL
     #[cfg(feature = "enterprise")]
     InternalMetrics,
@@ -58,7 +58,7 @@ struct Queue {
 }
 
 // SPDX-SnippetBegin
-// SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+// SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
 // SPDX-License-Identifier: LicenseRef-SEL
 #[cfg(feature = "enterprise")]
 const METRIC_ALERTS_INTERVAL: Duration = Duration::from_secs(5 * 60);
@@ -130,7 +130,7 @@ pub fn spawn_task_scheduler(inner: Arc<Inner>) {
             queue.schedule(Instant::now(), Event::CalculateMetrics);
 
             // SPDX-SnippetBegin
-            // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+            // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
             // SPDX-License-Identifier: LicenseRef-SEL
 
             // Enterprise Edition license management
@@ -153,7 +153,7 @@ pub fn spawn_task_scheduler(inner: Arc<Inner>) {
         }
 
         // SPDX-SnippetBegin
-        // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+        // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
         // SPDX-License-Identifier: LicenseRef-SEL
         // Metrics history
         #[cfg(feature = "enterprise")]
@@ -255,7 +255,7 @@ pub fn spawn_task_scheduler(inner: Arc<Inner>) {
                                 let otel = otel.clone();
 
                                 // SPDX-SnippetBegin
-                                // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+                                // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
                                 // SPDX-License-Identifier: LicenseRef-SEL
                                 #[cfg(feature = "enterprise")]
                                 let is_enterprise = server.is_enterprise_edition();
@@ -295,7 +295,7 @@ pub fn spawn_task_scheduler(inner: Arc<Inner>) {
                             let elapsed = Instant::now();
                             if server.core.network.roles.metrics_calculate {
                                 // SPDX-SnippetBegin
-                                // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+                                // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
                                 // SPDX-License-Identifier: LicenseRef-SEL
                                 #[cfg(feature = "enterprise")]
                                 if server.is_enterprise_edition() {
@@ -397,7 +397,7 @@ pub fn spawn_task_scheduler(inner: Arc<Inner>) {
                     }
 
                     // SPDX-SnippetBegin
-                    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+                    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
                     // SPDX-License-Identifier: LicenseRef-SEL
                     #[cfg(feature = "enterprise")]
                     Event::InternalMetrics => {

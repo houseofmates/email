@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -127,7 +127,7 @@ fn sample_queued_messages(blob_hashes: Vec<BlobHash>) -> Vec<Message> {
             return_path: "sender@myserver.com".into(),
             recipients: vec![
                 Recipient {
-                    address: "alice@example.com".into(),
+                    address: "alice@{{alias_domain}}".into(),
                     retry: Schedule {
                         due: future,
                         inner: 0,
@@ -253,7 +253,7 @@ fn sample_raw_messages() -> Vec<String> {
         // Raw message 1: Normal outbound email (matches Message 1)
         concat!(
             "From: sender@myserver.com\r\n",
-            "To: alice@example.com, bob@example.org\r\n",
+            "To: alice@{{alias_domain}}, bob@example.org\r\n",
             "Subject: Quarterly Report Q1 2027\r\n",
             "Date: Sat, 12 Apr 2027 09:00:00 +0000\r\n",
             "Message-ID: <msg-001@myserver.com>\r\n",
@@ -346,9 +346,9 @@ fn sample_tls_internal_reports() -> Vec<TlsInternalReport> {
         TlsInternalReport {
             created_at: now(),
             deliver_at: future,
-            domain: "example.com".to_string(),
-            http_rua: Map::new(vec!["https://example.com/tlsrpt".to_string()]),
-            mail_rua: Map::new(vec!["mailto:tls-reports@example.com".to_string()]),
+            domain: "{{alias_domain}}".to_string(),
+            http_rua: Map::new(vec!["https://{{alias_domain}}/tlsrpt".to_string()]),
+            mail_rua: Map::new(vec!["mailto:tls-reports@{{alias_domain}}".to_string()]),
             policy_identifiers: Map::new(vec![1]),
             report: TlsReport {
                 contact_info: Some("admin@myserver.com".to_string()),
@@ -357,8 +357,8 @@ fn sample_tls_internal_reports() -> Vec<TlsInternalReport> {
                 organization_name: Some("My Mail Server".to_string()),
                 policies: List::from(vec![TlsReportPolicy {
                     failure_details: List::from(vec![]),
-                    mx_hosts: Map::new(vec!["mx1.example.com".to_string()]),
-                    policy_domain: "example.com".to_string(),
+                    mx_hosts: Map::new(vec!["mx1.{{alias_domain}}".to_string()]),
+                    policy_domain: "{{alias_domain}}".to_string(),
                     policy_strings: Map::new(vec![
                         "mode: enforce".to_string(),
                         "max_age: 86400".to_string(),
@@ -1160,7 +1160,7 @@ fn sample_dmarc_external_reports() -> Vec<DmarcExternalReport> {
                             result: DkimAuthResult::Pass,
                             selector: "selector1".to_string(),
                         }]),
-                        envelope_from: "forwarder.example.com".to_string(),
+                        envelope_from: "forwarder.{{alias_domain}}".to_string(),
                         envelope_to: None,
                         evaluated_disposition: Default::default(),
                         evaluated_dkim: DmarcResult::Pass,
@@ -1172,7 +1172,7 @@ fn sample_dmarc_external_reports() -> Vec<DmarcExternalReport> {
                             203, 0, 113, 100,
                         )))),
                         spf_results: List::from(vec![DmarcSpfResult {
-                            domain: "forwarder.example.com".to_string(),
+                            domain: "forwarder.{{alias_domain}}".to_string(),
                             human_result: None,
                             result: SpfAuthResult::SoftFail,
                             scope: SpfDomainScope::MailFrom,

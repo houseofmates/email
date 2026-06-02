@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -12,19 +12,19 @@ use hyper::StatusCode;
 
 pub async fn test(test: &TestServer, assisted_discovery: bool) {
     println!("Running principals tests...");
-    let client = test.account("jane@example.com").webdav_client();
+    let client = test.account("jane@{{alias_domain}}").webdav_client();
     let principal_path = format!("D:href:{}/", DavResourceName::Principal.base_path());
     let jane_principal_path = format!(
-        "D:href:{}/jane%40example.com/",
+        "D:href:{}/jane%40{{alias_domain}}/",
         DavResourceName::Principal.base_path()
     );
 
     let path_support_card = format!(
-        "D:href:{}/support%40example.com/",
+        "D:href:{}/support%40{{alias_domain}}/",
         DavResourceName::Card.base_path()
     );
     let path_support_cal = format!(
-        "D:href:{}/support%40example.com/",
+        "D:href:{}/support%40{{alias_domain}}/",
         DavResourceName::Cal.base_path()
     );
 
@@ -76,7 +76,7 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
             .get(DavProperty::WebDav(WebDavProperty::Owner))
             .with_values([path_pal.as_str()])
             .with_status(StatusCode::OK);
-        if account_name == "jane%40example.com" && !assisted_discovery {
+        if account_name == "jane%40{{alias_domain}}" && !assisted_discovery {
             props
                 .get(DavProperty::Principal(PrincipalProperty::CalendarHomeSet))
                 .with_values([path_cal.as_str(), path_support_cal.as_str()])
@@ -125,7 +125,7 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
             .with_status(StatusCode::OK);
         props
             .get(DavProperty::Principal(PrincipalProperty::CalendarUserType))
-            .with_values([if account_name == "support%40example.com" {
+            .with_values([if account_name == "support%40{{alias_domain}}" {
                 "GROUP"
             } else {
                 "INDIVIDUAL"
@@ -236,7 +236,7 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
             props
                 .get(DavProperty::Principal(PrincipalProperty::CalendarHomeSet))
                 .with_values([format!(
-                    "D:href:{}/jane%40example.com/",
+                    "D:href:{}/jane%40{{alias_domain}}/",
                     DavResourceName::Cal.base_path()
                 )
                 .as_str()])
@@ -246,7 +246,7 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
                     PrincipalProperty::AddressbookHomeSet,
                 ))
                 .with_values([format!(
-                    "D:href:{}/jane%40example.com/",
+                    "D:href:{}/jane%40{{alias_domain}}/",
                     DavResourceName::Card.base_path()
                 )
                 .as_str()])
@@ -256,12 +256,12 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
                 .get(DavProperty::Principal(PrincipalProperty::CalendarHomeSet))
                 .with_values([
                     format!(
-                        "D:href:{}/jane%40example.com/",
+                        "D:href:{}/jane%40{{alias_domain}}/",
                         DavResourceName::Cal.base_path()
                     )
                     .as_str(),
                     format!(
-                        "D:href:{}/support%40example.com/",
+                        "D:href:{}/support%40{{alias_domain}}/",
                         DavResourceName::Cal.base_path()
                     )
                     .as_str(),
@@ -273,12 +273,12 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
                 ))
                 .with_values([
                     format!(
-                        "D:href:{}/jane%40example.com/",
+                        "D:href:{}/jane%40{{alias_domain}}/",
                         DavResourceName::Card.base_path()
                     )
                     .as_str(),
                     format!(
-                        "D:href:{}/support%40example.com/",
+                        "D:href:{}/support%40{{alias_domain}}/",
                         DavResourceName::Card.base_path()
                     )
                     .as_str(),
@@ -289,7 +289,7 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
         for account_ in test
             .accounts
             .values()
-            .filter(|account| ["jane@example.com", "support@example.com"].contains(&account.name()))
+            .filter(|account| ["jane@{{alias_domain}}", "support@{{alias_domain}}"].contains(&account.name()))
         {
             let account_name = account_.name().replace('@', "%40");
             let description = account_.description();
@@ -344,7 +344,7 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
                 .get(DavProperty::WebDav(WebDavProperty::Owner))
                 .with_values([path_pal.as_str()])
                 .with_status(StatusCode::OK);
-            if account_name == "jane%40example.com" && !assisted_discovery {
+            if account_name == "jane%40{{alias_domain}}" && !assisted_discovery {
                 props
                     .get(DavProperty::Principal(PrincipalProperty::CalendarHomeSet))
                     .with_values([path_cal.as_str(), path_support_cal.as_str()])
@@ -392,8 +392,8 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
             .with_status(StatusCode::MULTI_STATUS)
             .into_propfind_response(None);
         response.with_hrefs([
-            format!("{}/jane%40example.com/", resource_type.base_path()).as_str(),
-            format!("{}/support%40example.com/", resource_type.base_path()).as_str(),
+            format!("{}/jane%40{{alias_domain}}/", resource_type.base_path()).as_str(),
+            format!("{}/support%40{{alias_domain}}/", resource_type.base_path()).as_str(),
         ]);
     }
 
@@ -409,12 +409,12 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
         .into_propfind_response(None);
     response.with_hrefs([
         format!(
-            "{}/jane%40example.com/",
+            "{}/jane%40{{alias_domain}}/",
             DavResourceName::Principal.base_path()
         )
         .as_str(),
         format!(
-            "{}/support%40example.com/",
+            "{}/support%40{{alias_domain}}/",
             DavResourceName::Principal.base_path()
         )
         .as_str(),
@@ -451,23 +451,23 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
         .into_propfind_response(None);
     response.with_hrefs([
         format!(
-            "{}/jane%40example.com/",
+            "{}/jane%40{{alias_domain}}/",
             DavResourceName::Principal.base_path()
         )
         .as_str(),
         format!(
-            "{}/john%40example.com/",
+            "{}/john%40{{alias_domain}}/",
             DavResourceName::Principal.base_path()
         )
         .as_str(),
     ]);
     response
         .properties(&format!(
-            "{}/jane%40example.com/",
+            "{}/jane%40{{alias_domain}}/",
             DavResourceName::Principal.base_path()
         ))
         .get(DavProperty::WebDav(WebDavProperty::DisplayName))
-        .with_values([test.account("jane@example.com").description()])
+        .with_values([test.account("jane@{{alias_domain}}").description()])
         .with_status(StatusCode::OK);
     client
         .request(
@@ -479,14 +479,14 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
         .with_status(StatusCode::MULTI_STATUS)
         .into_propfind_response(None)
         .with_hrefs([format!(
-            "{}/support%40example.com/",
+            "{}/support%40{{alias_domain}}/",
             DavResourceName::Principal.base_path()
         )
         .as_str()]);
 
     client.delete_default_containers().await;
     client
-        .delete_default_containers_by_account("support@example.com")
+        .delete_default_containers_by_account("support@{{alias_domain}}")
         .await;
     test.assert_is_empty().await;
 }
@@ -510,7 +510,7 @@ const PRINCIPAL_PROPERTY_SEARCH_QUERY: &str = r#"<?xml version="1.0" encoding="u
        </D:prop>
        <D:match>$NAME</D:match>
      </D:property-search>
-     <D:prop xmlns:B="http://www.example.com/ns/">
+     <D:prop xmlns:B="http://www.{{alias_domain}}/ns/">
        <D:displayname/>
      </D:prop>
 </D:principal-property-search>"#;

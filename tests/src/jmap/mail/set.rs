@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -23,7 +23,7 @@ use types::id::Id;
 
 pub async fn test(test: &TestServer) {
     println!("Running Email Set tests...");
-    let account = test.account("jdoe@example.com");
+    let account = test.account("jdoe@{{alias_domain}}");
     let client = account.jmap_client().await;
     let mailbox_id = Id::from(INBOX_ID).to_string();
 
@@ -31,7 +31,7 @@ pub async fn test(test: &TestServer) {
     update(&client, &mailbox_id).await;
 
     test.destroy_all_mailboxes(account).await;
-    test.account("admin@example.com")
+    test.account("admin@{{alias_domain}}")
         .registry_destroy_all(ObjectType::SpamTrainingSample)
         .await;
     test.assert_is_empty().await;

@@ -1,8 +1,8 @@
 Date: Tue, 10 Jul 2018 01:05:08 +0000
-From: "Joe Bloggs" <joe@example.com>
+From: "Joe Bloggs" <joe@{{alias_domain}}>
 Message-ID: <my-message-id>
 Subject: World domination
-To: "John" <john@example.com>
+To: "John" <john@{{alias_domain}}>
 MIME-Version: 1.0
 Content-Type: multipart/alternative; 
 	boundary="boundary_0"

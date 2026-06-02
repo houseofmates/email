@@ -1,61 +1,79 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>passwords · settings</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="popup.css" />
-    <style>
-      .wrap {
-        width: 420px;
-        margin: 0 auto;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="wrap">
-      <h1 class="title">passwords</h1>
-      <p class="sub">extension settings</p>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=480" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" rel="stylesheet" />
+  <title>passwords — settings</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #050505;
+      color: #ffffff;
+      font-family: "Varela Round", sans-serif;
+      font-size: 14px;
+      text-transform: lowercase;
+      padding: 20px;
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { color: #f6b012; font-size: 18px; margin-bottom: 16px; }
+    .group { margin-bottom: 16px; }
+    label { display: block; color: #3c9fdd; font-size: 12px; margin-bottom: 4px; }
+    input, select {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #2a2a2a;
+      background: #111111;
+      color: #ffffff;
+      font-family: "Varela Round", sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: border 0.15s ease;
+    }
+    input:focus { border-color: #f6b012; }
+    .btn {
+      padding: 8px 20px;
+      border-radius: 8px;
+      border: none;
+      background: #f6b012;
+      color: #050505;
+      font-family: "Varela Round", sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn:hover { filter: brightness(1.1); }
+    .btn:active { transform: scale(0.98); }
+    .status { margin-top: 12px; font-size: 12px; color: #3c9fdd; }
+    .status.ok { color: #f6b012; }
+    .status.err { color: #ff4444; }
+  </style>
+</head>
+<body>
+  <h1>passwords settings</h1>
 
-      <div class="form">
-        <label class="label" for="apiBase">api base url</label>
-        <input
-          class="input"
-          id="apiBase"
-          type="url"
-          placeholder="http://localhost:8080/api"
-        />
+  <div class="group">
+    <label>api endpoint</label>
+    <input type="text" id="apiBase" placeholder="http://localhost:3099" />
+  </div>
 
-        <label class="label" for="aliasDomain">alias domain</label>
-        <input
-          class="input"
-          id="aliasDomain"
-          type="text"
-          placeholder="aliases.yourdomain.com"
-        />
+  <div class="group">
+    <label>alias domain</label>
+    <input type="text" id="aliasDomain" placeholder="yourdomain.com" />
+  </div>
 
-        <div class="divider"></div>
+  <div class="group">
+    <label>auth token (basic base64)</label>
+    <input type="password" id="authToken" placeholder="base64-encoded email:password" />
+  </div>
 
-        <label class="label" for="username">email <span class="opt">(for auth)</span></label>
-        <input class="input" id="username" type="text" placeholder="you@yourdomain.com" />
+  <button id="saveBtn" class="btn">save</button>
+  <div id="status" class="status"></div>
 
-        <label class="label" for="password">password</label>
-        <input class="input" id="password" type="password" placeholder="••••••••" />
-      </div>
-
-      <div class="actions">
-        <button class="btn btn-gold wide" id="saveBtn">save settings</button>
-      </div>
-
-      <p class="status" id="status"></p>
-    </div>
-
-    <script src="options.js"></script>
-  </body>
+  <script src="options.js"></script>
+</body>
 </html>

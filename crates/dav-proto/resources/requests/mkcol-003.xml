@@ -1,6 +1,6 @@
    <?xml version="1.0" encoding="utf-8" ?>
    <D:mkcol xmlns:D="DAV:"
-                 xmlns:E="http://example.com/ns/">
+                 xmlns:E="http://{{alias_domain}}/ns/">
      <D:set>
        <D:prop>
          <D:resourcetype>

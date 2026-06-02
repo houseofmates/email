@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -25,7 +25,7 @@ pub async fn test(test: &TestServer) {
     println!("Running Sieve tests...");
 
     // Create a global script
-    let admin = test.account("admin@example.com");
+    let admin = test.account("admin@{{alias_domain}}");
     admin
         .registry_create_object(SieveUserScript {
             contents: "require \"reject\";\nreject \"Rejected from a global script.\";\nstop;\n"
@@ -38,7 +38,7 @@ pub async fn test(test: &TestServer) {
     admin.reload_settings().await;
 
     let server = test.server.clone();
-    let account = test.account("jdoe@example.com");
+    let account = test.account("jdoe@{{alias_domain}}");
     let client = account.jmap_client().await;
 
     // Validate scripts
@@ -150,10 +150,10 @@ pub async fn test(test: &TestServer) {
         .unwrap();
     lmtp.ingest(
         "bill@remote.org",
-        &["jdoe@example.com"],
+        &["jdoe@{{alias_domain}}"],
         concat!(
             "From: bill@remote.org\r\n",
-            "To: jdoe@example.com\r\n",
+            "To: jdoe@{{alias_domain}}\r\n",
             "Subject: TPS Report\r\n",
             "\r\n",
             "I'm going to need those TPS reports ASAP. ",
@@ -238,11 +238,11 @@ pub async fn test(test: &TestServer) {
         .unwrap();
     lmtp.ingest(
         "bill@remote.org",
-        &["jdoe@example.com"],
+        &["jdoe@{{alias_domain}}"],
         concat!(
             "From: bill@remote.org\r\n",
             "Bcc: Undisclosed recipients;\r\n",
-            "Message-ID: <1234@example.com>\r\n",
+            "Message-ID: <1234@{{alias_domain}}>\r\n",
             "Subject: Holidays\r\n",
             "\r\n",
             "Remember to file your TPS reports before ",
@@ -275,11 +275,11 @@ pub async fn test(test: &TestServer) {
     // Run reject and duplicate check tests
     lmtp.ingest(
         "bill@remote.org",
-        &["jdoe@example.com"],
+        &["jdoe@{{alias_domain}}"],
         concat!(
             "From: bill@remote.org\r\n",
             "Bcc: Undisclosed recipients;\r\n",
-            "Message-ID: <1234@example.com>\r\n",
+            "Message-ID: <1234@{{alias_domain}}>\r\n",
             "Subject: Holidays\r\n",
             "\r\n",
             "Remember to file your T.P.S. reports before ",
@@ -316,11 +316,11 @@ pub async fn test(test: &TestServer) {
         .unwrap();
     lmtp.ingest(
         "bill@remote.org",
-        &["jdoe@example.com"],
+        &["jdoe@{{alias_domain}}"],
         concat!(
             "From: bill@remote.org\r\n",
             "Bcc: Undisclosed recipients;\r\n",
-            "Message-ID: <1234@example.com>\r\n",
+            "Message-ID: <1234@{{alias_domain}}>\r\n",
             "Subject: Holidays\r\n",
             "\r\n",
             "Remember to file your T.P.S. reports before ",
@@ -350,11 +350,11 @@ pub async fn test(test: &TestServer) {
         .unwrap();
     lmtp.ingest(
         "bill@remote.org",
-        &["jdoe@example.com"],
+        &["jdoe@{{alias_domain}}"],
         concat!(
             "From: bill@remote.org\r\n",
             "Bcc: Undisclosed recipients;\r\n",
-            "Message-ID: <1234@example.com>\r\n",
+            "Message-ID: <1234@{{alias_domain}}>\r\n",
             "Subject: Holidays\r\n",
             "\r\n",
             "Remember to file your T.P.S. reports before ",
@@ -384,10 +384,10 @@ pub async fn test(test: &TestServer) {
         .unwrap();
     lmtp.ingest(
         "bill@remote.org",
-        &["jdoe@example.com"],
+        &["jdoe@{{alias_domain}}"],
         concat!(
             "From: bill@remote.org\r\n",
-            "To: jdoe@example.com\r\n",
+            "To: jdoe@{{alias_domain}}\r\n",
             "Subject: TPS Report\r\n",
             "\r\n",
             "I'm going to need those TPS reports ASAP. ",
@@ -398,7 +398,7 @@ pub async fn test(test: &TestServer) {
     assert_message_delivery(
         &mut smtp_rx,
         MockMessage::new(
-            "<jdoe@example.com>",
+            "<jdoe@{{alias_domain}}>",
             ["<jane@remote.org>"],
             "@Attached you'll find",
         ),
@@ -423,10 +423,10 @@ pub async fn test(test: &TestServer) {
     smtp_settings.lock().do_stop = true;
     lmtp.ingest(
         "bill@remote.org",
-        &["jdoe@example.com"],
+        &["jdoe@{{alias_domain}}"],
         concat!(
             "From: bill@remote.org\r\n",
-            "To: jdoe@example.com\r\n",
+            "To: jdoe@{{alias_domain}}\r\n",
             "Subject: Urgently I need those TPS Reports\r\n",
             "\r\n",
             "I'm going to need those TPS reports ASAP. ",
@@ -438,7 +438,7 @@ pub async fn test(test: &TestServer) {
     assert_message_delivery(
         &mut smtp_rx,
         MockMessage::new(
-            "<jdoe@example.com>",
+            "<jdoe@{{alias_domain}}>",
             ["<sms_gateway@remote.org>"],
             "@It's TPS-o-clock",
         ),

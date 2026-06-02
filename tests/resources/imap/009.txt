@@ -1,6 +1,6 @@
 From: Art Vandelay <art@vandelay.com> (Vandelay Industries)
 To: "Colleagues": "James Smythe" <james@vandelay.com>; Friends:
-    jane@example.com, =?UTF-8?Q?John_Sm=C3=AEth?= <john@example.com>;
+    jane@{{alias_domain}}, =?UTF-8?Q?John_Sm=C3=AEth?= <john@{{alias_domain}}>;
 Date: Sat, 20 Nov 2021 14:22:01 -0800
 Subject: Why not both importing AND exporting? =?utf-8?b?4pi6?=
 Content-Type: multipart/mixed; boundary="festivus";

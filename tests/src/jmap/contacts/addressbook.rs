@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -13,7 +13,7 @@ use serde_json::json;
 
 pub async fn test(test: &TestServer) {
     println!("Running AddressBook tests...");
-    let account = test.account("jdoe@example.com");
+    let account = test.account("jdoe@{{alias_domain}}");
 
     // Make sure the default address book exists
     let response = account
@@ -36,7 +36,7 @@ pub async fn test(test: &TestServer) {
     assert_eq!(
         list[0],
         json!({
-            "name": "Stalwart Address Book (jdoe@example.com)",
+            "name": "Stalwart Address Book (jdoe@{{alias_domain}})",
             "description": (),
             "sortOrder": 0,
             "isSubscribed": false,
@@ -146,7 +146,7 @@ pub async fn test(test: &TestServer) {
                 "id": addressbook_id,
             }),
             json!({
-                "name": "Stalwart Address Book (jdoe@example.com)",
+                "name": "Stalwart Address Book (jdoe@{{alias_domain}})",
                 "description": (),
                 "sortOrder": 0,
                 "isSubscribed": false,
@@ -172,7 +172,7 @@ pub async fn test(test: &TestServer) {
               },
               "emails": {
                 "0": {
-                  "address": "joe.bloggs@example.com"
+                  "address": "joe.bloggs@{{alias_domain}}"
                 }
               }
             })],

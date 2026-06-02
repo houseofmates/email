@@ -38,7 +38,7 @@
         "data": {
           "type": "TextMatch",
           "match_type": "Contains",
-          "value": "mailto:lisa@example.com",
+          "value": "mailto:lisa@{{alias_domain}}",
           "collation": "AsciiCasemap",
           "negate": false
         }

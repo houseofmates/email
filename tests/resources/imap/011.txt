@@ -12,7 +12,7 @@ prologue
 
 --foo 
 
-From: m1@example.com
+From: m1@{{alias_domain}}
 Subject: m1
 
 m1 body
@@ -20,7 +20,7 @@ m1 body
 --foo 
 X-Mime: m2 header
 
-From: m2@example.com
+From: m2@{{alias_domain}}
 Subject: m2
 
 m2 body

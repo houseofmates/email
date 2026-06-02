@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -18,12 +18,12 @@ pub async fn test(test: &TestServer) {
     for i in 0..3 {
         let mut lmtp = SmtpConnection::connect().await;
         lmtp.ingest(
-            "bill@example.com",
-            &["popper@example.com"],
+            "bill@{{alias_domain}}",
+            &["popper@{{alias_domain}}"],
             &format!(
                 concat!(
-                    "From: bill@example.com\r\n",
-                    "To: popper@example.com\r\n",
+                    "From: bill@{{alias_domain}}\r\n",
+                    "To: popper@{{alias_domain}}\r\n",
                     "Subject: TPS Report {}\r\n",
                     "X-Spam-Status: No\r\n",
                     "\r\n",
@@ -38,7 +38,7 @@ pub async fn test(test: &TestServer) {
     }
 
     // Connect to POP3
-    let account = test.account("popper@example.com");
+    let account = test.account("popper@{{alias_domain}}");
     let mut pop3 = Pop3Connection::connect().await;
 
     // Capabilities
@@ -55,11 +55,11 @@ pub async fn test(test: &TestServer) {
     // Authenticate user/pass
     pop3.send("PASS secret").await;
     pop3.assert_read(ResponseType::Err).await;
-    pop3.send("USER popper@example.com").await;
+    pop3.send("USER popper@{{alias_domain}}").await;
     pop3.assert_read(ResponseType::Ok).await;
     pop3.send("PASS wrong_secret").await;
     pop3.assert_read(ResponseType::Err).await;
-    pop3.send("USER popper@example.com").await;
+    pop3.send("USER popper@{{alias_domain}}").await;
     pop3.assert_read(ResponseType::Ok).await;
     pop3.send(&format!("PASS {}", account.secret())).await;
     pop3.assert_read(ResponseType::Ok).await;

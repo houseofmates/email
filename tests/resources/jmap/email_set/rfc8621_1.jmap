@@ -13,7 +13,7 @@
   "from": [
     {
       "name": "Joe Bloggs",
-      "email": "joe@example.com"
+      "email": "joe@{{alias_domain}}"
     }
   ],
   "subject": "World domination",
@@ -29,7 +29,7 @@
       },
       {
         "name": "From",
-        "value": " \"Joe Bloggs\" <joe@example.com>"
+        "value": " \"Joe Bloggs\" <joe@{{alias_domain}}>"
       },
       {
         "name": "Message-ID",
@@ -81,7 +81,7 @@
         },
         {
           "name": "From",
-          "value": " \"Joe Bloggs\" <joe@example.com>"
+          "value": " \"Joe Bloggs\" <joe@{{alias_domain}}>"
         },
         {
           "name": "Message-ID",
@@ -127,7 +127,7 @@
         },
         {
           "name": "From",
-          "value": " \"Joe Bloggs\" <joe@example.com>"
+          "value": " \"Joe Bloggs\" <joe@{{alias_domain}}>"
         },
         {
           "name": "Message-ID",

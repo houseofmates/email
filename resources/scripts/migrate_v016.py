@@ -13,7 +13,7 @@ Two modes:
                                everything else, one op per line, in load order.
 
 Usage:
-    python migrate_v016.py dump --url https://mail.example.com \
+    python migrate_v016.py dump --url https://mail.{{alias_domain}} \
         --username admin --password s3cret \
         --settings settings.json --principals principals.json
 
@@ -2099,7 +2099,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     d = sub.add_parser("dump", help="Dump settings and principals to JSON files.")
     d.add_argument("--url", required=True,
-                   help="Base URL of the Stalwart server, e.g. https://mail.example.com")
+                   help="Base URL of the Stalwart server, e.g. https://mail.{{alias_domain}}")
     d.add_argument("--token", help="Bearer token.")
     d.add_argument("--username", help="Admin username for HTTP Basic auth.")
     d.add_argument("--password", help="Admin password for HTTP Basic auth.")

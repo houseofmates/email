@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -40,7 +40,7 @@ async fn sign_and_seal() {
     let admin = test.account("admin");
     let domain_id = admin
         .registry_create_object(Domain {
-            name: "example.com".into(),
+            name: "{{alias_domain}}".into(),
             certificate_management: CertificateManagement::Manual,
             dns_management: DnsManagement::Manual,
             dkim_management: DkimManagement::Manual,
@@ -74,7 +74,7 @@ async fn sign_and_seal() {
                 ..Default::default()
             },
             dkim_sign_domain: Expression {
-                else_: "'example.com'".into(),
+                else_: "'{{alias_domain}}'".into(),
                 ..Default::default()
             },
             dkim_verify: Expression {
@@ -90,12 +90,12 @@ async fn sign_and_seal() {
 
     // Add SPF, DKIM and DMARC records
     test.server.txt_add(
-        "mx.example.com",
+        "mx.{{alias_domain}}",
         Spf::parse(b"v=spf1 ip4:10.0.0.1 ip4:10.0.0.2 -all").unwrap(),
         Instant::now() + Duration::from_secs(5),
     );
     test.server.txt_add(
-        "example.com",
+        "{{alias_domain}}",
         Spf::parse(b"v=spf1 ip4:10.0.0.1 -all").unwrap(),
         Instant::now() + Duration::from_secs(5),
     );
@@ -131,11 +131,11 @@ async fn sign_and_seal() {
     let mut session = test.new_mta_session();
     session.data.remote_ip_str = "10.0.0.2".into();
     session.eval_session_params().await;
-    session.ehlo("mx.example.com").await;
+    session.ehlo("mx.{{alias_domain}}").await;
     session
         .send_message(
             "bill@foobar.org",
-            &["jdoe@example.com"],
+            &["jdoe@{{alias_domain}}"],
             "test:no_dkim",
             "250",
         )
@@ -145,12 +145,12 @@ async fn sign_and_seal() {
         .read_lines(&test)
         .await
         .assert_contains(
-            "DKIM-Signature: v=1; a=rsa-sha256; s=rsa; d=example.com; c=simple/relaxed;",
+            "DKIM-Signature: v=1; a=rsa-sha256; s=rsa; d={{alias_domain}}; c=simple/relaxed;",
         );
 
     // Test ARC verify
     session
-        .send_message("bill@foobar.org", &["jdoe@example.com"], "test:arc", "250")
+        .send_message("bill@foobar.org", &["jdoe@{{alias_domain}}"], "test:arc", "250")
         .await;
     test.expect_message().await;
 
@@ -159,22 +159,22 @@ async fn sign_and_seal() {
 
     .read_lines(&test)
         .await
-        .assert_contains("ARC-Seal: i=3; a=ed25519-sha256; s=ed; d=example.com; cv=pass;")
+        .assert_contains("ARC-Seal: i=3; a=ed25519-sha256; s=ed; d={{alias_domain}}; cv=pass;")
         .assert_contains(
-            "ARC-Message-Signature: i=3; a=ed25519-sha256; s=ed; d=example.com; c=relaxed/simple;",
+            "ARC-Message-Signature: i=3; a=ed25519-sha256; s=ed; d={{alias_domain}}; c=relaxed/simple;",
         );
 
     // Test ARC sealing of a DKIM signed message
     session
-        .send_message("bill@foobar.org", &["jdoe@example.com"], "test:dkim", "250")
+        .send_message("bill@foobar.org", &["jdoe@{{alias_domain}}"], "test:dkim", "250")
         .await;
     test.expect_message()
         .await
         .read_lines(&test)
         .await
-        .assert_contains("ARC-Seal: i=1; a=ed25519-sha256; s=ed; d=example.com; cv=none;")
+        .assert_contains("ARC-Seal: i=1; a=ed25519-sha256; s=ed; d={{alias_domain}}; cv=none;")
         .assert_contains(
-            "ARC-Message-Signature: i=1; a=ed25519-sha256; s=ed; d=example.com; c=relaxed/simple;",
+            "ARC-Message-Signature: i=1; a=ed25519-sha256; s=ed; d={{alias_domain}}; c=relaxed/simple;",
         );*/
 }
 

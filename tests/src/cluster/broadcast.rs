@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -69,7 +69,7 @@ pub async fn cluster_tests() {
     admin.mta_no_auth().await;
     let account = admin
         .create_user_account(
-            "jdoe@example.com",
+            "jdoe@{{alias_domain}}",
             "this is john's secret",
             "John's account",
             &[],
@@ -133,7 +133,7 @@ pub async fn cluster_tests() {
     for node_id in 1..NUM_NODES {
         let test = TestServerBuilder::new_with_role(
             &format!("cluster_test_{node_id}"),
-            format!("mail-{node_id}.example.com"),
+            format!("mail-{node_id}.{{alias_domain}}"),
             Some(format!("role_{node_id}")),
             false,
         )
@@ -199,8 +199,8 @@ pub async fn cluster_tests() {
     );
 
     // Run IMAP idle tests across nodes
-    let mut node1_client = imap_client("jdoe@example.com", "this is john's secret", 1).await;
-    let mut node2_client = imap_client("jdoe@example.com", "this is john's secret", 2).await;
+    let mut node1_client = imap_client("jdoe@{{alias_domain}}", "this is john's secret", 1).await;
+    let mut node2_client = imap_client("jdoe@{{alias_domain}}", "this is john's secret", 2).await;
     idle::test(&mut node1_client, &mut node2_client, true).await;
 }
 

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -18,7 +18,7 @@ pub async fn test(test: &TestServer) {
 
     // Create test account
     let server = test.server.clone();
-    let account = test.account("jdoe@example.com");
+    let account = test.account("jdoe@{{alias_domain}}");
     let client = account.jmap_client().await;
 
     // Start mock SMTP server
@@ -45,10 +45,10 @@ pub async fn test(test: &TestServer) {
     // Send a message
     lmtp.ingest(
         "bill@remote.org",
-        &["jdoe@example.com"],
+        &["jdoe@{{alias_domain}}"],
         concat!(
             "From: bill@remote.org\r\n",
-            "To: jdoe@example.com\r\n",
+            "To: jdoe@{{alias_domain}}\r\n",
             "Subject: TPS Report\r\n",
             "\r\n",
             "I'm going to need those TPS reports ASAP. ",
@@ -60,7 +60,7 @@ pub async fn test(test: &TestServer) {
     // Await vacation response
     assert_message_delivery(
         &mut smtp_rx,
-        MockMessage::new("<jdoe@example.com>", ["<bill@remote.org>"], "@Kokomo"),
+        MockMessage::new("<jdoe@{{alias_domain}}>", ["<bill@remote.org>"], "@Kokomo"),
     )
     .await;
 
@@ -68,10 +68,10 @@ pub async fn test(test: &TestServer) {
     // trigger a vacation response
     lmtp.ingest(
         "bill@remote.org",
-        &["jdoe@example.com"],
+        &["jdoe@{{alias_domain}}"],
         concat!(
             "From: bill@remote.org\r\n",
-            "To: jdoe@example.com\r\n",
+            "To: jdoe@{{alias_domain}}\r\n",
             "Subject: TPS Report -- friendly reminder\r\n",
             "\r\n",
             "Listen, are you gonna have those TPS reports for us this afternoon?",
@@ -85,10 +85,10 @@ pub async fn test(test: &TestServer) {
     // trigger a vacation response
     lmtp.ingest(
         "MAILER-DAEMON@remote.org",
-        &["jdoe@example.com"],
+        &["jdoe@{{alias_domain}}"],
         concat!(
-            "From: MAILER-DAEMON@example.com\r\n",
-            "To: jdoe@example.com\r\n",
+            "From: MAILER-DAEMON@{{alias_domain}}\r\n",
+            "To: jdoe@{{alias_domain}}\r\n",
             "Subject: Delivery Failure\r\n",
             "\r\n",
             "I tried so hard and got so far but in the end it wasn't delivered.",
@@ -110,10 +110,10 @@ pub async fn test(test: &TestServer) {
         .unwrap();
     lmtp.ingest(
         "jane_smith@remote.org",
-        &["jdoe@example.com"],
+        &["jdoe@{{alias_domain}}"],
         concat!(
             "From: jane_smith@remote.org\r\n",
-            "To: jdoe@example.com\r\n",
+            "To: jdoe@{{alias_domain}}\r\n",
             "Subject: When were you going on holidays?\r\n",
             "\r\n",
             "I'm asking because Bill really wants those TPS reports.",
@@ -135,10 +135,10 @@ pub async fn test(test: &TestServer) {
     smtp_settings.lock().do_stop = true;
     lmtp.ingest(
         "jane_smith@remote.org",
-        &["jdoe@example.com"],
+        &["jdoe@{{alias_domain}}"],
         concat!(
             "From: jane_smith@remote.org\r\n",
-            "To: jdoe@example.com\r\n",
+            "To: jdoe@{{alias_domain}}\r\n",
             "Subject: When were you going on holidays?\r\n",
             "\r\n",
             "I'm asking because Bill really wants those TPS reports.",
@@ -149,7 +149,7 @@ pub async fn test(test: &TestServer) {
 
     assert_message_delivery(
         &mut smtp_rx,
-        MockMessage::new("<jdoe@example.com>", ["<jane_smith@remote.org>"], "@Kokomo"),
+        MockMessage::new("<jdoe@{{alias_domain}}>", ["<jane_smith@remote.org>"], "@Kokomo"),
     )
     .await;
 

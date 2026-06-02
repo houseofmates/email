@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -53,33 +53,33 @@ pub async fn webdav_tests() {
         .await;
 
     // Create admin account
-    let admin = test.create_admin_account("admin@example.com").await;
+    let admin = test.create_admin_account("admin@{{alias_domain}}").await;
 
     // Create test users
     for (name, secret, description, aliases) in [
         (
-            "john@example.com",
+            "john@{{alias_domain}}",
             "secret2 + some more text",
             "John Doe",
-            &["jdoe@example.com"],
+            &["jdoe@{{alias_domain}}"],
         ),
         (
-            "jane@example.com",
+            "jane@{{alias_domain}}",
             "secret3 + some more text",
             "Jane Doe-Smith",
-            &["jane.smith@example.com"],
+            &["jane.smith@{{alias_domain}}"],
         ),
         (
-            "bill@example.com",
+            "bill@{{alias_domain}}",
             "secret4 + some more text",
             "Bill Foobar",
-            &["bill@example.com"],
+            &["bill@{{alias_domain}}"],
         ),
         (
-            "mike@example.com",
+            "mike@{{alias_domain}}",
             "secret5 + some more text",
             "Mike Noquota",
-            &["mike@example.com"],
+            &["mike@{{alias_domain}}"],
         ),
     ] {
         let account = admin
@@ -96,7 +96,7 @@ pub async fn webdav_tests() {
                 ],
             )
             .await;
-        if name == "mike@example.com" {
+        if name == "mike@{{alias_domain}}" {
             admin
                 .registry_update_object(
                     ObjectType::Account,
@@ -114,16 +114,16 @@ pub async fn webdav_tests() {
     // Create test group
     test.insert_account(
         admin
-            .create_group_account("support@example.com", "Support Group", &[])
+            .create_group_account("support@{{alias_domain}}", "Support Group", &[])
             .await,
     );
 
     // Add Jane to the Support group
-    let support_id = test.account("support@example.com").id();
+    let support_id = test.account("support@{{alias_domain}}").id();
     admin
         .registry_update_object(
             ObjectType::Account,
-            test.account("jane@example.com").id(),
+            test.account("jane@{{alias_domain}}").id(),
             json!({
                 "memberGroupIds": { support_id: true },
             }),
@@ -242,7 +242,7 @@ END:VCARD
 "#;
 
 pub const TEST_ICAL_1: &str = r#"BEGIN:VCALENDAR
-SOURCE;VALUE=URI:http://calendar.example.com/event_with_html.ics
+SOURCE;VALUE=URI:http://calendar.{{alias_domain}}/event_with_html.ics
 X-TEST:SEQ1
 BEGIN:VEVENT
 UID: 2371c2d9-a136-43b0-bba3-f6ab249ad46e

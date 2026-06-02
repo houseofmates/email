@@ -18,15 +18,15 @@ BODY (
          "message" NIL NIL NIL NIL NIL 42 (
             NIL "m1" (
                (
-                  NIL NIL "m1" "example.com"
+                  NIL NIL "m1" "{{alias_domain}}"
                )
             ) (
                (
-                  NIL NIL "m1" "example.com"
+                  NIL NIL "m1" "{{alias_domain}}"
                )
             ) (
                (
-                  NIL NIL "m1" "example.com"
+                  NIL NIL "m1" "{{alias_domain}}"
                )
             ) NIL NIL NIL NIL NIL
          ) (
@@ -38,15 +38,15 @@ BODY (
          "message" NIL NIL NIL NIL NIL 42 (
             NIL "m2" (
                (
-                  NIL NIL "m2" "example.com"
+                  NIL NIL "m2" "{{alias_domain}}"
                )
             ) (
                (
-                  NIL NIL "m2" "example.com"
+                  NIL NIL "m2" "{{alias_domain}}"
                )
             ) (
                (
-                  NIL NIL "m2" "example.com"
+                  NIL NIL "m2" "{{alias_domain}}"
                )
             ) NIL NIL NIL NIL NIL
          ) (
@@ -78,15 +78,15 @@ BODYSTRUCTURE (
          "message" NIL NIL NIL NIL NIL 42 (
             NIL "m1" (
                (
-                  NIL NIL "m1" "example.com"
+                  NIL NIL "m1" "{{alias_domain}}"
                )
             ) (
                (
-                  NIL NIL "m1" "example.com"
+                  NIL NIL "m1" "{{alias_domain}}"
                )
             ) (
                (
-                  NIL NIL "m1" "example.com"
+                  NIL NIL "m1" "{{alias_domain}}"
                )
             ) NIL NIL NIL NIL NIL
          ) (
@@ -98,15 +98,15 @@ BODYSTRUCTURE (
          "message" NIL NIL NIL NIL NIL 42 (
             NIL "m2" (
                (
-                  NIL NIL "m2" "example.com"
+                  NIL NIL "m2" "{{alias_domain}}"
                )
             ) (
                (
-                  NIL NIL "m2" "example.com"
+                  NIL NIL "m2" "{{alias_domain}}"
                )
             ) (
                (
-                  NIL NIL "m2" "example.com"
+                  NIL NIL "m2" "{{alias_domain}}"
                )
             ) NIL NIL NIL NIL NIL
          ) (
@@ -135,7 +135,7 @@ prologue
 
 --foo 
 
-From: m1@example.com
+From: m1@{{alias_domain}}
 Subject: m1
 
 m1 body
@@ -143,7 +143,7 @@ m1 body
 --foo 
 X-Mime: m2 header
 
-From: m2@example.com
+From: m2@{{alias_domain}}
 Subject: m2
 
 m2 body
@@ -162,7 +162,7 @@ prologue
 
 --foo 
 
-From: m1@example.com
+From: m1@{{alias_domain}}
 Subject: m1
 
 m1 body
@@ -170,7 +170,7 @@ m1 body
 --foo 
 X-Mime: m2 header
 
-From: m2@example.com
+From: m2@{{alias_domain}}
 Subject: m2
 
 m2 body
@@ -196,7 +196,7 @@ prologue
 
 --foo 
 
-From: m1@example.com
+From: m1@{{alias_domain}}
 Subject: m1
 
 m1 body
@@ -204,7 +204,7 @@ m1 body
 --foo 
 X-Mime: m2 header
 
-From: m2@example.com
+From: m2@{{alias_domain}}
 Subject: m2
 
 m2 body
@@ -229,7 +229,7 @@ prologue
 
 --foo 
 
-From: m1@example.com
+From: m1@{{alias_domain}}
 Subject: m1
 
 m1 body
@@ -237,7 +237,7 @@ m1 body
 --foo 
 X-Mime: m2 header
 
-From: m2@example.com
+From: m2@{{alias_domain}}
 Subject: m2
 
 m2 body
@@ -256,7 +256,7 @@ prologue
 
 --foo 
 
-From: m1@example.com
+From: m1@{{alias_domain}}
 Subject: m1
 
 m1 body
@@ -264,7 +264,7 @@ m1 body
 --foo 
 X-Mime: m2 header
 
-From: m2@example.com
+From: m2@{{alias_domain}}
 Subject: m2
 
 m2 body
@@ -285,7 +285,7 @@ prologue
 
 --foo 
 
-From: m1@example.com
+From: m1@{{alias_domain}}
 Subject: m1
 
 m1 body
@@ -293,7 +293,7 @@ m1 body
 --foo 
 X-Mime: m2 header
 
-From: m2@example.com
+From: m2@{{alias_domain}}
 Subject: m2
 
 m2 body
@@ -306,13 +306,13 @@ Content-Type: message/rfc822
 
 ----------------------------------
 BODY[1.1] {42}
-From: m1@example.com
+From: m1@{{alias_domain}}
 Subject: m1
 
 m1 body
 
 BINARY[1.1] {42}
-From: m1@example.com
+From: m1@{{alias_domain}}
 Subject: m1
 
 m1 body
@@ -320,7 +320,7 @@ m1 body
 BINARY.SIZE[1.1] 42
 ----------------------------------
 BODY[1.1.HEADER] {34}
-From: m1@example.com
+From: m1@{{alias_domain}}
 Subject: m1
 
 
@@ -342,13 +342,13 @@ m1 body
 BINARY.SIZE[1.1.1] 8
 ----------------------------------
 BODY[1.2] {42}
-From: m2@example.com
+From: m2@{{alias_domain}}
 Subject: m2
 
 m2 body
 
 BINARY[1.2] {42}
-From: m2@example.com
+From: m2@{{alias_domain}}
 Subject: m2
 
 m2 body
@@ -356,7 +356,7 @@ m2 body
 BINARY.SIZE[1.2] 42
 ----------------------------------
 BODY[1.2.HEADER] {34}
-From: m2@example.com
+From: m2@{{alias_domain}}
 Subject: m2
 
 

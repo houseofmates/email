@@ -1,5 +1,5 @@
-From: Hendrik <hendrik@example.com>
-To: Harrie <harrie@example.com>
+From: Hendrik <hendrik@{{alias_domain}}>
+To: Harrie <harrie@{{alias_domain}}>
 Date: Sat, 11 Oct 2010 00:31:44 +0200
 Subject: One Two Three Four
 Content-Type: multipart/mixed; boundary=AA

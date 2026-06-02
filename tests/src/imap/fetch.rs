@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -41,8 +41,8 @@ pub async fn test(imap: &mut ImapConnection, _imap_check: &mut ImapConnection) {
             "((NIL NIL \"Colleagues\" NIL)",
             "(\"James Smythe\" NIL \"james\" \"vandelay.com\")",
             "(NIL NIL NIL NIL)(NIL NIL \"Friends\" NIL)",
-            "(NIL NIL \"jane\" \"example.com\")",
-            "(\"John Smîth\" NIL \"john\" \"example.com\")",
+            "(NIL NIL \"jane\" \"{{alias_domain}}\")",
+            "(\"John Smîth\" NIL \"john\" \"{{alias_domain}}\")",
             "(NIL NIL NIL NIL)) NIL NIL NIL NIL)"
         ))
         .assert_contains(concat!(

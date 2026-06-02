@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -13,7 +13,7 @@ use serde_json::json;
 
 pub async fn test(test: &TestServer) {
     println!("Running Calendar tests...");
-    let account = test.account("jdoe@example.com");
+    let account = test.account("jdoe@{{alias_domain}}");
 
     // Make sure the default calendar exists
     let response = account
@@ -43,7 +43,7 @@ pub async fn test(test: &TestServer) {
         list[0],
         json!({
             "id": default_calendar_id,
-            "name": "Stalwart Calendar (jdoe@example.com)",
+            "name": "Stalwart Calendar (jdoe@{{alias_domain}})",
             "description": null,
             "sortOrder": 0,
             "isSubscribed": false,
@@ -308,7 +308,7 @@ pub async fn test(test: &TestServer) {
     }));
     response.list()[1].assert_is_equal(json!({
         "id": default_calendar_id,
-        "name": "Stalwart Calendar (jdoe@example.com)",
+        "name": "Stalwart Calendar (jdoe@{{alias_domain}})",
         "description": (),
         "sortOrder": 0,
         "isSubscribed": false,

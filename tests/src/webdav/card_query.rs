@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -12,11 +12,11 @@ use hyper::StatusCode;
 
 pub async fn test(test: &TestServer) {
     println!("Running REPORT addressbook-query tests...");
-    let client = test.account("john@example.com").webdav_client();
+    let client = test.account("john@{{alias_domain}}").webdav_client();
 
     // Create test data
     let default_path = format!(
-        "{}/john%40example.com/default/",
+        "{}/john%40{{alias_domain}}/default/",
         DavResourceName::Card.base_path()
     );
     let mut hrefs = Vec::with_capacity(3);
@@ -235,8 +235,8 @@ NICKNAME:Sadie
 GENDER:F
 BDAY:19850415
 ANNIVERSARY:20100610
-EMAIL;TYPE=work:sarah.johnson@example.com
-EMAIL;TYPE=home,pref:sarahjpersonal@example.com
+EMAIL;TYPE=work:sarah.johnson@{{alias_domain}}
+EMAIL;TYPE=home,pref:sarahjpersonal@{{alias_domain}}
 TEL;TYPE=cell,voice,pref:+1-555-123-4567
 TEL;TYPE=work,voice:+1-555-987-6543
 TEL;TYPE=home,voice:+1-555-456-7890
@@ -246,9 +246,9 @@ ORG:Acme Technologies Inc.;Research Department
 TITLE:Senior Research Scientist
 ROLE:Team Lead
 CATEGORIES:Work,Research,VIP
-URL;TYPE=work:https://www.example.com/staff/sjohnson
-URL;TYPE=home:https://www.sarahjohnson.example.com
-KEY;TYPE=PGP:https://pgp.example.com/pks/lookup?op=get&search=sarah.johnson@example.com
+URL;TYPE=work:https://www.{{alias_domain}}/staff/sjohnson
+URL;TYPE=home:https://www.sarahjohnson.{{alias_domain}}
+KEY;TYPE=PGP:https://pgp.{{alias_domain}}/pks/lookup?op=get&search=sarah.johnson@{{alias_domain}}
 NOTE:Sarah prefers video calls over phone calls. Available Mon-Thu 9-5 EST.
 LANG;TYPE=work;PREF=1:en
 LANG;TYPE=work;PREF=2:fr
@@ -282,7 +282,7 @@ CATEGORIES:Marketing,Management,International
 URL;TYPE=work:https://www.example-corp.com/team/carlos
 URL;TYPE=home:https://www.carlosrodriguez.example
 URL;TYPE=social:https://linkedin.com/in/carlosrodriguezm
-KEY;TYPE=PGP:https://pgp.example.com/pks/lookup?op=get&search=carlos.rodriguez@example-corp.com
+KEY;TYPE=PGP:https://pgp.{{alias_domain}}/pks/lookup?op=get&search=carlos.rodriguez@example-corp.com
 NOTE:Carlos speaks English, Spanish, and Portuguese fluently. Prefers communication via email. Do not contact after 7PM CET.
 LANG;TYPE=work;PREF=1:es
 LANG;TYPE=work;PREF=2:en
@@ -291,7 +291,7 @@ TZ:+0100
 GEO:40.4168;-3.7038
 UID:urn:uuid:e1ee798b-3d4c-41b0-b217-b9c918e4686a
 REV:20230712T092135Z
-SOURCE:https://contacts.example.com/carlosrodriguez.vcf
+SOURCE:https://contacts.{{alias_domain}}/carlosrodriguez.vcf
 KIND:individual
 MEMBER:urn:uuid:03a0e51f-d1aa-4385-8a53-e29025acd8af
 RELATED;TYPE=friend:urn:uuid:f81d4fae-7dec-11d0-a765-00a0c91e6bf6
@@ -321,14 +321,14 @@ NOTE:Business hours: Mon-Fri 9:00-17:30 GMT. Closed on UK bank holidays. VAT
   Reg: GB123456789
 TZ:Z
 GEO:51.5074;-0.1278
-KEY;TYPE=PGP:https://pgp.example.com/pks/lookup?op=get&search=info@acme-solu
+KEY;TYPE=PGP:https://pgp.{{alias_domain}}/pks/lookup?op=get&search=info@acme-solu
  tions.example
 UID:urn:uuid:a9e95948-7b1c-46e8-bd85-c729a9e910f2
 REV:20230415T153000Z
 LANG;TYPE=WORK;PREF=1:en
 LANG;TYPE=WORK;PREF=2:de
 LANG;TYPE=WORK;PREF=3:fr
-SOURCE:https://directory.example.com/acme.vcf
+SOURCE:https://directory.{{alias_domain}}/acme.vcf
 RELATED;TYPE=CONTACT:urn:uuid:b9e93fdb-4d34-45fa-a1e2-47da0428c4a1
 RELATED;TYPE=CONTACT:urn:uuid:c8e74dfe-6b34-45fa-b1e2-47ea0428c4b2
 X-ABLabel:Company

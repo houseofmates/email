@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -15,9 +15,9 @@ use hyper::StatusCode;
 use registry::schema::structs::Action;
 
 pub async fn test(test: &TestServer, assisted_discovery: bool) {
-    let admin = test.account("admin@example.com");
-    let client = test.account("jane@example.com").webdav_client();
-    let mike_noquota = test.account("mike@example.com").webdav_client();
+    let admin = test.account("admin@{{alias_domain}}");
+    let client = test.account("jane@{{alias_domain}}").webdav_client();
+    let mike_noquota = test.account("mike@{{alias_domain}}").webdav_client();
 
     for resource_type in [
         DavResourceName::File,
@@ -25,8 +25,8 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
         DavResourceName::Card,
     ] {
         println!("Running COPY/MOVE tests ({})...", resource_type.base_path());
-        let user_base_path = format!("{}/jane%40example.com", resource_type.base_path());
-        let group_base_path = format!("{}/support%40example.com", resource_type.base_path());
+        let user_base_path = format!("{}/jane%40{{alias_domain}}", resource_type.base_path());
+        let group_base_path = format!("{}/support%40{{alias_domain}}", resource_type.base_path());
         let default_test_depth = if resource_type == DavResourceName::File {
             2
         } else {
@@ -729,7 +729,7 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
         // Test 19: Quota enforcement (on CalDAV/CardDAV items are linked, not copied therefore there is no quota increase)
         if resource_type == DavResourceName::File {
             let path = format!(
-                "{}/mike%40example.com/quota-test/",
+                "{}/mike%40{{alias_domain}}/quota-test/",
                 resource_type.base_path()
             );
             let content = resource_type.generate();
@@ -752,7 +752,7 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
                         [(
                             "destination",
                             format!(
-                                "{}/mike%40example.com/quota-test{i}",
+                                "{}/mike%40{{alias_domain}}/quota-test{i}",
                                 resource_type.base_path()
                             )
                             .as_str(),
@@ -787,7 +787,7 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
                     .request(
                         "DELETE",
                         &format!(
-                            "{}/mike%40example.com/quota-test{i}",
+                            "{}/mike%40{{alias_domain}}/quota-test{i}",
                             resource_type.base_path()
                         ),
                         "",
@@ -800,7 +800,7 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
 
     client.delete_default_containers().await;
     client
-        .delete_default_containers_by_account("support@example.com")
+        .delete_default_containers_by_account("support@{{alias_domain}}")
         .await;
     mike_noquota.delete_default_containers().await;
     test.assert_is_empty().await;
@@ -812,8 +812,8 @@ fn assert_result(response: &DavResponse, hierarchy: &[(String, String)]) {
         .hrefs()
         .into_iter()
         .filter(|h| {
-            !h.ends_with("/jane%40example.com/")
-                && !h.ends_with("/support%40example.com/")
+            !h.ends_with("/jane%40{{alias_domain}}/")
+                && !h.ends_with("/support%40{{alias_domain}}/")
                 && !h.ends_with("/default/")
         })
         .collect::<AHashSet<_>>();

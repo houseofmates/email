@@ -1,7 +1,7 @@
 # RFC6638 - Recurring Event Scheduling
 
 # Organizer invites participant to a recurring event
-> put cyrus@example.com 9263504FD3AD
+> put cyrus@{{alias_domain}} 9263504FD3AD
 BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Example Corp.//CalDAV Client//EN
@@ -31,17 +31,17 @@ DTEND;TZID=America/Montreal:20090601T160000
 RRULE:FREQ=DAILY;INTERVAL=1;COUNT=5
 TRANSP:OPAQUE
 SUMMARY:Review Internet-Draft
-ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@example.com
-ATTENDEE;CN="Cyrus Daboo";CUTYPE=INDIVIDUAL;PARTSTAT=ACCEPTED:mailto:cyrus@example.com
+ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@{{alias_domain}}
+ATTENDEE;CN="Cyrus Daboo";CUTYPE=INDIVIDUAL;PARTSTAT=ACCEPTED:mailto:cyrus@{{alias_domain}}
 ATTENDEE;CN="Bernard Desruisseaux";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=TRUE:mailto:bernard@example.net
 END:VEVENT
 END:VCALENDAR
 
 > expect
-from: cyrus@example.com
+from: cyrus@{{alias_domain}}
 to: bernard@example.net
 summary: invite
-summary.attendee: Participants([ItipParticipant { email: "cyrus@example.com", name: Some("Cyrus Daboo"), is_organizer: true }, ItipParticipant { email: "bernard@example.net", name: Some("Bernard Desruisseaux"), is_organizer: false }])
+summary.attendee: Participants([ItipParticipant { email: "cyrus@{{alias_domain}}", name: Some("Cyrus Daboo"), is_organizer: true }, ItipParticipant { email: "bernard@example.net", name: Some("Bernard Desruisseaux"), is_organizer: false }])
 summary.dtstart: Time(ItipTime { start: 1243882800, tz_id: 167 })
 summary.rrule: Rrule(ICalendarRecurrenceRule { freq: Daily, until: None, count: Some(5), interval: Some(1), bysecond: [], byminute: [], byhour: [], byday: [], bymonthday: [], byyearday: [], byweekno: [], bymonth: [], bysetpos: [], wkst: None, rscale: None, skip: None })
 summary.summary: Text("Review Internet-Draft")
@@ -58,7 +58,7 @@ ATTENDEE;CN="Bernard Desruisseaux";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;
  RSVP=TRUE;PARTSTAT=NEEDS-ACTION:mailto:bernard@example.net
 ATTENDEE;CN="Cyrus Daboo";CUTYPE=INDIVIDUAL;PARTSTAT=ACCEPTED:mailto:cyrus@e
  xample.com
-ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@example.com
+ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@{{alias_domain}}
 UID:9263504FD3AD
 RRULE:FREQ=DAILY;COUNT=5;INTERVAL=1
 DTSTAMP:0
@@ -100,7 +100,7 @@ ATTENDEE;CN="Bernard Desruisseaux";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=
  TRUE;PARTSTAT=NEEDS-ACTION:mailto:bernard@example.net
 ATTENDEE;CN="Cyrus Daboo";CUTYPE=INDIVIDUAL;PARTSTAT=ACCEPTED:mailto:cyrus@e
  xample.com
-ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@example.com
+ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@{{alias_domain}}
 UID:9263504FD3AD
 RRULE:FREQ=DAILY;COUNT=5;INTERVAL=1
 DTSTAMP:0
@@ -156,8 +156,8 @@ DTEND;TZID=America/Montreal:20090601T160000
 RRULE:FREQ=DAILY;INTERVAL=1;COUNT=5
 TRANSP:OPAQUE
 SUMMARY:Review Internet-Draft
-ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@example.com
-ATTENDEE;CN="Cyrus Daboo";CUTYPE=INDIVIDUAL;PARTSTAT=ACCEPTED:mailto:cyrus@example.com
+ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@{{alias_domain}}
+ATTENDEE;CN="Cyrus Daboo";CUTYPE=INDIVIDUAL;PARTSTAT=ACCEPTED:mailto:cyrus@{{alias_domain}}
 ATTENDEE;CN="Bernard Desruisseaux";CUTYPE=INDIVIDUAL;PARTSTAT=ACCEPTED;ROLE=REQ-PARTICIPANT;RSVP=TRUE:mailto:bernard@example.net
 END:VEVENT
 BEGIN:VEVENT
@@ -169,17 +169,17 @@ DTSTART;TZID=America/Montreal:20090602T150000
 DTEND;TZID=America/Montreal:20090602T160000
 TRANSP:TRANSPARENT
 SUMMARY:Review Internet-Draft
-ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@example.com
-ATTENDEE;CN="Cyrus Daboo";CUTYPE=INDIVIDUAL;PARTSTAT=ACCEPTED:mailto:cyrus@example.com
+ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@{{alias_domain}}
+ATTENDEE;CN="Cyrus Daboo";CUTYPE=INDIVIDUAL;PARTSTAT=ACCEPTED:mailto:cyrus@{{alias_domain}}
 ATTENDEE;CN="Bernard Desruisseaux";CUTYPE=INDIVIDUAL;PARTSTAT=DECLINED;ROLE=REQ-PARTICIPANT;RSVP=TRUE:mailto:bernard@example.net
 END:VEVENT
 END:VCALENDAR
 
 > expect
 from: bernard@example.net
-to: cyrus@example.com
+to: cyrus@{{alias_domain}}
 summary: rsvp ACCEPTED
-summary.attendee: Participants([ItipParticipant { email: "cyrus@example.com", name: Some("Cyrus Daboo"), is_organizer: true }, ItipParticipant { email: "bernard@example.net", name: Some("Bernard Desruisseaux"), is_organizer: false }])
+summary.attendee: Participants([ItipParticipant { email: "cyrus@{{alias_domain}}", name: Some("Cyrus Daboo"), is_organizer: true }, ItipParticipant { email: "bernard@example.net", name: Some("Bernard Desruisseaux"), is_organizer: false }])
 summary.dtstart: Time(ItipTime { start: 1243882800, tz_id: 167 })
 summary.rrule: Rrule(ICalendarRecurrenceRule { freq: Daily, until: None, count: Some(5), interval: Some(1), bysecond: [], byminute: [], byhour: [], byday: [], bymonthday: [], byyearday: [], byweekno: [], bymonth: [], bysetpos: [], wkst: None, rscale: None, skip: None })
 summary.summary: Text("Review Internet-Draft")
@@ -193,7 +193,7 @@ DTEND;TZID=America/Montreal:20090601T160000
 DTSTART;TZID=America/Montreal:20090601T150000
 ATTENDEE;CN="Bernard Desruisseaux";CUTYPE=INDIVIDUAL;PARTSTAT=ACCEPTED;
  ROLE=REQ-PARTICIPANT;RSVP=TRUE:mailto:bernard@example.net
-ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@example.com
+ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@{{alias_domain}}
 UID:9263504FD3AD
 DTSTAMP:0
 SEQUENCE:1
@@ -205,7 +205,7 @@ DTEND;TZID=America/Montreal:20090602T160000
 DTSTART;TZID=America/Montreal:20090602T150000
 ATTENDEE;CN="Bernard Desruisseaux";CUTYPE=INDIVIDUAL;PARTSTAT=DECLINED;
  ROLE=REQ-PARTICIPANT;RSVP=TRUE:mailto:bernard@example.net
-ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@example.com
+ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@{{alias_domain}}
 RECURRENCE-ID;TZID=America/Montreal:20090602T150000
 UID:9263504FD3AD
 DTSTAMP:0
@@ -235,7 +235,7 @@ END:VCALENDAR
 > send
 
 # Organizer receives the response
-> get cyrus@example.com 9263504FD3AD
+> get cyrus@{{alias_domain}} 9263504FD3AD
 BEGIN:VCALENDAR
 PRODID:-//Example Corp.//CalDAV Client//EN
 VERSION:2.0
@@ -248,7 +248,7 @@ ATTENDEE;CN="Bernard Desruisseaux";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=
  TRUE;PARTSTAT=ACCEPTED;SCHEDULE-STATUS=2.0:mailto:bernard@example.net
 ATTENDEE;CN="Cyrus Daboo";CUTYPE=INDIVIDUAL;PARTSTAT=ACCEPTED:mailto:cyrus@e
  xample.com
-ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@example.com
+ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@{{alias_domain}}
 UID:9263504FD3AD
 RRULE:FREQ=DAILY;COUNT=5;INTERVAL=1
 DTSTAMP:1
@@ -257,7 +257,7 @@ END:VEVENT
 BEGIN:VEVENT
 ATTENDEE;CN="Bernard Desruisseaux";CUTYPE=INDIVIDUAL;PARTSTAT=DECLINED;ROLE=
  REQ-PARTICIPANT;RSVP=TRUE:mailto:bernard@example.net
-ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@example.com
+ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@{{alias_domain}}
 RECURRENCE-ID;TZID=America/Montreal:20090602T150000
 UID:9263504FD3AD
 DTSTAMP:0
@@ -314,8 +314,8 @@ RRULE:FREQ=DAILY;INTERVAL=1;COUNT=5
 EXDATE;TZID=America/Montreal:20090603T150000
 TRANSP:OPAQUE
 SUMMARY:Review Internet-Draft
-ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@example.com
-ATTENDEE;CN="Cyrus Daboo";CUTYPE=INDIVIDUAL;PARTSTAT=ACCEPTED:mailto:cyrus@example.com
+ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@{{alias_domain}}
+ATTENDEE;CN="Cyrus Daboo";CUTYPE=INDIVIDUAL;PARTSTAT=ACCEPTED:mailto:cyrus@{{alias_domain}}
 ATTENDEE;CN="Bernard Desruisseaux";CUTYPE=INDIVIDUAL;PARTSTAT=ACCEPTED;ROLE=REQ-PARTICIPANT;RSVP=TRUE:mailto:bernard@example.net
 END:VEVENT
 BEGIN:VEVENT
@@ -327,17 +327,17 @@ DTSTART;TZID=America/Montreal:20090602T150000
 DTEND;TZID=America/Montreal:20090602T160000
 TRANSP:TRANSPARENT
 SUMMARY:Review Internet-Draft
-ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@example.com
-ATTENDEE;CN="Cyrus Daboo";CUTYPE=INDIVIDUAL;PARTSTAT=ACCEPTED:mailto:cyrus@example.com
+ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@{{alias_domain}}
+ATTENDEE;CN="Cyrus Daboo";CUTYPE=INDIVIDUAL;PARTSTAT=ACCEPTED:mailto:cyrus@{{alias_domain}}
 ATTENDEE;CN="Bernard Desruisseaux";CUTYPE=INDIVIDUAL;PARTSTAT=DECLINED;ROLE=REQ-PARTICIPANT;RSVP=TRUE:mailto:bernard@example.net
 END:VEVENT
 END:VCALENDAR
 
 > expect
 from: bernard@example.net
-to: cyrus@example.com
+to: cyrus@{{alias_domain}}
 summary: rsvp DECLINED
-summary.attendee: Participants([ItipParticipant { email: "cyrus@example.com", name: Some("Cyrus Daboo"), is_organizer: true }, ItipParticipant { email: "bernard@example.net", name: Some("Bernard Desruisseaux"), is_organizer: false }])
+summary.attendee: Participants([ItipParticipant { email: "cyrus@{{alias_domain}}", name: Some("Cyrus Daboo"), is_organizer: true }, ItipParticipant { email: "bernard@example.net", name: Some("Bernard Desruisseaux"), is_organizer: false }])
 summary.dtstart: Time(ItipTime { start: 1243882800, tz_id: 167 })
 summary.rrule: Rrule(ICalendarRecurrenceRule { freq: Daily, until: None, count: Some(5), interval: Some(1), bysecond: [], byminute: [], byhour: [], byday: [], bymonthday: [], byyearday: [], byweekno: [], bymonth: [], bysetpos: [], wkst: None, rscale: None, skip: None })
 summary.summary: Text("Review Internet-Draft")
@@ -350,7 +350,7 @@ SUMMARY:Review Internet-Draft
 DTEND;TZID=America/Montreal:20090601T160000
 DTSTART;TZID=America/Montreal:20090601T150000
 ATTENDEE;PARTSTAT=DECLINED:mailto:bernard@example.net
-ORGANIZER:mailto:cyrus@example.com
+ORGANIZER:mailto:cyrus@{{alias_domain}}
 RECURRENCE-ID;TZID=America/Montreal:20090603T150000
 UID:9263504FD3AD
 DTSTAMP:0
@@ -379,13 +379,13 @@ END:VCALENDAR
 > send
 
 # Organizer receives the response
-> get cyrus@example.com 9263504FD3AD
+> get cyrus@{{alias_domain}} 9263504FD3AD
 BEGIN:VCALENDAR
 PRODID:-//Example Corp.//CalDAV Client//EN
 VERSION:2.0
 BEGIN:VEVENT
 ATTENDEE;PARTSTAT=DECLINED:mailto:bernard@example.net
-ORGANIZER:mailto:cyrus@example.com
+ORGANIZER:mailto:cyrus@{{alias_domain}}
 RECURRENCE-ID;TZID=America/Montreal:20090603T150000
 UID:9263504FD3AD
 DTSTAMP:0
@@ -400,7 +400,7 @@ ATTENDEE;CN="Bernard Desruisseaux";CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;RSVP=
  TRUE;PARTSTAT=ACCEPTED;SCHEDULE-STATUS=2.0:mailto:bernard@example.net
 ATTENDEE;CN="Cyrus Daboo";CUTYPE=INDIVIDUAL;PARTSTAT=ACCEPTED:mailto:cyrus@e
  xample.com
-ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@example.com
+ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@{{alias_domain}}
 UID:9263504FD3AD
 RRULE:FREQ=DAILY;COUNT=5;INTERVAL=1
 DTSTAMP:1
@@ -409,7 +409,7 @@ END:VEVENT
 BEGIN:VEVENT
 ATTENDEE;CN="Bernard Desruisseaux";CUTYPE=INDIVIDUAL;PARTSTAT=DECLINED;ROLE=
  REQ-PARTICIPANT;RSVP=TRUE:mailto:bernard@example.net
-ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@example.com
+ORGANIZER;CN="Cyrus Daboo":mailto:cyrus@{{alias_domain}}
 RECURRENCE-ID;TZID=America/Montreal:20090602T150000
 UID:9263504FD3AD
 DTSTAMP:0

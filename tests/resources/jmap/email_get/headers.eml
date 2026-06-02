@@ -1,7 +1,7 @@
 From: Art Vandelay <art@vandelay.com> (Vandelay Industries)
-To: "  James Smythe" <james@example.com>, Friends:
-      jane@example.com, =?UTF-8?Q?John_Sm=C3=AEth?=
-      <john@example.com>;
+To: "  James Smythe" <james@{{alias_domain}}>, Friends:
+      jane@{{alias_domain}}, =?UTF-8?Q?John_Sm=C3=AEth?=
+      <john@{{alias_domain}}>;
 Cc: List 1: addr1@test.com, addr2@test.com; List 2: addr3@test.com, 
        addr4@test.com; addr5@test.com, addr6@test.com
 Cc: =?utf-8?b?VGjDrXMgw61zIHbDoWzDrWQgw5pURjg=?=: addr1@test.com, 
@@ -14,7 +14,7 @@ Date: Tue, 1 Jul 2003 10:52:37 +0200
 Resent-Date: Tue, 2 Jul 2005 11:52:37 +0200
 Resent-Date: Tue, 3 Jul 2005 12:52:37 +0300
 Resent-Date: Tue, 4 Jul 2005 13:52:37 +0400
-Message-ID: <5678.21-Nov-1997@example.com>
+Message-ID: <5678.21-Nov-1997@{{alias_domain}}>
 References: <1234@local.machine.example>
             <3456@example.net>
 References: <789@local.machine.example>
@@ -57,9 +57,9 @@ X-Text: =?ISO-8859-1?Q?a?= =?ISO-8859-2?Q?_b?=
 X-Date-Single: Tue, 5 Jul 2006 13:52:37 -0500
 X-Date: Sat, 20 Nov 2021 14:22:01 -0800
 X-Date: Sun, 21 Nov 2021 15:23:02 -0900
-X-Id-Single: <myid@example.com> <myid2@example.com>
-X-Id: <myid3@example.com>
-X-Id: <myid4@example.com> <myid5@example.com>
+X-Id-Single: <myid@{{alias_domain}}> <myid2@{{alias_domain}}>
+X-Id: <myid3@{{alias_domain}}>
+X-Id: <myid4@{{alias_domain}}> <myid5@{{alias_domain}}>
 Content-Type: multipart/mixed; boundary="festivus";
 
 --festivus

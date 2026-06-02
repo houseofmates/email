@@ -18,7 +18,7 @@ mini-pc) behind a cloudflare tunnel, with your own domain.
   (see §4 — smtp/imap can't go over a plain cloudflare http tunnel).
 - a brevo account (free tier) if you want a reliable outbound relay (§5).
 
-throughout, replace `example.com` with your domain and `mail.example.com` with
+throughout, replace `{{alias_domain}}` with your domain and `mail.{{alias_domain}}` with
 the hostname you'll run the server on.
 
 ---
@@ -70,8 +70,8 @@ sudo nano /etc/email/email.env
 ```
 
 ```ini
-STALWART_HOSTNAME=mail.example.com
-STALWART_PUBLIC_URL=https://mail.example.com
+STALWART_HOSTNAME=mail.{{alias_domain}}
+STALWART_PUBLIC_URL=https://mail.{{alias_domain}}
 ```
 
 ```bash
@@ -79,7 +79,7 @@ sudo systemctl restart email
 ```
 
 everything else (domains, dkim, users, relays, encryption) is done from the
-**admin ui** at `https://mail.example.com` (or `https://192.168.1.50:443` over
+**admin ui** at `https://mail.{{alias_domain}}` (or `https://192.168.1.50:443` over
 lan), signing in with `admin` + the bootstrap password.
 
 ---
@@ -88,16 +88,16 @@ lan), signing in with `admin` + the bootstrap password.
 
 create the domain in the admin ui first (**directory → domains → add**). the ui
 generates your **dkim** record for you — copy it from
-**directory → domains → example.com → dns records**. then add these at
+**directory → domains → {{alias_domain}} → dns records**. then add these at
 cloudflare:
 
 | type | name | value | proxy |
 |---|---|---|---|
 | `A` | `mail` | your public ip (or tunnel, see §4) | dns only (grey cloud) |
-| `MX` | `@` | `10 mail.example.com` | n/a |
+| `MX` | `@` | `10 mail.{{alias_domain}}` | n/a |
 | `TXT` | `@` (spf) | `v=spf1 mx ~all` | n/a |
 | `TXT` | `<selector>._domainkey` | *(copy dkim value from admin ui)* | n/a |
-| `TXT` | `_dmarc` | `v=DMARC1; p=quarantine; rua=mailto:postmaster@example.com` | n/a |
+| `TXT` | `_dmarc` | `v=DMARC1; p=quarantine; rua=mailto:postmaster@{{alias_domain}}` | n/a |
 
 notes:
 - **mail records must be "dns only" (grey cloud)** — cloudflare's orange-cloud
@@ -108,9 +108,9 @@ notes:
 
 verify after propagation:
 ```bash
-dig +short MX example.com
-dig +short TXT example.com
-dig +short TXT <selector>._domainkey.example.com
+dig +short MX {{alias_domain}}
+dig +short TXT {{alias_domain}}
+dig +short TXT <selector>._domainkey.{{alias_domain}}
 ```
 
 ---
@@ -129,14 +129,14 @@ cloudflared tunnel create email
 tunnel: email
 credentials-file: /root/.cloudflared/<id>.json
 ingress:
-  - hostname: mail.example.com
+  - hostname: mail.{{alias_domain}}
     service: https://localhost:443
     originRequest:
       noTLSVerify: true        # stalwart serves its own cert on 443
   - service: http_status:404
 ```
 ```bash
-cloudflared tunnel route dns email mail.example.com
+cloudflared tunnel route dns email mail.{{alias_domain}}
 sudo cloudflared service install
 ```
 
@@ -209,9 +209,9 @@ enable a catch-all so **every** address at your domain lands in your mailbox,
 then invent aliases freely (and track them in the ui/extension):
 
 admin ui → **directory → your account → email addresses** → add
-`@example.com` (a bare `@domain` entry) as a catch-all alias of your account.
+`@{{alias_domain}}` (a bare `@domain` entry) as a catch-all alias of your account.
 
-now `anything@example.com` is delivered to you with zero per-alias setup — this
+now `anything@{{alias_domain}}` is delivered to you with zero per-alias setup — this
 is the simplest path to unlimited aliases, and the alias tracker stays useful
 for knowing who you handed each one to.
 
@@ -250,14 +250,14 @@ mini-pc for defense in depth.
 
 once dns + the server are up:
 
-- **mail:** imap `mail.example.com:993` (ssl), smtp submission `:587` (starttls),
-  or jmap at `https://mail.example.com/jmap/session`. the built-in web ui also
-  lives at `https://mail.example.com`.
-- **calendar (caldav):** `https://mail.example.com/dav/cal/<you@example.com>/`
-- **contacts (carddav):** `https://mail.example.com/dav/card/<you@example.com>/`
-- **files (webdav):** `https://mail.example.com/dav/file/<you@example.com>/`
+- **mail:** imap `mail.{{alias_domain}}:993` (ssl), smtp submission `:587` (starttls),
+  or jmap at `https://mail.{{alias_domain}}/jmap/session`. the built-in web ui also
+  lives at `https://mail.{{alias_domain}}`.
+- **calendar (caldav):** `https://mail.{{alias_domain}}/dav/cal/<you@{{alias_domain}}>/`
+- **contacts (carddav):** `https://mail.{{alias_domain}}/dav/card/<you@{{alias_domain}}>/`
+- **files (webdav):** `https://mail.{{alias_domain}}/dav/file/<you@{{alias_domain}}>/`
 - **passwords:** web ui → passwords, or the browser extension (point its options
-  page `api base` at `https://mail.example.com/api` and set your alias domain).
+  page `api base` at `https://mail.{{alias_domain}}/api` and set your alias domain).
 
 ios/macos accept the caldav/carddav urls directly in account settings; thunderbird
 and davx5 (android) work with the same urls + your account password.
@@ -267,7 +267,7 @@ and davx5 (android) work with the same urls + your account password.
 ## 8. health check & ops
 
 ```bash
-curl -k https://mail.example.com/healthz/live      # liveness
+curl -k https://mail.{{alias_domain}}/healthz/live      # liveness
 sudo journalctl -u email -f                        # logs
 sudo systemctl restart email                        # restart
 ```

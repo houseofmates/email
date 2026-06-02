@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -146,12 +146,12 @@ async fn dmarc() {
 
     // Add SPF, DKIM and DMARC records
     test.server.txt_add(
-        "mx.example.com",
+        "mx.{{alias_domain}}",
         Spf::parse(b"v=spf1 ip4:10.0.0.1 ip4:10.0.0.2 -all").unwrap(),
         Instant::now() + Duration::from_secs(5),
     );
     test.server.txt_add(
-        "example.com",
+        "{{alias_domain}}",
         Spf::parse(b"v=spf1 ip4:10.0.0.1 -all ra=spf-failures rr=e:f:s:n").unwrap(),
         Instant::now() + Duration::from_secs(5),
     );
@@ -161,7 +161,7 @@ async fn dmarc() {
         Instant::now() + Duration::from_secs(5),
     );
     test.server.txt_add(
-        "ed._domainkey.example.com",
+        "ed._domainkey.{{alias_domain}}",
         DomainKey::parse(
             concat!(
                 "v=DKIM1; k=ed25519; ",
@@ -173,7 +173,7 @@ async fn dmarc() {
         Instant::now() + Duration::from_secs(5),
     );
     test.server.txt_add(
-        "default._domainkey.example.com",
+        "default._domainkey.{{alias_domain}}",
         DomainKey::parse(
             concat!(
                 "v=DKIM1; t=s; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQ",
@@ -188,17 +188,17 @@ async fn dmarc() {
         Instant::now() + Duration::from_secs(5),
     );
     test.server.txt_add(
-        "_report._domainkey.example.com",
+        "_report._domainkey.{{alias_domain}}",
         DomainKeyReport::parse(b"ra=dkim-failures; rp=100; rr=d:o:p:s:u:v:x;").unwrap(),
         Instant::now() + Duration::from_secs(5),
     );
     test.server.txt_add(
-        "_dmarc.example.com",
+        "_dmarc.{{alias_domain}}",
         Dmarc::parse(
             concat!(
                 "v=DMARC1; p=reject; sp=quarantine; np=None; aspf=s; adkim=s; fo=1;",
-                "rua=mailto:dmarc-feedback@example.com;",
-                "ruf=mailto:dmarc-failures@example.com"
+                "rua=mailto:dmarc-feedback@{{alias_domain}};",
+                "ruf=mailto:dmarc-failures@{{alias_domain}}"
             )
             .as_bytes(),
         )
@@ -211,25 +211,25 @@ async fn dmarc() {
     session.data.remote_ip_str = "10.0.0.2".into();
     session.data.remote_ip = session.data.remote_ip_str.parse().unwrap();
     session.eval_session_params().await;
-    session.ehlo("mx.example.com").await;
-    session.mail_from("bill@example.com", "550 5.7.23").await;
+    session.ehlo("mx.{{alias_domain}}").await;
+    session.mail_from("bill@{{alias_domain}}", "550 5.7.23").await;
 
     // Expect SPF auth failure report
     let message = test.expect_message().await;
     assert_eq!(
         message.message.recipients.last().unwrap().address(),
-        "spf-failures@example.com"
+        "spf-failures@{{alias_domain}}"
     );
     message
         .read_lines(&test)
         .await
         .assert_contains("DKIM-Signature: v=1; a=rsa-sha256; s=rsa; d=localdomain.org;")
-        .assert_contains("To: spf-failures@example.com")
+        .assert_contains("To: spf-failures@{{alias_domain}}")
         .assert_contains("Feedback-Type: auth-failure")
         .assert_contains("Auth-Failure: spf");
 
     // Second DKIM failure report should be rate limited
-    session.mail_from("bill@example.com", "550 5.7.23").await;
+    session.mail_from("bill@{{alias_domain}}", "550 5.7.23").await;
     test.assert_no_events();
 
     // Invalid DKIM signatures should be rejected
@@ -238,7 +238,7 @@ async fn dmarc() {
     session.eval_session_params().await;
     session
         .send_message(
-            "bill@example.com",
+            "bill@{{alias_domain}}",
             &["jdoe@localdomain.org"],
             "test:invalid_dkim",
             "550 5.7.20",
@@ -249,20 +249,20 @@ async fn dmarc() {
     let message = test.expect_message().await;
     assert_eq!(
         message.message.recipients.last().unwrap().address(),
-        "dkim-failures@example.com"
+        "dkim-failures@{{alias_domain}}"
     );
     message
         .read_lines(&test)
         .await
         .assert_contains("DKIM-Signature: v=1; a=rsa-sha256; s=rsa; d=localdomain.org;")
-        .assert_contains("To: dkim-failures@example.com")
+        .assert_contains("To: dkim-failures@{{alias_domain}}")
         .assert_contains("Feedback-Type: auth-failure")
         .assert_contains("Auth-Failure: bodyhash");
 
     // Second DKIM failure report should be rate limited
     session
         .send_message(
-            "bill@example.com",
+            "bill@{{alias_domain}}",
             &["jdoe@localdomain.org"],
             "test:invalid_dkim",
             "550 5.7.20",
@@ -273,7 +273,7 @@ async fn dmarc() {
     // Invalid ARC should be rejected
     session
         .send_message(
-            "bill@example.com",
+            "bill@{{alias_domain}}",
             &["jdoe@localdomain.org"],
             "test:invalid_arc",
             "550 5.7.29",
@@ -300,20 +300,20 @@ async fn dmarc() {
     let message = test.expect_message().await;
     assert_eq!(
         message.message.recipients.last().unwrap().address(),
-        "dmarc-failures@example.com"
+        "dmarc-failures@{{alias_domain}}"
     );
     message
         .read_lines(&test)
         .await
         .assert_contains("DKIM-Signature: v=1; a=rsa-sha256; s=rsa; d=localdomain.org;")
-        .assert_contains("To: dmarc-failures@example.com")
+        .assert_contains("To: dmarc-failures@{{alias_domain}}")
         .assert_contains("Feedback-Type: auth-failure")
         .assert_contains("Auth-Failure: dmarc")
         .assert_contains("dmarc=3Dnone");
 
     // Expect DMARC aggregate report
     let report = test.read_report().await.unwrap_dmarc();
-    assert_eq!(report.domain, "example.com");
+    assert_eq!(report.domain, "{{alias_domain}}");
     assert_eq!(report.interval, AggregateFrequency::Daily);
     assert_eq!(report.dmarc_record.rua().len(), 1);
     assert_eq!(report.report_record.dmarc_spf_result(), DmarcResult::Fail);
@@ -332,7 +332,7 @@ async fn dmarc() {
     // Messages passing DMARC should be accepted
     session
         .send_message(
-            "bill@example.com",
+            "bill@{{alias_domain}}",
             &["jdoe@localdomain.org"],
             "test:dkim",
             "250",

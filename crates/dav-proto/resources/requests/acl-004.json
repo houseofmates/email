@@ -2,7 +2,7 @@
   "aces": [
     {
       "principal": {
-        "Href": "http://www.example.com/users/esedlar"
+        "Href": "http://www.{{alias_domain}}/users/esedlar"
       },
       "invert": false,
       "grant_deny": {

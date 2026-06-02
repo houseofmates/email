@@ -15,7 +15,7 @@
         "type": "DeadProperty",
         "data": {
           "name": "title",
-          "attrs": "xmlns=\"http://www.example.com/ns/\""
+          "attrs": "xmlns=\"http://www.{{alias_domain}}/ns/\""
         }
       },
       "match_": "Sales"
@@ -32,28 +32,28 @@
       "type": "DeadProperty",
       "data": {
         "name": "department",
-        "attrs": "xmlns=\"http://www.example.com/ns/\""
+        "attrs": "xmlns=\"http://www.{{alias_domain}}/ns/\""
       }
     },
     {
       "type": "DeadProperty",
       "data": {
         "name": "phone",
-        "attrs": "xmlns=\"http://www.example.com/ns/\""
+        "attrs": "xmlns=\"http://www.{{alias_domain}}/ns/\""
       }
     },
     {
       "type": "DeadProperty",
       "data": {
         "name": "office",
-        "attrs": "xmlns=\"http://www.example.com/ns/\""
+        "attrs": "xmlns=\"http://www.{{alias_domain}}/ns/\""
       }
     },
     {
       "type": "DeadProperty",
       "data": {
         "name": "salary",
-        "attrs": "xmlns=\"http://www.example.com/ns/\""
+        "attrs": "xmlns=\"http://www.{{alias_domain}}/ns/\""
       }
     }
   ],

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -19,7 +19,7 @@ pub async fn test(test: &TestServer) {
         .assert_contains("IMPLEMENTATION");
 
     // Authenticate
-    let account = test.account("jdoe@example.com");
+    let account = test.account("jdoe@{{alias_domain}}");
     sieve.authenticate(account.name(), account.secret()).await;
 
     // CheckScript

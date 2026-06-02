@@ -1,12 +1,12 @@
 expect MIME_HTML_ONLY HTML_SHORT_1
 
-Message-Id: <4.2.0.58.20000519002557.00a88870@pop.example.com>
-X-Sender: dwsauder@pop.example.com (Unverified)
+Message-Id: <4.2.0.58.20000519002557.00a88870@pop.{{alias_domain}}>
+X-Sender: dwsauder@pop.{{alias_domain}} (Unverified)
 X-Mailer: QUALCOMM Windows Eudora Pro Version 4.2.0.58 
 X-Priority: 2 (High)
 Date: Fri, 19 May 2000 00:29:55 -0400
-To: Heinz =?iso-8859-1?Q?M=FCller?= <mueller@example.com>
-From: Doug Sauder <dwsauder@example.com>
+To: Heinz =?iso-8859-1?Q?M=FCller?= <mueller@{{alias_domain}}>
+From: Doug Sauder <dwsauder@{{alias_domain}}>
 Subject: =?iso-8859-1?Q?Die_Hasen_und_die_Fr=F6sche?=
 Mime-Version: 1.0
 Content-Type: text/html; charset="iso-8859-1"
@@ -244,7 +244,7 @@ Content-Type: text/html; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 <head>
-<meta http-equiv="refresh" content="5; url=https://example.com/">
+<meta http-equiv="refresh" content="5; url=https://{{alias_domain}}/">
 </head>
 <body>
 <p>some text</p>
