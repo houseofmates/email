@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -16,7 +16,7 @@ pub async fn test(imap: &mut ImapConnection, _imap_check: &mut ImapConnection) {
     assert_eq!(
         Credentials::Bearer {
             token: "vF9dft4qmTc2Nvb3RlckBhbHRhdmlzdGEuY29tCg==".to_string(),
-            username: Some("user@example.com".to_string()),
+            username: Some("user@{{alias_domain}}".to_string()),
         },
         Credentials::decode_sasl_challenge_oauth(
             &base64_decode(
@@ -48,7 +48,7 @@ pub async fn test(imap: &mut ImapConnection, _imap_check: &mut ImapConnection) {
         .assert_contains("* ID (\"name\" \"Stalwart\" \"version\" ");
 
     // Login should be disabled
-    imap.send("LOGIN jdoe@example.com secret").await;
+    imap.send("LOGIN jdoe@{{alias_domain}} secret").await;
     imap.assert_read(Type::Tagged, ResponseType::No).await;
 
     // Try logging in with wrong password

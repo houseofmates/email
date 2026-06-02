@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -18,9 +18,9 @@ use types::TimeRange;
 
 pub async fn test(test: &TestServer) {
     println!("Running REPORT calendar-query & free-busy-query tests...");
-    let client = test.account("john@example.com").webdav_client();
+    let client = test.account("john@{{alias_domain}}").webdav_client();
     let cal_path = format!(
-        "{}/john%40example.com/default/",
+        "{}/john%40{{alias_domain}}/default/",
         DavResourceName::Cal.base_path()
     );
 
@@ -328,7 +328,7 @@ fn roundtrip_expansion(ics: &str, ignore_errors: bool) {
 
 fn rfc_file_name(num: usize) -> String {
     format!(
-        "{}/john%40example.com/default/abcd{num}.ics",
+        "{}/john%40{{alias_domain}}/default/abcd{num}.ics",
         DavResourceName::Cal.base_path()
     )
 }
@@ -394,21 +394,21 @@ DTSTART;TZID=US/Eastern:20060102T120000
 DURATION:PT1H
 RRULE:FREQ=DAILY;COUNT=5
 SUMMARY:Event #2
-UID:00959BC664CA650E933C892C@example.com
+UID:00959BC664CA650E933C892C@{{alias_domain}}
 END:VEVENT
 BEGIN:VEVENT
 DTSTART;TZID=US/Eastern:20060104T140000
 DURATION:PT1H
 RECURRENCE-ID;TZID=US/Eastern:20060104T120000
 SUMMARY:Event #2 bis
-UID:00959BC664CA650E933C892C@example.com
+UID:00959BC664CA650E933C892C@{{alias_domain}}
 END:VEVENT
 BEGIN:VEVENT
 DTSTART;TZID=US/Eastern:20060106T140000
 DURATION:PT1H
 RECURRENCE-ID;TZID=US/Eastern:20060106T120000
 SUMMARY:Event #2 bis bis
-UID:00959BC664CA650E933C892C@example.com
+UID:00959BC664CA650E933C892C@{{alias_domain}}
 END:VEVENT
 END:VCALENDAR
 "#;
@@ -438,7 +438,7 @@ BEGIN:VEVENT
 DTSTART;TZID=US/Eastern:20060104T100000
 DURATION:PT1H
 SUMMARY:Event #3
-UID:DC6C50A017428C5216A2F1CD@example.com
+UID:DC6C50A017428C5216A2F1CD@{{alias_domain}}
 END:VEVENT
 END:VCALENDAR
 "#;
@@ -490,7 +490,7 @@ DTSTART;TZID=US/Eastern:20060102T120000
 DURATION:PT1H
 RRULE:FREQ=DAILY;COUNT=5
 SUMMARY:Event #2
-UID:00959BC664CA650E933C892C@example.com
+UID:00959BC664CA650E933C892C@{{alias_domain}}
 END:VEVENT
 BEGIN:VEVENT
 DTSTAMP:20060206T001121Z
@@ -498,7 +498,7 @@ DTSTART;TZID=US/Eastern:20060104T140000
 DURATION:PT1H
 RECURRENCE-ID;TZID=US/Eastern:20060104T120000
 SUMMARY:Event #2 bis
-UID:00959BC664CA650E933C892C@example.com
+UID:00959BC664CA650E933C892C@{{alias_domain}}
 END:VEVENT
 END:VCALENDAR
 "#;
@@ -525,18 +525,18 @@ TZOFFSETTO:-0500
 END:STANDARD
 END:VTIMEZONE
 BEGIN:VEVENT
-ATTENDEE;PARTSTAT=ACCEPTED;ROLE=CHAIR:mailto:cyrus@example.com
-ATTENDEE;PARTSTAT=NEEDS-ACTION:mailto:lisa@example.com
+ATTENDEE;PARTSTAT=ACCEPTED;ROLE=CHAIR:mailto:cyrus@{{alias_domain}}
+ATTENDEE;PARTSTAT=NEEDS-ACTION:mailto:lisa@{{alias_domain}}
 DTSTAMP:20060206T001220Z
 DTSTART;TZID=US/Eastern:20060104T100000
 DURATION:PT1H
 LAST-MODIFIED:20060206T001330Z
-ORGANIZER:mailto:cyrus@example.com
+ORGANIZER:mailto:cyrus@{{alias_domain}}
 SEQUENCE:1
 STATUS:TENTATIVE
 SUMMARY:Event #3
-UID:DC6C50A017428C5216A2F1CD@example.com
-X-ABC-GUID:E1CX5Dr-0007ym-Hz@example.com
+UID:DC6C50A017428C5216A2F1CD@{{alias_domain}}
+X-ABC-GUID:E1CX5Dr-0007ym-Hz@{{alias_domain}}
 END:VEVENT
 END:VCALENDAR
 "#;
@@ -573,7 +573,7 @@ RECURRENCE-ID:20060103T170000Z
 DTSTAMP:20060206T001121Z
 DURATION:PT1H
 SUMMARY:Event #2
-UID:00959BC664CA650E933C892C@example.com
+UID:00959BC664CA650E933C892C@{{alias_domain}}
 END:VEVENT
 BEGIN:VEVENT
 DTSTART:20060104T190000Z
@@ -581,7 +581,7 @@ RECURRENCE-ID:20060104T190000Z
 DTSTAMP:20060206T001121Z
 DURATION:PT1H
 SUMMARY:Event #2 bis
-UID:00959BC664CA650E933C892C@example.com
+UID:00959BC664CA650E933C892C@{{alias_domain}}
 END:VEVENT
 END:VCALENDAR
 "#;
@@ -591,17 +591,17 @@ VERSION:2.0
 PRODID:-//Example Corp.//CalDAV Client//EN
 BEGIN:VEVENT
 DTSTART:20060104T150000Z
-ATTENDEE;PARTSTAT=ACCEPTED;ROLE=CHAIR:mailto:cyrus@example.com
-ATTENDEE;PARTSTAT=NEEDS-ACTION:mailto:lisa@example.com
+ATTENDEE;PARTSTAT=ACCEPTED;ROLE=CHAIR:mailto:cyrus@{{alias_domain}}
+ATTENDEE;PARTSTAT=NEEDS-ACTION:mailto:lisa@{{alias_domain}}
 DTSTAMP:20060206T001220Z
 DURATION:PT1H
 LAST-MODIFIED:20060206T001330Z
-ORGANIZER:mailto:cyrus@example.com
+ORGANIZER:mailto:cyrus@{{alias_domain}}
 SEQUENCE:1
 STATUS:TENTATIVE
 SUMMARY:Event #3
-UID:DC6C50A017428C5216A2F1CD@example.com
-X-ABC-GUID:E1CX5Dr-0007ym-Hz@example.com
+UID:DC6C50A017428C5216A2F1CD@{{alias_domain}}
+X-ABC-GUID:E1CX5Dr-0007ym-Hz@{{alias_domain}}
 END:VEVENT
 END:VCALENDAR
 "#;
@@ -630,8 +630,8 @@ const REPORT_4_EXPECTED_ABCD8: &str = r#"BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Example Corp.//CalDAV Client//EN
 BEGIN:VFREEBUSY
-ORGANIZER;CN="Bernard Desruisseaux":mailto:bernard@example.com
-UID:76ef34-54a3d2@example.com
+ORGANIZER;CN="Bernard Desruisseaux":mailto:bernard@{{alias_domain}}
+UID:76ef34-54a3d2@{{alias_domain}}
 DTSTAMP:20050530T123421Z
 DTSTART:20060101T000000Z
 DTEND:20060108T000000Z
@@ -670,7 +670,7 @@ const REPORT_6: &str = r#"<?xml version="1.0" encoding="utf-8" ?>
          <C:comp-filter name="VEVENT">
            <C:prop-filter name="UID">
              <C:text-match collation="i;octet"
-             >DC6C50A017428C5216A2F1CD@example.com</C:text-match>
+             >DC6C50A017428C5216A2F1CD@{{alias_domain}}</C:text-match>
            </C:prop-filter>
          </C:comp-filter>
        </C:comp-filter>
@@ -689,7 +689,7 @@ const REPORT_7: &str = r#"<?xml version="1.0" encoding="utf-8" ?>
          <C:comp-filter name="VEVENT">
            <C:prop-filter name="ATTENDEE">
              <C:text-match collation="i;ascii-casemap"
-              >mailto:lisa@example.com</C:text-match>
+              >mailto:lisa@{{alias_domain}}</C:text-match>
              <C:param-filter name="PARTSTAT">
                <C:text-match collation="i;ascii-casemap"
                 >NEEDS-ACTION</C:text-match>
@@ -805,7 +805,7 @@ DTSTART;TZID=US/Eastern:20060102T100000
 DURATION:PT1H
 SUMMARY:Event #1
 Description:Go Steelers!
-UID:74855313FA803DA593CD579A@example.com
+UID:74855313FA803DA593CD579A@{{alias_domain}}
 END:VEVENT
 END:VCALENDAR
 "#;
@@ -837,7 +837,7 @@ DTSTART;TZID=US/Eastern:20060102T120000
 DURATION:PT1H
 RRULE:FREQ=DAILY;COUNT=5
 SUMMARY:Event #2
-UID:00959BC664CA650E933C892C@example.com
+UID:00959BC664CA650E933C892C@{{alias_domain}}
 END:VEVENT
 BEGIN:VEVENT
 DTSTAMP:20060206T001121Z
@@ -845,7 +845,7 @@ DTSTART;TZID=US/Eastern:20060104T140000
 DURATION:PT1H
 RECURRENCE-ID;TZID=US/Eastern:20060104T120000
 SUMMARY:Event #2 bis
-UID:00959BC664CA650E933C892C@example.com
+UID:00959BC664CA650E933C892C@{{alias_domain}}
 END:VEVENT
 BEGIN:VEVENT
 DTSTAMP:20060206T001121Z
@@ -853,7 +853,7 @@ DTSTART;TZID=US/Eastern:20060106T140000
 DURATION:PT1H
 RECURRENCE-ID;TZID=US/Eastern:20060106T120000
 SUMMARY:Event #2 bis bis
-UID:00959BC664CA650E933C892C@example.com
+UID:00959BC664CA650E933C892C@{{alias_domain}}
 END:VEVENT
 END:VCALENDAR
 "#;
@@ -880,18 +880,18 @@ TZOFFSETTO:-0500
 END:STANDARD
 END:VTIMEZONE
 BEGIN:VEVENT
-ATTENDEE;PARTSTAT=ACCEPTED;ROLE=CHAIR:mailto:cyrus@example.com
-ATTENDEE;PARTSTAT=NEEDS-ACTION:mailto:lisa@example.com
+ATTENDEE;PARTSTAT=ACCEPTED;ROLE=CHAIR:mailto:cyrus@{{alias_domain}}
+ATTENDEE;PARTSTAT=NEEDS-ACTION:mailto:lisa@{{alias_domain}}
 DTSTAMP:20060206T001220Z
 DTSTART;TZID=US/Eastern:20060104T100000
 DURATION:PT1H
 LAST-MODIFIED:20060206T001330Z
-ORGANIZER:mailto:cyrus@example.com
+ORGANIZER:mailto:cyrus@{{alias_domain}}
 SEQUENCE:1
 STATUS:TENTATIVE
 SUMMARY:Event #3
-UID:DC6C50A017428C5216A2F1CD@example.com
-X-ABC-GUID:E1CX5Dr-0007ym-Hz@example.com
+UID:DC6C50A017428C5216A2F1CD@{{alias_domain}}
+X-ABC-GUID:E1CX5Dr-0007ym-Hz@{{alias_domain}}
 END:VEVENT
 END:VCALENDAR
 "#;
@@ -904,7 +904,7 @@ DTSTAMP:20060205T235335Z
 DUE;VALUE=DATE:20060104
 STATUS:NEEDS-ACTION
 SUMMARY:Task #1
-UID:DDDEEB7915FA61233B861457@example.com
+UID:DDDEEB7915FA61233B861457@{{alias_domain}}
 BEGIN:VALARM
 ACTION:AUDIO
 TRIGGER;RELATED=START:-PT10M
@@ -923,7 +923,7 @@ LAST-MODIFIED:20060205T235308Z
 SEQUENCE:1
 STATUS:NEEDS-ACTION
 SUMMARY:Task #2
-UID:E10BA47467C5C69BB74E8720@example.com
+UID:E10BA47467C5C69BB74E8720@{{alias_domain}}
 BEGIN:VALARM
 ACTION:AUDIO
 TRIGGER;RELATED=START:-PT10M
@@ -943,7 +943,7 @@ LAST-MODIFIED:20060205T235308Z
 SEQUENCE:1
 STATUS:COMPLETED
 SUMMARY:Task #3
-UID:E10BA47467C5C69BB74E8722@example.com
+UID:E10BA47467C5C69BB74E8722@{{alias_domain}}
 END:VTODO
 END:VCALENDAR
 "#;
@@ -958,7 +958,7 @@ LAST-MODIFIED:20060205T235308Z
 SEQUENCE:1
 STATUS:CANCELLED
 SUMMARY:Task #4
-UID:E10BA47467C5C69BB74E8725@example.com
+UID:E10BA47467C5C69BB74E8725@{{alias_domain}}
 END:VTODO
 END:VCALENDAR
 "#;
@@ -967,8 +967,8 @@ const ICAL_RFC_ABCD8_ICS: &str = r#"BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//Example Corp.//CalDAV Client//EN
 BEGIN:VFREEBUSY
-ORGANIZER;CN="Bernard Desruisseaux":mailto:bernard@example.com
-UID:76ef34-54a3d2@example.com
+ORGANIZER;CN="Bernard Desruisseaux":mailto:bernard@{{alias_domain}}
+UID:76ef34-54a3d2@{{alias_domain}}
 DTSTAMP:20050530T123421Z
 DTSTART:20060101T000000Z
 DTEND:20060108T000000Z

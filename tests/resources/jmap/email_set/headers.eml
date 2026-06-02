@@ -1,8 +1,8 @@
 Bcc: "=?utf-8?B?wqFFbCDDsWFuZMO6IGNvbWnDsyDDsW9xdWlzIQ==?="
-	<addr1@example.com>
-Cc: "=?utf-8?B?0J/RgNC40LLQtdGCLCDQvNC40YA=?=" <addr0@example.com>
+	<addr1@{{alias_domain}}>
+Cc: "=?utf-8?B?0J/RgNC40LLQtdGCLCDQvNC40YA=?=" <addr0@{{alias_domain}}>
 Date: Tue, 10 Jul 2018 01:03:11 +0000
-From: "Joe Bloggs" <joe@example.com>
+From: "Joe Bloggs" <joe@{{alias_domain}}>
 In-Reply-To: <other-message-id> <yet-another-message-id>
 List-Owner: <http://www.host.com/list.cgi?cmd=sub&lst=list>,
 	<mailto:list-manager@host.com?body=subscribe%20list>
@@ -11,12 +11,12 @@ List-Subscribe: <ftp://ftp.host.com/list.txt>,
 List-Subscribe: <mailto:list-manager@host.com?body=subscribe%20list>
 Message-ID: <my-message-id>
 References: <first-message-id> <second-message-id>
-Reply-To: "=?utf-8?B?7JWI64WV7ZWY7IS47JqUIOyEuOqzhA==?=" <addr2@example.com>, 
-	"=?utf-8?Q?Antoine_de_Saint-Exup=C3=A9ry?=" <addr3@example.com>
+Reply-To: "=?utf-8?B?7JWI64WV7ZWY7IS47JqUIOyEuOqzhA==?=" <addr2@{{alias_domain}}>, 
+	"=?utf-8?Q?Antoine_de_Saint-Exup=C3=A9ry?=" <addr3@{{alias_domain}}>
 Resent-Date: Sat, 2 Jul 2005 09:52:37 +0000
 Resent-Date: Sun, 3 Jul 2005 09:52:37 +0000
 Resent-Date: Mon, 4 Jul 2005 09:52:37 +0000
-Sender: "=?utf-8?B?44OP44Ot44O844O744Ov44O844Or44OJ?=" <joe@example.com>
+Sender: "=?utf-8?B?44OP44Ot44O844O744Ov44O844Or44OJ?=" <joe@{{alias_domain}}>
 Subject: Headers test
 To: "Greg Vaudreuil" <gvaudre@NRI.Reston.VA.US>, 
 	"Ned Freed" <ned@innosoft.com>, "Keith Moore" <moore@cs.utk.edu>
@@ -45,7 +45,7 @@ Content-Transfer-Encoding: quoted-printable
 I have the most brilliant plan.  Let me tell you all about it.  What we do i=
 s, we
 --boundary_0
-Content-Location: https://example.com/html-body.html
+Content-Location: https://{{alias_domain}}/html-body.html
 Content-Type: text/html; charset="utf-8"; name="html-body.html"
 Content-Transfer-Encoding: quoted-printable
 

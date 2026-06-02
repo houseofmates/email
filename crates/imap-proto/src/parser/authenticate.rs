@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -69,11 +69,11 @@ mod tests {
 
         for (command, arguments) in [
             (
-                "a002 AUTHENTICATE \"EXTERNAL\" {16+}\r\nfred@example.com\r\n",
+                "a002 AUTHENTICATE \"EXTERNAL\" {16+}\r\nfred@{{alias_domain}}\r\n",
                 authenticate::Arguments {
                     tag: "a002".into(),
                     mechanism: Mechanism::External,
-                    params: vec!["fred@example.com".into()],
+                    params: vec!["fred@{{alias_domain}}".into()],
                 },
             ),
             (

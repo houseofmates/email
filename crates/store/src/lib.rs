@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -157,7 +157,7 @@ pub enum Store {
     RocksDb(Arc<backend::rocksdb::RocksDbStore>),
     Ephemeral(Arc<EphemeralStore>),
     // SPDX-SnippetBegin
-    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
     // SPDX-License-Identifier: LicenseRef-SEL
     #[cfg(all(feature = "enterprise", any(feature = "postgres", feature = "mysql")))]
     SQLReadReplica(Arc<backend::composite::read_replica::SQLReadReplica>),
@@ -175,7 +175,7 @@ pub enum BlobStore {
     #[cfg(feature = "azure")]
     Azure(Arc<backend::azure::AzureStore>),
     // SPDX-SnippetBegin
-    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
     // SPDX-License-Identifier: LicenseRef-SEL
     #[cfg(feature = "enterprise")]
     Sharded(Arc<backend::composite::sharded_blob::ShardedBlob>),
@@ -197,7 +197,7 @@ pub enum InMemoryStore {
     Http(Arc<HttpStore>),
     Static(Arc<StaticMemoryStore>),
     // SPDX-SnippetBegin
-    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
     // SPDX-License-Identifier: LicenseRef-SEL
     #[cfg(feature = "enterprise")]
     Sharded(Arc<backend::composite::sharded_lookup::ShardedInMemory>),
@@ -662,7 +662,7 @@ impl Store {
             #[cfg(feature = "mysql")]
             Store::MySQL(_) => true,
             // SPDX-SnippetBegin
-            // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+            // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
             // SPDX-License-Identifier: LicenseRef-SEL
             #[cfg(all(feature = "enterprise", any(feature = "postgres", feature = "mysql")))]
             Store::SQLReadReplica(_) => true,
@@ -697,7 +697,7 @@ impl Store {
     }
 
     // SPDX-SnippetBegin
-    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
     // SPDX-License-Identifier: LicenseRef-SEL
     #[cfg(feature = "enterprise")]
     pub fn downgrade_store(self) -> Self {
@@ -735,7 +735,7 @@ impl std::fmt::Debug for Store {
             Self::Ephemeral(_) => f.debug_tuple("Ephemeral").finish(),
 
             // SPDX-SnippetBegin
-            // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+            // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
             // SPDX-License-Identifier: LicenseRef-SEL
             #[cfg(all(feature = "enterprise", any(feature = "postgres", feature = "mysql")))]
             Self::SQLReadReplica(_) => f.debug_tuple("SQLReadReplica").finish(),

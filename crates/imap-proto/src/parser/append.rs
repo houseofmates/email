@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -290,7 +290,7 @@ mod tests {
             "Date: Mon, 7 Feb 1994 22:43:04 -0800 (PST)\r\n",
             "From: Joe Mooch <mooch@OWaTaGu.example.net>\r\n",
             "Subject: Re: afternoon meeting\r\n",
-            "To: foobar@blurdybloop.example.com\r\n",
+            "To: foobar@blurdybloop.{{alias_domain}}\r\n",
             "Message-Id: <a0434793874930@OWaTaGu.example.net>\r\n",
             "MIME-Version: 1.0\r\n",
             "Content-Type: TEXT/PLAIN; CHARSET=US-ASCII\r\n\r\n",
@@ -326,7 +326,7 @@ mod tests {
                                         "Date: Mon, 7 Feb 1994 22:43:04 -0800 (PST)\r\n",
                                         "From: Joe Mooch <mooch@OWaTaGu.example.net>\r\n",
                                         "Subject: Re: afternoon meeting\r\n",
-                                        "To: foobar@blurdybloop.example.com\r\n",
+                                        "To: foobar@blurdybloop.{{alias_domain}}\r\n",
                                         "Message-Id: <a0434793874930@OWaTaGu.example.net>\r\n",
                                         "MIME-Version: 1.0\r\n",
                                         "Content-Type: TEXT/PLAIN; CHARSET=US-ASCII\r\n\r\n",

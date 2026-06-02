@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -18,7 +18,7 @@ use types::{collection::SyncCollection, id::Id};
 
 pub async fn test(test: &TestServer) {
     println!("Running Calendar Event tests...");
-    let account = test.account("jdoe@example.com");
+    let account = test.account("jdoe@{{alias_domain}}");
 
     // Create test calendars
     let response = account
@@ -243,7 +243,7 @@ pub async fn test(test: &TestServer) {
         "title": "Event #3",
         "participants": {
           "3f5bc8c0-c722-5345-b7d9-5a899db08a30": {
-            "calendarAddress": "mailto:cyrus@example.com",
+            "calendarAddress": "mailto:cyrus@{{alias_domain}}",
             "@type": "Participant"
           }
         },
@@ -281,7 +281,7 @@ pub async fn test(test: &TestServer) {
                     "start": "2006-01-22T10:00:00",
                     "duration": "PT1H",
                     "timeZone": "US/Eastern",
-                    "uid": "00959BC664CA650E933C892C@example.com",
+                    "uid": "00959BC664CA650E933C892C@{{alias_domain}}",
                     "calendarIds": {
                         &calendar1_id: true
                     },
@@ -291,7 +291,7 @@ pub async fn test(test: &TestServer) {
             .await
             .not_created(0)
             .description(),
-        "An event with UID 00959BC664CA650E933C892C@example.com already exists."
+        "An event with UID 00959BC664CA650E933C892C@{{alias_domain}} already exists."
     );
 
     // Patching tests
@@ -339,7 +339,7 @@ pub async fn test(test: &TestServer) {
                         "participants/3f5bc8c0-c722-5345-b7d9-5a899db08a30/roles/owner": true,
                         "participants/ec5e7db5-22a3-5ed5-89bf-c8894ab86805" : null,
                         "participants/7f2bd210-6c66-5b64-8562-0176b74462b1": {
-                            "calendarAddress": "mailto:rupert@example.com",
+                            "calendarAddress": "mailto:rupert@{{alias_domain}}",
                             "@type": "Participant",
                             "participationStatus": "needs-action"
                         }
@@ -433,7 +433,7 @@ pub async fn test(test: &TestServer) {
         "start": "2006-01-04T09:00:00",
         "participants": {
             "3f5bc8c0-c722-5345-b7d9-5a899db08a30": {
-                "calendarAddress": "mailto:cyrus@example.com",
+                "calendarAddress": "mailto:cyrus@{{alias_domain}}",
                 "@type": "Participant",
                 "roles": {
                     "owner": true
@@ -441,7 +441,7 @@ pub async fn test(test: &TestServer) {
                 "participationStatus": "accepted"
             },
             "7f2bd210-6c66-5b64-8562-0176b74462b1": {
-                "calendarAddress": "mailto:rupert@example.com",
+                "calendarAddress": "mailto:rupert@{{alias_domain}}",
                 "@type": "Participant",
                 "participationStatus": "needs-action"
             }
@@ -461,7 +461,7 @@ pub async fn test(test: &TestServer) {
                 [
                     ("text", "Event one"),
                     ("inCalendar", calendar1_id.as_str()),
-                    ("uid", "74855313FA803DA593CD579A@example.com"),
+                    ("uid", "74855313FA803DA593CD579A@{{alias_domain}}"),
                     ("after", "2006-01-02T10:59:59"),
                     ("before", "2006-01-02T10:00:01"),
                 ],
@@ -586,8 +586,8 @@ PRODID:-//xyz Corp//NONSGML PDA Calendar Version 1.0//EN
 VERSION:2.0
 BEGIN:VEVENT
 DTSTAMP:19960704T120000Z
-UID:uid1@example.com
-ORGANIZER:mailto:jsmith@example.com
+UID:uid1@{{alias_domain}}
+ORGANIZER:mailto:jsmith@{{alias_domain}}
 DTSTART:19960918T143000Z
 DTEND:19960920T220000Z
 STATUS:CONFIRMED
@@ -642,17 +642,17 @@ END:VCALENDAR
       "name": "vevent"
     },
     "@type": "Event",
-    "uid": "uid1@example.com",
+    "uid": "uid1@{{alias_domain}}",
     "participants": {
       "25d7647e-52fc-559b-88df-d66f08da079c": {
-        "calendarAddress": "mailto:jsmith@example.com",
+        "calendarAddress": "mailto:jsmith@{{alias_domain}}",
         "@type": "Participant"
       }
     },
     "keywords": {
       "CONFERENCE": true
     },
-    "organizerCalendarAddress": "mailto:jsmith@example.com",
+    "organizerCalendarAddress": "mailto:jsmith@{{alias_domain}}",
     "duration": "P2DT7H30M"
   }
 ]));
@@ -722,7 +722,7 @@ pub fn test_jscalendar_1() -> Value {
       "timeZone": "US/Eastern",
       "start": "2006-01-02T10:00:00",
       "title": "Event #1",
-      "uid": "74855313FA803DA593CD579A@example.com"
+      "uid": "74855313FA803DA593CD579A@{{alias_domain}}"
     })
 }
 
@@ -736,7 +736,7 @@ pub fn test_jscalendar_2() -> Value {
         "count": 5
       },
       "start": "2006-01-02T12:00:00",
-      "uid": "00959BC664CA650E933C892C@example.com",
+      "uid": "00959BC664CA650E933C892C@{{alias_domain}}",
       "@type": "Event",
       "timeZone": "US/Eastern",
       "recurrenceOverrides": {
@@ -759,15 +759,15 @@ pub fn test_jscalendar_2() -> Value {
 pub fn test_jscalendar_3() -> Value {
     json!({
       "duration": "PT1H",
-      "organizerCalendarAddress": "mailto:cyrus@example.com",
+      "organizerCalendarAddress": "mailto:cyrus@{{alias_domain}}",
       "@type": "Event",
       "start": "2006-01-04T10:00:00",
       "status": "tentative",
-      "uid": "DC6C50A017428C5216A2F1CD@example.com",
+      "uid": "DC6C50A017428C5216A2F1CD@{{alias_domain}}",
       "sequence": 1,
       "participants": {
         "3f5bc8c0-c722-5345-b7d9-5a899db08a30": {
-          "calendarAddress": "mailto:cyrus@example.com",
+          "calendarAddress": "mailto:cyrus@{{alias_domain}}",
           "@type": "Participant",
           "roles": {
             "chair": true
@@ -775,7 +775,7 @@ pub fn test_jscalendar_3() -> Value {
           "participationStatus": "accepted"
         },
         "ec5e7db5-22a3-5ed5-89bf-c8894ab86805": {
-          "calendarAddress": "mailto:lisa@example.com",
+          "calendarAddress": "mailto:lisa@{{alias_domain}}",
           "@type": "Participant",
           "participationStatus": "needs-action"
         }
@@ -795,14 +795,14 @@ pub fn test_jscalendar_4() -> Value {
       "timeZone": "US/Eastern",
       "start": "2006-01-02T10:00:00",
       "title": "Tmp Event",
-      "uid": "tmp-event@example.com"
+      "uid": "tmp-event@{{alias_domain}}"
     })
 }
 
 const TEST_ICAL_1: &str = r#"BEGIN:VCALENDAR
 BEGIN:VEVENT
 DTSTART;TZID=US/Eastern:20060102T100000
-UID:74855313FA803DA593CD579A@example.com
+UID:74855313FA803DA593CD579A@{{alias_domain}}
 DURATION:PT1H
 SUMMARY:Event one
 DTSTAMP:20060206T001102Z

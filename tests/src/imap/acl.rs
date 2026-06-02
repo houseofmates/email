@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -17,11 +17,11 @@ pub async fn test(
     println!("Running ACL tests...");
     let mut lmtp = SmtpConnection::connect().await;
     lmtp.ingest(
-        "bill@example.com",
-        &["support@example.com"],
+        "bill@{{alias_domain}}",
+        &["support@{{alias_domain}}"],
         concat!(
-            "From: bill@example.com\r\n",
-            "To: support@example.com\r\n",
+            "From: bill@{{alias_domain}}\r\n",
+            "To: support@{{alias_domain}}\r\n",
             "Subject: TPS Report\r\n",
             "\r\n",
             "I'm going to need those TPS reports ASAP. ",
@@ -31,17 +31,17 @@ pub async fn test(
     .await;
 
     // Connect to all test accounts
-    let mut imap_jane = test.account("jane.smith@example.com").imap_client().await;
-    let mut imap_bill = test.account("foobar@example.com").imap_client().await;
+    let mut imap_jane = test.account("jane.smith@{{alias_domain}}").imap_client().await;
+    let mut imap_bill = test.account("foobar@{{alias_domain}}").imap_client().await;
 
     // Jane should see the Support account
     imap_jane.send("LIST \"\" \"*\"").await;
     imap_jane
         .assert_read(Type::Tagged, ResponseType::Ok)
         .await
-        .assert_contains("Shared Folders/support@example.com/INBOX");
+        .assert_contains("Shared Folders/support@{{alias_domain}}/INBOX");
     imap_jane
-        .send("SELECT \"Shared Folders/support@example.com/INBOX\"")
+        .send("SELECT \"Shared Folders/support@{{alias_domain}}/INBOX\"")
         .await;
     imap_jane.assert_read(Type::Tagged, ResponseType::Ok).await;
     imap_jane.send("FETCH 1 (PREVIEW)").await;
@@ -54,7 +54,7 @@ pub async fn test(
 
     // Jane should be able to create folders under the Support account
     imap_jane
-        .send("CREATE \"Shared Folders/support@example.com/inbox/Jane's Folder\"")
+        .send("CREATE \"Shared Folders/support@{{alias_domain}}/inbox/Jane's Folder\"")
         .await;
     imap_jane.assert_read(Type::Tagged, ResponseType::Ok).await;
     imap_jane.send("LIST \"\" \"*\"").await;
@@ -62,10 +62,10 @@ pub async fn test(
         .assert_read(Type::Tagged, ResponseType::Ok)
         .await
         .assert_equals(
-            "* LIST () \"/\" \"Shared Folders/support@example.com/INBOX/Jane's Folder\"",
+            "* LIST () \"/\" \"Shared Folders/support@{{alias_domain}}/INBOX/Jane's Folder\"",
         );
     imap_jane
-        .send("DELETE \"Shared Folders/support@example.com/INBOX/Jane's Folder\"")
+        .send("DELETE \"Shared Folders/support@{{alias_domain}}/INBOX/Jane's Folder\"")
         .await;
     imap_jane.assert_read(Type::Tagged, ResponseType::Ok).await;
 
@@ -79,32 +79,32 @@ pub async fn test(
     imap_john.assert_read(Type::Tagged, ResponseType::Ok).await;
 
     // List rights
-    imap_jane.send("LISTRIGHTS INBOX jdoe@example.com").await;
+    imap_jane.send("LISTRIGHTS INBOX jdoe@{{alias_domain}}").await;
     imap_jane
         .assert_read(Type::Tagged, ResponseType::Ok)
         .await
-        .assert_equals("* LISTRIGHTS \"INBOX\" \"jdoe@example.com\" r l ws i et k x p a");
+        .assert_equals("* LISTRIGHTS \"INBOX\" \"jdoe@{{alias_domain}}\" r l ws i et k x p a");
 
     // Jane shares her Inbox to John, expect a Shared Folders item in John's list
-    imap_jane.send("SETACL INBOX jdoe@example.com lr").await;
+    imap_jane.send("SETACL INBOX jdoe@{{alias_domain}} lr").await;
     imap_jane.assert_read(Type::Tagged, ResponseType::Ok).await;
     imap_john.send("LIST \"\" \"*\"").await;
     imap_john
         .assert_read(Type::Tagged, ResponseType::Ok)
         .await
         .assert_equals("* LIST (\\NoSelect) \"/\" \"Shared Folders\"")
-        .assert_equals("* LIST (\\NoSelect) \"/\" \"Shared Folders/jane.smith@example.com\"")
-        .assert_equals("* LIST () \"/\" \"Shared Folders/jane.smith@example.com/INBOX\"");
+        .assert_equals("* LIST (\\NoSelect) \"/\" \"Shared Folders/jane.smith@{{alias_domain}}\"")
+        .assert_equals("* LIST () \"/\" \"Shared Folders/jane.smith@{{alias_domain}}/INBOX\"");
 
     // Grant access to Bill and check ACLs
     imap_jane.send("GETACL INBOX").await;
     imap_jane
         .assert_read(Type::Tagged, ResponseType::Ok)
         .await
-        .assert_contains("\"jdoe@example.com\" rl");
+        .assert_contains("\"jdoe@{{alias_domain}}\" rl");
 
     imap_jane
-        .send("SETACL INBOX foobar@example.com lrxtws")
+        .send("SETACL INBOX foobar@{{alias_domain}} lrxtws")
         .await;
     imap_jane.assert_read(Type::Tagged, ResponseType::Ok).await;
 
@@ -112,14 +112,14 @@ pub async fn test(
     imap_jane
         .assert_read(Type::Tagged, ResponseType::Ok)
         .await
-        .assert_contains("\"jdoe@example.com\" rl")
-        .assert_contains("\"foobar@example.com\" tewsrxl");
+        .assert_contains("\"jdoe@{{alias_domain}}\" rl")
+        .assert_contains("\"foobar@{{alias_domain}}\" tewsrxl");
 
     imap_bill.send("LIST \"\" \"*\"").await;
     imap_bill
         .assert_read(Type::Tagged, ResponseType::Ok)
         .await
-        .assert_contains("Shared Folders/jane.smith@example.com/INBOX");
+        .assert_contains("Shared Folders/jane.smith@{{alias_domain}}/INBOX");
 
     // Namespace should now return the Shared Folders namespace
     imap_john.send("NAMESPACE").await;
@@ -130,17 +130,17 @@ pub async fn test(
 
     // List John's right on Jane's Inbox
     imap_john
-        .send("MYRIGHTS \"Shared Folders/jane.smith@example.com/INBOX\"")
+        .send("MYRIGHTS \"Shared Folders/jane.smith@{{alias_domain}}/INBOX\"")
         .await;
     imap_john
         .assert_read(Type::Tagged, ResponseType::Ok)
         .await
-        .assert_equals("* MYRIGHTS \"Shared Folders/jane.smith@example.com/INBOX\" rl");
+        .assert_equals("* MYRIGHTS \"Shared Folders/jane.smith@{{alias_domain}}/INBOX\" rl");
 
     // John should not be able to append messages
     assert_append_message(
         imap_john,
-        "Shared Folders/jane.smith@example.com/INBOX",
+        "Shared Folders/jane.smith@{{alias_domain}}/INBOX",
         "From: john\n\ncontents",
         ResponseType::No,
     )
@@ -148,18 +148,18 @@ pub async fn test(
 
     // Grant insert access to John on Jane's Inbox, and try inserting the
     // message again.
-    imap_jane.send("SETACL INBOX jdoe@example.com +i").await;
+    imap_jane.send("SETACL INBOX jdoe@{{alias_domain}} +i").await;
     imap_jane.assert_read(Type::Tagged, ResponseType::Ok).await;
     imap_john
-        .send("MYRIGHTS \"Shared Folders/jane.smith@example.com/INBOX\"")
+        .send("MYRIGHTS \"Shared Folders/jane.smith@{{alias_domain}}/INBOX\"")
         .await;
     imap_john
         .assert_read(Type::Tagged, ResponseType::Ok)
         .await
-        .assert_equals("* MYRIGHTS \"Shared Folders/jane.smith@example.com/INBOX\" rli");
+        .assert_equals("* MYRIGHTS \"Shared Folders/jane.smith@{{alias_domain}}/INBOX\" rli");
     assert_append_message(
         imap_john,
-        "Shared Folders/jane.smith@example.com/INBOX",
+        "Shared Folders/jane.smith@{{alias_domain}}/INBOX",
         "From: john\n\ncontents",
         ResponseType::Ok,
     )
@@ -167,7 +167,7 @@ pub async fn test(
 
     // Only Bill should be allowed to delete messages on Jane's Inbox
     for imap in [&mut imap_john, &mut imap_bill] {
-        imap.send("SELECT \"Shared Folders/jane.smith@example.com/INBOX\"")
+        imap.send("SELECT \"Shared Folders/jane.smith@{{alias_domain}}/INBOX\"")
             .await;
         imap.assert_read(Type::Tagged, ResponseType::Ok).await;
     }
@@ -196,7 +196,7 @@ pub async fn test(
         .assert_count("contents", 0);
 
     imap_bill
-        .send("STATUS \"Shared Folders/jane.smith@example.com/INBOX\" (MESSAGES)")
+        .send("STATUS \"Shared Folders/jane.smith@{{alias_domain}}/INBOX\" (MESSAGES)")
         .await;
     imap_bill
         .assert_read(Type::Tagged, ResponseType::Ok)
@@ -219,7 +219,7 @@ pub async fn test(
     // Copy from John's Inbox to Jane's Inbox
     imap_john
         .send(&format!(
-            "UID COPY {} \"Shared Folders/jane.smith@example.com/INBOX\"",
+            "UID COPY {} \"Shared Folders/jane.smith@{{alias_domain}}/INBOX\"",
             uid
         ))
         .await;
@@ -288,18 +288,18 @@ pub async fn test(
         .assert_contains("copy test");
 
     // Jane stops sharing with Bill, and removes Insert access to John
-    imap_jane.send("DELETEACL INBOX foobar@example.com").await;
+    imap_jane.send("DELETEACL INBOX foobar@{{alias_domain}}").await;
     imap_jane.assert_read(Type::Tagged, ResponseType::Ok).await;
 
-    imap_jane.send("SETACL INBOX jdoe@example.com -i").await;
+    imap_jane.send("SETACL INBOX jdoe@{{alias_domain}} -i").await;
     imap_jane.assert_read(Type::Tagged, ResponseType::Ok).await;
 
     imap_jane.send("GETACL INBOX").await;
     imap_jane
         .assert_read(Type::Tagged, ResponseType::Ok)
         .await
-        .assert_contains("\"jdoe@example.com\" rl")
-        .assert_count("foobar@example.com", 0);
+        .assert_contains("\"jdoe@{{alias_domain}}\" rl")
+        .assert_count("foobar@{{alias_domain}}", 0);
 
     // Bill should not have access to Jane's Inbox anymore
     imap_bill.send("LIST \"\" \"*\"").await;

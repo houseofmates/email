@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -222,7 +222,7 @@ async fn store_maintenance(
                 .caused_by(trc::location!())?;
 
             // SPDX-SnippetBegin
-            // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+            // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
             // SPDX-License-Identifier: LicenseRef-SEL
             #[cfg(feature = "enterprise")]
             {
@@ -361,7 +361,7 @@ async fn store_maintenance(
         }
         TaskStoreMaintenanceType::ResetTenantQuotas => {
             // SPDX-SnippetBegin
-            // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+            // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
             // SPDX-License-Identifier: LicenseRef-SEL
             #[cfg(feature = "enterprise")]
             {
@@ -502,7 +502,7 @@ async fn recalculate_quota(server: &Server, account_id: u32) -> trc::Result<()> 
 }
 
 // SPDX-SnippetBegin
-// SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+// SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
 // SPDX-License-Identifier: LicenseRef-SEL
 #[cfg(feature = "enterprise")]
 async fn recalculate_tenant_quota(server: &Server, tenant_id: u32) -> trc::Result<()> {

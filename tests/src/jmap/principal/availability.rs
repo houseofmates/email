@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -18,8 +18,8 @@ use types::id::Id;
 
 pub async fn test(test: &TestServer) {
     println!("Running Principal Availability tests...");
-    let john = test.account("jdoe@example.com");
-    let jane = test.account("jane.smith@example.com");
+    let john = test.account("jdoe@{{alias_domain}}");
+    let jane = test.account("jane.smith@{{alias_domain}}");
     let john_id = john.id_string().to_string();
     let jane_id = jane.id_string().to_string();
 
@@ -54,7 +54,7 @@ pub async fn test(test: &TestServer) {
             JSCalendarProperty::<Id>::Participants,
             json!({
               "3f5bc8c0-c722-5345-b7d9-5a899db08a30": {
-                "calendarAddress": "mailto:jdoe@example.com",
+                "calendarAddress": "mailto:jdoe@{{alias_domain}}",
                 "@type": "Participant",
                 "roles": {
                   "attendee": true,

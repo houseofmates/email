@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -12,7 +12,7 @@ use groupware::DavResourceName;
 use hyper::StatusCode;
 
 pub async fn test(test: &TestServer) {
-    let client = test.account("john@example.com").webdav_client();
+    let client = test.account("john@{{alias_domain}}").webdav_client();
 
     for resource_type in [
         DavResourceName::File,
@@ -23,7 +23,7 @@ pub async fn test(test: &TestServer) {
             "Running REPORT sync-collection tests ({})...",
             resource_type.base_path()
         );
-        let user_base_path = format!("{}/john%40example.com/", resource_type.base_path());
+        let user_base_path = format!("{}/john%40{{alias_domain}}/", resource_type.base_path());
 
         // Test 1: Initial sync
         let response = client

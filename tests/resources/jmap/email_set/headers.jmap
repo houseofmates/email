@@ -21,13 +21,13 @@
   "sender": [
     {
       "name": "ハロー・ワールド",
-      "email": "joe@example.com"
+      "email": "joe@{{alias_domain}}"
     }
   ],
   "from": [
     {
       "name": "Joe Bloggs",
-      "email": "joe@example.com"
+      "email": "joe@{{alias_domain}}"
     }
   ],
   "to": [
@@ -47,23 +47,23 @@
   "cc": [
     {
       "name": "Привет, мир",
-      "email": "addr0@example.com"
+      "email": "addr0@{{alias_domain}}"
     }
   ],
   "bcc": [
     {
       "name": "¡El ñandú comió ñoquis!",
-      "email": "addr1@example.com"
+      "email": "addr1@{{alias_domain}}"
     }
   ],
   "replyTo": [
     {
       "name": "안녕하세요 세계",
-      "email": "addr2@example.com"
+      "email": "addr2@{{alias_domain}}"
     },
     {
       "name": "Antoine de Saint-Exupéry",
-      "email": "addr3@example.com"
+      "email": "addr3@{{alias_domain}}"
     }
   ],
   "subject": "Headers test",
@@ -72,11 +72,11 @@
     "headers": [
       {
         "name": "Bcc",
-        "value": " \"=?utf-8?B?wqFFbCDDsWFuZMO6IGNvbWnDsyDDsW9xdWlzIQ==?=\"\r\n\t<addr1@example.com>"
+        "value": " \"=?utf-8?B?wqFFbCDDsWFuZMO6IGNvbWnDsyDDsW9xdWlzIQ==?=\"\r\n\t<addr1@{{alias_domain}}>"
       },
       {
         "name": "Cc",
-        "value": " \"=?utf-8?B?0J/RgNC40LLQtdGCLCDQvNC40YA=?=\" <addr0@example.com>"
+        "value": " \"=?utf-8?B?0J/RgNC40LLQtdGCLCDQvNC40YA=?=\" <addr0@{{alias_domain}}>"
       },
       {
         "name": "Date",
@@ -84,7 +84,7 @@
       },
       {
         "name": "From",
-        "value": " \"Joe Bloggs\" <joe@example.com>"
+        "value": " \"Joe Bloggs\" <joe@{{alias_domain}}>"
       },
       {
         "name": "In-Reply-To",
@@ -112,7 +112,7 @@
       },
       {
         "name": "Reply-To",
-        "value": " \"=?utf-8?B?7JWI64WV7ZWY7IS47JqUIOyEuOqzhA==?=\" <addr2@example.com>, \r\n\t\"=?utf-8?Q?Antoine_de_Saint-Exup=C3=A9ry?=\" <addr3@example.com>"
+        "value": " \"=?utf-8?B?7JWI64WV7ZWY7IS47JqUIOyEuOqzhA==?=\" <addr2@{{alias_domain}}>, \r\n\t\"=?utf-8?Q?Antoine_de_Saint-Exup=C3=A9ry?=\" <addr3@{{alias_domain}}>"
       },
       {
         "name": "Resent-Date",
@@ -128,7 +128,7 @@
       },
       {
         "name": "Sender",
-        "value": " \"=?utf-8?B?44OP44Ot44O844O744Ov44O844Or44OJ?=\" <joe@example.com>"
+        "value": " \"=?utf-8?B?44OP44Ot44O844O744Ov44O844Or44OJ?=\" <joe@{{alias_domain}}>"
       },
       {
         "name": "Subject",
@@ -212,7 +212,7 @@
         "headers": [
           {
             "name": "Content-Location",
-            "value": " https://example.com/html-body.html"
+            "value": " https://{{alias_domain}}/html-body.html"
           },
           {
             "name": "Content-Type",
@@ -226,7 +226,7 @@
         "name": "html-body.html",
         "type": "text/html",
         "charset": "utf-8",
-        "location": "https://example.com/html-body.html"
+        "location": "https://{{alias_domain}}/html-body.html"
       }
     ]
   },
@@ -284,7 +284,7 @@
       "headers": [
         {
           "name": "Content-Location",
-          "value": " https://example.com/html-body.html"
+          "value": " https://{{alias_domain}}/html-body.html"
         },
         {
           "name": "Content-Type",
@@ -298,7 +298,7 @@
       "name": "html-body.html",
       "type": "text/html",
       "charset": "utf-8",
-      "location": "https://example.com/html-body.html"
+      "location": "https://{{alias_domain}}/html-body.html"
     }
   ],
   "attachments": [],

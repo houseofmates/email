@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -10,8 +10,8 @@ use groupware::DavResourceName;
 use hyper::StatusCode;
 
 pub async fn test(test: &TestServer) {
-    let owner_client = test.account("bill@example.com").webdav_client();
-    let sharee_client = test.account("john@example.com").webdav_client();
+    let owner_client = test.account("bill@{{alias_domain}}").webdav_client();
+    let sharee_client = test.account("john@{{alias_domain}}").webdav_client();
 
     for resource_type in [
         DavResourceName::File,
@@ -21,15 +21,15 @@ pub async fn test(test: &TestServer) {
         println!("Running ACL tests ({})...", resource_type.base_path());
         let is_file = resource_type == DavResourceName::File;
         let sharee_principal = format!(
-            "{}/john%40example.com/",
+            "{}/john%40{{alias_domain}}/",
             DavResourceName::Principal.base_path()
         );
-        let sharee_base_path = format!("{}/john%40example.com/", resource_type.base_path());
+        let sharee_base_path = format!("{}/john%40{{alias_domain}}/", resource_type.base_path());
         let owner_principal = format!(
-            "{}/bill%40example.com/",
+            "{}/bill%40{{alias_domain}}/",
             DavResourceName::Principal.base_path()
         );
-        let owner_base_path = format!("{}/bill%40example.com/", resource_type.base_path());
+        let owner_base_path = format!("{}/bill%40{{alias_domain}}/", resource_type.base_path());
 
         // Create a resource for the owner
         let owner_folder = format!("{owner_base_path}test-shared/");

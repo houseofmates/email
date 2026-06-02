@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -11,7 +11,7 @@ use types::id::Id;
 
 pub async fn test(test: &TestServer) {
     println!("Running blob tests...");
-    let account = test.account("jdoe@example.com");
+    let account = test.account("jdoe@{{alias_domain}}");
     test.blob_expire_all().await;
 
     // Blob/set simple test
@@ -359,8 +359,8 @@ pub async fn test(test: &TestServer) {
     let blob_id = client
         .email_import(
             concat!(
-                "From: bill@example.com\r\n",
-                "To: jdoe@example.com\r\n",
+                "From: bill@{{alias_domain}}\r\n",
+                "To: jdoe@{{alias_domain}}\r\n",
                 "Subject: TPS Report\r\n",
                 "\r\n",
                 "I'm going to need those TPS reports ASAP. ",

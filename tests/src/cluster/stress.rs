@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -38,7 +38,7 @@ pub async fn stress_tests() {
         .await
         .build()
         .await;
-    let admin = test.create_admin_account("admin@example.com").await;
+    let admin = test.create_admin_account("admin@{{alias_domain}}").await;
     admin
         .registry_destroy_all(ObjectType::MtaConnectionStrategy)
         .await;
@@ -53,7 +53,7 @@ pub async fn stress_tests() {
 
 async fn email_tests(test: &TestServer) {
     let server = &test.server;
-    let client = Arc::new(test.account("admin@example.com").jmap_client().await);
+    let client = Arc::new(test.account("admin@{{alias_domain}}").jmap_client().await);
 
     for pass in 0..NUM_PASSES {
         println!(
@@ -282,7 +282,7 @@ async fn email_tests(test: &TestServer) {
 }
 
 async fn mailbox_tests(test: &TestServer) {
-    let client = Arc::new(test.account("admin@example.com").jmap_client().await);
+    let client = Arc::new(test.account("admin@{{alias_domain}}").jmap_client().await);
 
     let mailboxes = Arc::new(vec![
         "test/test1/test2/test3".to_string(),

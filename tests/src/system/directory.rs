@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -33,13 +33,13 @@ pub async fn test(test: &TestServer) {
     // Create a domain and make sure it's in the cache
     let domain_id = account
         .registry_create_object(Domain {
-            name: "example.com".to_string(),
+            name: "{{alias_domain}}".to_string(),
             certificate_management: CertificateManagement::Manual,
             dns_management: DnsManagement::Manual,
             dkim_management: DkimManagement::Manual,
             aliases: Map::new(vec!["beispiel.de".to_string()]),
             is_enabled: true,
-            catch_all_address: Some("catchy@example.com".to_string()),
+            catch_all_address: Some("catchy@{{alias_domain}}".to_string()),
             sub_addressing: SubAddressing::Enabled,
             ..Default::default()
         })
@@ -52,18 +52,18 @@ pub async fn test(test: &TestServer) {
         .unwrap();
     assert_eq!(
         &domain_cache.names,
-        &Box::from_iter(["example.com".into(), "beispiel.de".into()])
+        &Box::from_iter(["{{alias_domain}}".into(), "beispiel.de".into()])
     );
     assert_eq!(domain_cache.id, domain_id.document_id());
     assert_eq!(
         domain_cache.catch_all.as_deref(),
-        Some("catchy@example.com")
+        Some("catchy@{{alias_domain}}")
     );
 
     // Multiple domains with the same name should not be allowed
     account
         .registry_create_object_expect_err(Domain {
-            name: "example.com".to_string(),
+            name: "{{alias_domain}}".to_string(),
             certificate_management: CertificateManagement::Manual,
             dns_management: DnsManagement::Manual,
             dkim_management: DkimManagement::Manual,
@@ -117,7 +117,7 @@ pub async fn test(test: &TestServer) {
         }))
         .await;
     let account_cache = test.server.account(account_id.document_id()).await.unwrap();
-    assert_eq!(account_cache.name.as_ref(), "johndoe@example.com");
+    assert_eq!(account_cache.name.as_ref(), "johndoe@{{alias_domain}}");
     assert_eq!(
         account_cache.description.as_deref(),
         Some("John 'Johnny-D' Doe")
@@ -191,7 +191,7 @@ pub async fn test(test: &TestServer) {
         }))
         .await;
     let account_cache = test.server.account(group_id.document_id()).await.unwrap();
-    assert_eq!(account_cache.name.as_ref(), "sales@example.com");
+    assert_eq!(account_cache.name.as_ref(), "sales@{{alias_domain}}");
     assert!(account_cache.flags & ACCOUNT_IS_USER == 0);
     account
         .registry_update_object(
@@ -241,7 +241,7 @@ pub async fn test(test: &TestServer) {
 
     // Create a masked email
     let john = crate::utils::account::Account::new(
-        "johndoe@example.com",
+        "johndoe@{{alias_domain}}",
         "hello world",
         &[],
         "John",
@@ -260,7 +260,7 @@ pub async fn test(test: &TestServer) {
     let masked_email = masked.text_field("email").to_string();
     assert_eq!(
         test.server
-            .account_id_from_email("johndoe@example.com", true)
+            .account_id_from_email("johndoe@{{alias_domain}}", true)
             .await
             .unwrap(),
         Some(account_id.document_id())
@@ -278,7 +278,7 @@ pub async fn test(test: &TestServer) {
         .registry_create_object(MailingList {
             name: "newsletter".to_string(),
             domain_id,
-            recipients: Map::new(vec!["jdoe@example.com".to_string()]),
+            recipients: Map::new(vec!["jdoe@{{alias_domain}}".to_string()]),
             ..Default::default()
         })
         .await;
@@ -290,7 +290,7 @@ pub async fn test(test: &TestServer) {
         .unwrap();
     assert_eq!(
         &list_cache.recipients,
-        &Arc::from(Box::from_iter(["jdoe@example.com".into()]))
+        &Arc::from(Box::from_iter(["jdoe@{{alias_domain}}".into()]))
     );
 
     // Update mailing list
@@ -299,7 +299,7 @@ pub async fn test(test: &TestServer) {
             ObjectType::MailingList,
             list_id,
             json!({
-                "recipients/sales@example.com": true
+                "recipients/sales@{{alias_domain}}": true
             }),
         )
         .await;
@@ -312,19 +312,19 @@ pub async fn test(test: &TestServer) {
     assert_eq!(
         &list_cache.recipients,
         &Arc::from(Box::from_iter([
-            "jdoe@example.com".into(),
-            "sales@example.com".into()
+            "jdoe@{{alias_domain}}".into(),
+            "sales@{{alias_domain}}".into()
         ]))
     );
 
     // Verify RCPT expansion
     for (address, expected) in [
         (
-            "johndoe@example.com",
+            "johndoe@{{alias_domain}}",
             EmailCache::Account(account_id.document_id()),
         ),
         (
-            "jdoe@example.com",
+            "jdoe@{{alias_domain}}",
             EmailCache::Account(account_id.document_id()),
         ),
         (
@@ -336,7 +336,7 @@ pub async fn test(test: &TestServer) {
             EmailCache::Account(account_id.document_id()),
         ),
         (
-            "sales@example.com",
+            "sales@{{alias_domain}}",
             EmailCache::Account(group_id.document_id()),
         ),
         (
@@ -344,7 +344,7 @@ pub async fn test(test: &TestServer) {
             EmailCache::Account(group_id.document_id()),
         ),
         (
-            "newsletter@example.com",
+            "newsletter@{{alias_domain}}",
             EmailCache::MailingList(list_id.document_id()),
         ),
         (
@@ -360,7 +360,7 @@ pub async fn test(test: &TestServer) {
     }
     assert_eq!(
         test.server
-            .rcpt_id_from_email("unknown@example.com")
+            .rcpt_id_from_email("unknown@{{alias_domain}}")
             .await
             .unwrap(),
         None
@@ -376,7 +376,7 @@ pub async fn test(test: &TestServer) {
     // MTA rcpt resolve
     let domain_2_id = account
         .registry_create_object(Domain {
-            name: "another-example.com".to_string(),
+            name: "another-{{alias_domain}}".to_string(),
             is_enabled: true,
             certificate_management: CertificateManagement::Manual,
             dns_management: DnsManagement::Manual,
@@ -413,7 +413,7 @@ pub async fn test(test: &TestServer) {
     );
     assert_eq!(
         test.server
-            .rcpt_resolve("jdoe@example.com", 0)
+            .rcpt_resolve("jdoe@{{alias_domain}}", 0)
             .await
             .unwrap(),
         RcptResolution::Accept
@@ -427,45 +427,45 @@ pub async fn test(test: &TestServer) {
     );
     assert_eq!(
         test.server
-            .rcpt_resolve("sales@example.com", 0)
+            .rcpt_resolve("sales@{{alias_domain}}", 0)
             .await
             .unwrap(),
         RcptResolution::Accept
     );
     assert_eq!(
         test.server
-            .rcpt_resolve("jdoe+promotions@example.com", 0)
+            .rcpt_resolve("jdoe+promotions@{{alias_domain}}", 0)
             .await
             .unwrap(),
-        RcptResolution::Rewrite("jdoe@example.com".into())
+        RcptResolution::Rewrite("jdoe@{{alias_domain}}".into())
     );
     assert_eq!(
         test.server
-            .rcpt_resolve("newsletter@example.com", 0)
+            .rcpt_resolve("newsletter@{{alias_domain}}", 0)
             .await
             .unwrap(),
         RcptResolution::Expand(Arc::from(Box::from_iter([
-            "jdoe@example.com".into(),
-            "sales@example.com".into()
+            "jdoe@{{alias_domain}}".into(),
+            "sales@{{alias_domain}}".into()
         ])))
     );
     assert_eq!(
         test.server
-            .rcpt_resolve("unknown@example.com", 0)
+            .rcpt_resolve("unknown@{{alias_domain}}", 0)
             .await
             .unwrap(),
-        RcptResolution::Rewrite("catchy@example.com".into())
+        RcptResolution::Rewrite("catchy@{{alias_domain}}".into())
     );
     assert_eq!(
         test.server
-            .rcpt_resolve("subaddresser.ignoreme@another-example.com", 0)
+            .rcpt_resolve("subaddresser.ignoreme@another-{{alias_domain}}", 0)
             .await
             .unwrap(),
-        RcptResolution::Rewrite("subaddresser@another-example.com".into())
+        RcptResolution::Rewrite("subaddresser@another-{{alias_domain}}".into())
     );
     assert_eq!(
         test.server
-            .rcpt_resolve("unknown@another-example.com", 0)
+            .rcpt_resolve("unknown@another-{{alias_domain}}", 0)
             .await
             .unwrap(),
         RcptResolution::UnknownRecipient
@@ -475,7 +475,7 @@ pub async fn test(test: &TestServer) {
             .rcpt_resolve(masked_email.as_str(), 0)
             .await
             .unwrap(),
-        RcptResolution::Rewrite("johndoe@example.com".into())
+        RcptResolution::Rewrite("johndoe@{{alias_domain}}".into())
     );
 
     // Query tests
@@ -483,7 +483,7 @@ pub async fn test(test: &TestServer) {
         account
             .registry_query_ids(
                 ObjectType::Domain,
-                [(Property::Name, "example.com")],
+                [(Property::Name, "{{alias_domain}}")],
                 [Property::Name]
             )
             .await,
@@ -541,10 +541,10 @@ pub async fn test(test: &TestServer) {
             .unwrap()
             .is_none()
     );
-    assert!(test.server.domain("example.com").await.unwrap().is_none());
+    assert!(test.server.domain("{{alias_domain}}").await.unwrap().is_none());
     assert!(
         test.server
-            .domain("another-example.com")
+            .domain("another-{{alias_domain}}")
             .await
             .unwrap()
             .is_none()

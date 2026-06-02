@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -14,7 +14,7 @@ use types::{collection::Collection, field::PrincipalField};
 
 pub async fn test(test: &TestServer) {
     println!("Running Participant Identity tests...");
-    let account = test.account("jdoe@example.com");
+    let account = test.account("jdoe@{{alias_domain}}");
 
     // Obtain all identities
     let response = account
@@ -33,13 +33,13 @@ pub async fn test(test: &TestServer) {
       {
         "id": "a",
         "name": "John Doe",
-        "calendarAddress": "mailto:jdoe@example.com",
+        "calendarAddress": "mailto:jdoe@{{alias_domain}}",
         "isDefault": true
       },
       {
         "id": "b",
         "name": "John Doe",
-        "calendarAddress": "mailto:john.doe@example.com",
+        "calendarAddress": "mailto:john.doe@{{alias_domain}}",
         "isDefault": false
       }
     ]));
@@ -69,7 +69,7 @@ pub async fn test(test: &TestServer) {
       {
         "id": "a",
         "name": "John Doe",
-        "calendarAddress": "mailto:jdoe@example.com",
+        "calendarAddress": "mailto:jdoe@{{alias_domain}}",
         "isDefault": true
       }
     ]));
@@ -81,11 +81,11 @@ pub async fn test(test: &TestServer) {
             [
                 json!({
                     "name": "Work",
-                    "calendarAddress": "mailto:work@example.com"
+                    "calendarAddress": "mailto:work@{{alias_domain}}"
                 }),
                 json!({
                     "name": "Work",
-                    "calendarAddress": "work@example.com"
+                    "calendarAddress": "work@{{alias_domain}}"
                 }),
             ],
             [("onSuccessSetIsDefault", "#i0")],
@@ -106,7 +106,7 @@ pub async fn test(test: &TestServer) {
             MethodObject::ParticipantIdentity,
             [json!({
                 "name": "Johnny B Goode",
-                "calendarAddress": "mailto:john.doe@example.com"
+                "calendarAddress": "mailto:john.doe@{{alias_domain}}"
             })],
             [("onSuccessSetIsDefault", "#i0")],
         )
@@ -128,13 +128,13 @@ pub async fn test(test: &TestServer) {
       {
         "id": "a",
         "name": "John Doe",
-        "calendarAddress": "mailto:jdoe@example.com",
+        "calendarAddress": "mailto:jdoe@{{alias_domain}}",
         "isDefault": false
       },
       {
         "id": "b",
         "name": "Johnny B Goode",
-        "calendarAddress": "mailto:john.doe@example.com",
+        "calendarAddress": "mailto:john.doe@{{alias_domain}}",
         "isDefault": true
       }
     ]));

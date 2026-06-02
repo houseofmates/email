@@ -9,7 +9,7 @@
          <C:comp-filter name="VEVENT">
            <C:prop-filter name="ATTENDEE">
              <C:text-match collation="i;ascii-casemap"
-              >mailto:lisa@example.com</C:text-match>
+              >mailto:lisa@{{alias_domain}}</C:text-match>
              <C:param-filter name="PARTSTAT">
                <C:text-match collation="i;ascii-casemap"
                 >NEEDS-ACTION</C:text-match>

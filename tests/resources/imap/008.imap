@@ -7,21 +7,21 @@ BODY (
       "message" "rfc822" NIL NIL NIL "base64" 1179 (
          "Tue, 14 Dec 2021 11:48:25 +0100" "HTML test" (
             (
-               "Name" NIL "email" "example.com"
+               "Name" NIL "email" "{{alias_domain}}"
             )
          ) (
             (
-               "Name" NIL "email" "example.com"
+               "Name" NIL "email" "{{alias_domain}}"
             )
          ) (
             (
-               "Name" NIL "email" "example.com"
+               "Name" NIL "email" "{{alias_domain}}"
             )
          ) (
             (
-               "email@example.com" NIL "email" "example.com"
+               "email@{{alias_domain}}" NIL "email" "{{alias_domain}}"
             )
-         ) NIL NIL NIL "<random-message-id@example.com>"
+         ) NIL NIL NIL "<random-message-id@{{alias_domain}}>"
       ) (
          (
             "text" "plain" (
@@ -45,21 +45,21 @@ BODYSTRUCTURE (
       "message" "rfc822" NIL NIL NIL "base64" 1179 (
          "Tue, 14 Dec 2021 11:48:25 +0100" "HTML test" (
             (
-               "Name" NIL "email" "example.com"
+               "Name" NIL "email" "{{alias_domain}}"
             )
          ) (
             (
-               "Name" NIL "email" "example.com"
+               "Name" NIL "email" "{{alias_domain}}"
             )
          ) (
             (
-               "Name" NIL "email" "example.com"
+               "Name" NIL "email" "{{alias_domain}}"
             )
          ) (
             (
-               "email@example.com" NIL "email" "example.com"
+               "email@{{alias_domain}}" NIL "email" "{{alias_domain}}"
             )
-         ) NIL NIL NIL "<random-message-id@example.com>"
+         ) NIL NIL NIL "<random-message-id@{{alias_domain}}>"
       ) (
          (
             "text" "plain" (
@@ -257,10 +257,10 @@ YWFhYSINCkNvbnRlbnQtTGFuZ3VhZ2U6IGVuLVVTDQoNClRoaXMgaXMgYSBtdWx
 BINARY.SIZE[2] 872
 ----------------------------------
 BODY[2.HEADER] {319}
-To: "email@example.com" <email@example.com>
-From: Name <email@example.com>
+To: "email@{{alias_domain}}" <email@{{alias_domain}}>
+From: Name <email@{{alias_domain}}>
 Subject: HTML test
-Message-ID: <random-message-id@example.com>
+Message-ID: <random-message-id@{{alias_domain}}>
 Date: Tue, 14 Dec 2021 11:48:25 +0100
 MIME-Version: 1.0
 Content-Type: multipart/alternative;

@@ -15,7 +15,7 @@
            </D:locktoken>
            <D:lockroot>
              <D:href
-             >http://example.com/workspace/webdav/proposal.doc</D:href>
+             >http://{{alias_domain}}/workspace/webdav/proposal.doc</D:href>
            </D:lockroot>
          </D:activelock>
        </D:lockdiscovery>

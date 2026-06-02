@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -166,13 +166,13 @@ mod tests {
             Some(("token_with_special_chars!@#".to_string(), None))
         );
 
-        let input = "n,a=user@example.com,\x01host=server.example.com\x01port=143\x01auth=Bearer vF9dft4qmTc2Nvb3RlckBhbHRhdmlzdGEuY29tCg==\x01\x01";
+        let input = "n,a=user@{{alias_domain}},\x01host=server.{{alias_domain}}\x01port=143\x01auth=Bearer vF9dft4qmTc2Nvb3RlckBhbHRhdmlzdGEuY29tCg==\x01\x01";
         let result = extract_oauth_bearer(input.as_bytes());
         assert_eq!(
             result,
             Some((
                 "vF9dft4qmTc2Nvb3RlckBhbHRhdmlzdGEuY29tCg==".to_string(),
-                Some("user@example.com".to_string())
+                Some("user@{{alias_domain}}".to_string())
             ))
         );
     }

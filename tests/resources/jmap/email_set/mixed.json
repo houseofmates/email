@@ -25,11 +25,11 @@
             "name": "Friends",
             "addresses": [
                 {
-                    "email": "jane@example.com"
+                    "email": "jane@{{alias_domain}}"
                 },
                 {
                     "name": "John Smîth",
-                    "email": "john@example.com"
+                    "email": "john@{{alias_domain}}"
                 }
             ]
         }

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -21,7 +21,7 @@ pub async fn test(test: &TestServer) {
     test_dir.push("email_get");
 
     let mailbox_id = Id::from(INBOX_ID).to_string();
-    let account = test.account("jdoe@example.com");
+    let account = test.account("jdoe@{{alias_domain}}");
     let client = account.jmap_client().await;
 
     for file_name in fs::read_dir(&test_dir).unwrap() {
@@ -167,7 +167,7 @@ pub async fn test(test: &TestServer) {
     }
 
     test.destroy_all_mailboxes(account).await;
-    test.account("admin@example.com")
+    test.account("admin@{{alias_domain}}")
         .registry_destroy_all(ObjectType::SpamTrainingSample)
         .await;
     test.assert_is_empty().await;

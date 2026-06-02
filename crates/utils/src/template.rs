@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -563,7 +563,7 @@ Best regards"#;
         );
         vars.insert_single(
             CalendarTemplateVariable::ActionUrl,
-            "http://example.com/action".to_string(),
+            "http://{{alias_domain}}/action".to_string(),
         );
         vars.insert_single(
             CalendarTemplateVariable::ActionName,

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -62,7 +62,7 @@ pub async fn test(test: &TestServer) {
     println!("Running E-mail submissions tests...");
     // Start mock SMTP server
     let server = test.server.clone();
-    let account = test.account("jdoe@example.com");
+    let account = test.account("jdoe@{{alias_domain}}");
     let client = account.jmap_client().await;
     let (mut smtp_rx, smtp_settings) = spawn_mock_smtp_server();
     server.ipv4_add(
@@ -72,7 +72,7 @@ pub async fn test(test: &TestServer) {
     );
 
     // Test automatic identity creation
-    for (identity_id, email) in [(2u64, "jdoe@example.com"), (1u64, "john.doe@example.com")] {
+    for (identity_id, email) in [(2u64, "jdoe@{{alias_domain}}"), (1u64, "john.doe@{{alias_domain}}")] {
         let identity = client
             .identity_get(&Id::from(identity_id).to_string(), None)
             .await
@@ -85,12 +85,12 @@ pub async fn test(test: &TestServer) {
     // Users should be allowed to create identities only
     // using email addresses associated to their principal
     let iid1 = client
-        .identity_create("John Doe", "jdoe@example.com")
+        .identity_create("John Doe", "jdoe@{{alias_domain}}")
         .await
         .unwrap()
         .take_id();
     let iid2 = client
-        .identity_create("John Doe (secondary)", "john.doe@example.com")
+        .identity_create("John Doe (secondary)", "john.doe@{{alias_domain}}")
         .await
         .unwrap()
         .take_id();
@@ -118,7 +118,7 @@ pub async fn test(test: &TestServer) {
 
     // Create an identity
     let identity_id = client
-        .identity_create("John Doe (manually created)", "jdoe@example.com")
+        .identity_create("John Doe (manually created)", "jdoe@{{alias_domain}}")
         .await
         .unwrap()
         .take_id();
@@ -138,7 +138,7 @@ pub async fn test(test: &TestServer) {
     // Import an email without any recipients
     let email_id = client
         .email_import(
-            b"From: jdoe@example.com\nSubject: hey\n\ntest".to_vec(),
+            b"From: jdoe@{{alias_domain}}\nSubject: hey\n\ntest".to_vec(),
             [&mailbox_id],
             None::<Vec<&str>>,
             None,
@@ -185,7 +185,7 @@ pub async fn test(test: &TestServer) {
             .email_submission_create_envelope(
                 &email_id,
                 &identity_id,
-                "other_address@example.com",
+                "other_address@{{alias_domain}}",
                 Vec::<Address>::new(),
             )
             .await,
@@ -197,7 +197,7 @@ pub async fn test(test: &TestServer) {
 
     // Submit a valid message submission
     let email_body = concat!(
-        "From: jdoe@example.com\r\n",
+        "From: jdoe@{{alias_domain}}\r\n",
         "To: jane_smith@remote.org\r\n",
         "Bcc: bill@remote.org\r\n",
         "Subject: hey\r\n\r\n",
@@ -223,7 +223,7 @@ pub async fn test(test: &TestServer) {
     assert_message_delivery(
         &mut smtp_rx,
         MockMessage::new(
-            "<jdoe@example.com>",
+            "<jdoe@{{alias_domain}}>",
             ["<bill@remote.org>", "<jane_smith@remote.org>"],
             &email_body,
         ),
@@ -235,7 +235,7 @@ pub async fn test(test: &TestServer) {
         .email_submission_create_envelope(
             &email_id,
             &identity_id,
-            "jdoe@example.com",
+            "jdoe@{{alias_domain}}",
             [
                 "tim@foobar.com", // Should be de-duplicated
                 "tim@foobar.com",
@@ -251,7 +251,7 @@ pub async fn test(test: &TestServer) {
     for _ in 0..3 {
         let mut message = expect_message_delivery(&mut smtp_rx).await;
 
-        assert_eq!(message.mail_from, "<jdoe@example.com>");
+        assert_eq!(message.mail_from, "<jdoe@{{alias_domain}}>");
         let rcpt_to = message.rcpt_to.pop().unwrap();
         assert!(
             [
@@ -301,9 +301,9 @@ pub async fn test(test: &TestServer) {
         .email_submission_create_envelope(
             &email_id,
             &identity_id,
-            "jdoe@example.com",
+            "jdoe@{{alias_domain}}",
             [
-                "nonexistant@example.com",
+                "nonexistant@{{alias_domain}}",
                 "delay@other_domain.com",
                 "fail@test.com",
                 "tim@foobar.com",
@@ -314,7 +314,7 @@ pub async fn test(test: &TestServer) {
         .take_id();
     assert_message_delivery(
         &mut smtp_rx,
-        MockMessage::new("<jdoe@example.com>", ["<tim@foobar.com>"], &email_body),
+        MockMessage::new("<jdoe@{{alias_domain}}>", ["<tim@foobar.com>"], &email_body),
     )
     .await;
     expect_nothing(&mut smtp_rx).await;
@@ -334,7 +334,7 @@ pub async fn test(test: &TestServer) {
         email_submission.delivery_status().unwrap(),
         &AHashMap::from_iter([
             (
-                "nonexistant@example.com".to_string(),
+                "nonexistant@{{alias_domain}}".to_string(),
                 DeliveryStatus::new(
                     "550 5.1.2 Mailbox does not exist.",
                     Delivered::No,
@@ -386,7 +386,7 @@ pub async fn test(test: &TestServer) {
         email_submission.delivery_status().unwrap(),
         &AHashMap::from_iter([
             (
-                "nonexistant@example.com".to_string(),
+                "nonexistant@{{alias_domain}}".to_string(),
                 DeliveryStatus::new(
                     "550 5.1.2 Mailbox does not exist.",
                     Delivered::No,
@@ -416,7 +416,7 @@ pub async fn test(test: &TestServer) {
         .email_submission_create_envelope(
             &email_id,
             &identity_id,
-            Address::new("jdoe@example.com").parameter("HOLDUNTIL", Some(hold_until.to_string())),
+            Address::new("jdoe@{{alias_domain}}").parameter("HOLDUNTIL", Some(hold_until.to_string())),
             ["jane_smith@remote.org"],
         )
         .await

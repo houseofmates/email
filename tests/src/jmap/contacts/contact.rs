@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -18,7 +18,7 @@ use types::{collection::SyncCollection, id::Id};
 
 pub async fn test(test: &TestServer) {
     println!("Running Contact Card tests...");
-    let account = test.account("jdoe@example.com");
+    let account = test.account("jdoe@{{alias_domain}}");
 
     // Create test address books
     let response = account
@@ -339,7 +339,7 @@ pub async fn test(test: &TestServer) {
     // Query tests
     test.wait_for_tasks().await;
     let email = if !test.server.search_store().is_mysql() {
-        "sarah.johnson@example.com"
+        "sarah.johnson@{{alias_domain}}"
     } else {
         "sarah.johnson@example"
     };
@@ -541,7 +541,7 @@ fn test_jscontact_1() -> Value {
       },
       "cryptoKeys": {
         "k1": {
-          "uri": "https://pgp.example.com/pks/lookup?op=get&search=sarah.johnson@example.com",
+          "uri": "https://pgp.{{alias_domain}}/pks/lookup?op=get&search=sarah.johnson@{{alias_domain}}",
           "contexts": {
             "pgp": true
           }
@@ -574,13 +574,13 @@ fn test_jscontact_1() -> Value {
       },
       "links": {
         "k1": {
-          "uri": "https://www.example.com/staff/sjohnson",
+          "uri": "https://www.{{alias_domain}}/staff/sjohnson",
           "contexts": {
             "work": true
           }
         },
         "k2": {
-          "uri": "https://www.sarahjohnson.example.com",
+          "uri": "https://www.sarahjohnson.{{alias_domain}}",
           "contexts": {
             "private": true
           }
@@ -598,13 +598,13 @@ fn test_jscontact_1() -> Value {
       },
       "emails": {
         "k1": {
-          "address": "sarah.johnson@example.com",
+          "address": "sarah.johnson@{{alias_domain}}",
           "contexts": {
             "work": true
           }
         },
         "k2": {
-          "address": "sarahjpersonal@example.com",
+          "address": "sarahjpersonal@{{alias_domain}}",
           "contexts": {
             "private": true,
             "pref": true
@@ -852,13 +852,13 @@ fn test_jscontact_2() -> Value {
       },
       "directories": {
         "k1": {
-          "uri": "https://contacts.example.com/carlosrodriguez.vcf",
+          "uri": "https://contacts.{{alias_domain}}/carlosrodriguez.vcf",
           "kind": "entry"
         }
       },
       "cryptoKeys": {
         "k1": {
-          "uri": "https://pgp.example.com/pks/lookup?op=get&search=carlos.rodriguez@example-corp.com",
+          "uri": "https://pgp.{{alias_domain}}/pks/lookup?op=get&search=carlos.rodriguez@example-corp.com",
           "contexts": {
             "pgp": true
           }
@@ -1032,13 +1032,13 @@ fn test_jscontact_3() -> Value {
       },
       "directories": {
         "k1": {
-          "uri": "https://directory.example.com/acme.vcf",
+          "uri": "https://directory.{{alias_domain}}/acme.vcf",
           "kind": "entry"
         }
       },
       "cryptoKeys": {
         "k1": {
-          "uri": "https://pgp.example.com/pks/lookup?op=get&search=info@acme-solutions.example",
+          "uri": "https://pgp.{{alias_domain}}/pks/lookup?op=get&search=info@acme-solutions.example",
           "contexts": {
             "pgp": true
           }
@@ -1209,16 +1209,16 @@ LANG;TYPE=WORK;PREF=1;PROP-ID=k1:en
 LANG;TYPE=WORK;PREF=2;PROP-ID=k2:fr
 FN:Sarah O'Connor
 N;JSCOMPS=";0;1;2;3;4":O'Connor;Sarah;Marie;Dr.;Ph.D.;;
-KEY;TYPE=PGP;PROP-ID=k1:https://pgp.example.com/pks/lookup?op=get&search=sar
- ah.johnson@example.com
+KEY;TYPE=PGP;PROP-ID=k1:https://pgp.{{alias_domain}}/pks/lookup?op=get&search=sar
+ ah.johnson@{{alias_domain}}
 CATEGORIES:Work,Research,VIP
 BDAY;PROP-ID=k1:19850415
 ANNIVERSARY;PROP-ID=k2:20100610
-URL;TYPE=WORK;PROP-ID=k1:https://www.example.com/staff/sjohnson
-URL;TYPE=HOME;PROP-ID=k2:https://www.sarahjohnson.example.com
+URL;TYPE=WORK;PROP-ID=k1:https://www.{{alias_domain}}/staff/sjohnson
+URL;TYPE=HOME;PROP-ID=k2:https://www.sarahjohnson.{{alias_domain}}
 ORG;PROP-ID=k1:Acme Technologies Inc.;Research Department
-EMAIL;TYPE=WORK;PROP-ID=k1:sarah.johnson@example.com
-EMAIL;TYPE=HOME,PREF;PROP-ID=k2:sarahjpersonal@example.com
+EMAIL;TYPE=WORK;PROP-ID=k1:sarah.johnson@{{alias_domain}}
+EMAIL;TYPE=HOME,PREF;PROP-ID=k2:sarahjpersonal@{{alias_domain}}
 TEL;TYPE=PREF,CELL,VOICE;PROP-ID=k1:+1-555-123-4567
 TEL;TYPE=WORK,VOICE;PROP-ID=k2:+1-555-987-6543
 TEL;TYPE=HOME,VOICE;PROP-ID=k3:+1-555-456-7890

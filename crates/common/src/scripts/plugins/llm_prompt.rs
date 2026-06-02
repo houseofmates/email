@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -16,7 +16,7 @@ pub fn register(plugin_id: u32, fnc_map: &mut FunctionMap) {
 
 pub async fn exec(ctx: PluginContext<'_>) -> trc::Result<Variable> {
     // SPDX-SnippetBegin
-    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
     // SPDX-License-Identifier: LicenseRef-SEL
 
     #[cfg(feature = "enterprise")]

@@ -1,16 +1,19 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect, createContext, useContext } from "react"
 import Login from "./login"
-import Dashboard from "./dashboard"
+import Inbox from "./inbox"
+import Passwords from "./passwords"
 import Aliases from "./aliases"
-import Identities from "./identities"
-import Credentials from "./credentials"
-import Calendar from "./calendar"
-import Contacts from "./contacts"
-import Drive from "./drive"
+import Settings from "./settings"
+
+export const AuthContext = createContext(null)
+
+export function useAuth() {
+  return useContext(AuthContext)
+}
 
 export default function App() {
   const [authed, setAuthed] = useState(false)
-  const [page, setPage] = useState("dashboard")
+  const [page, setPage] = useState("inbox")
   const [credentials, setCredentials] = useState(null)
 
   const authHeader = useMemo(() => {
@@ -18,29 +21,48 @@ export default function App() {
     return "Basic " + btoa(`${credentials.email}:${credentials.password}`)
   }, [credentials])
 
+  // restore session from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("email_creds")
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        setCredentials(parsed)
+        setAuthed(true)
+      }
+    } catch { /* not restored */ }
+  }, [])
+
   function handleLogin(creds) {
     setCredentials(creds)
     setAuthed(true)
+    setPage("inbox")
+    try {
+      localStorage.setItem("email_creds", JSON.stringify(creds))
+    } catch { /* storage fail */ }
   }
 
   function handleLogout() {
     setAuthed(false)
     setCredentials(null)
-    setPage("dashboard")
+    setPage("inbox")
+    try {
+      localStorage.removeItem("email_creds")
+    } catch { /* storage fail */ }
   }
+
+  const auth = { authed, authHeader, credentials, onLogout: handleLogout, onNavigate: setPage }
 
   if (!authed) return <Login onLogin={handleLogin} />
 
-  const userEmail = credentials?.email || ""
-  const shared = { onNavigate: setPage, onLogout: handleLogout, authHeader }
-  const dav = { onNavigate: setPage, onLogout: handleLogout, userEmail }
+  const shared = { authHeader, onNavigate: setPage, onLogout: handleLogout, userEmail: credentials?.email || "" }
 
-  if (page === "aliases") return <Aliases {...shared} />
-  if (page === "identities") return <Identities {...shared} />
-  if (page === "passwords") return <Credentials {...shared} />
-  if (page === "calendar") return <Calendar {...dav} />
-  if (page === "contacts") return <Contacts {...dav} />
-  if (page === "drive") return <Drive {...dav} />
-
-  return <Dashboard {...shared} userEmail={userEmail} />
+  return (
+    <AuthContext.Provider value={auth}>
+      {page === "inbox" && <Inbox {...shared} />}
+      {page === "passwords" && <Passwords {...shared} />}
+      {page === "aliases" && <Aliases {...shared} />}
+      {page === "settings" && <Settings {...shared} />}
+    </AuthContext.Provider>
+  )
 }

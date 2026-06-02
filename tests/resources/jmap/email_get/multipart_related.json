@@ -8,18 +8,18 @@
   "size": 11304,
   "receivedAt": "2328-03-18T08:00:00Z",
   "messageId": [
-    "4.2.0.58.20000519003556.00a918e0@pop.example.com"
+    "4.2.0.58.20000519003556.00a918e0@pop.{{alias_domain}}"
   ],
   "from": [
     {
       "name": "Doug Sauder",
-      "email": "dwsauder@example.com"
+      "email": "dwsauder@{{alias_domain}}"
     }
   ],
   "to": [
     {
       "name": "Heinz Muller",
-      "email": "mueller@example.com"
+      "email": "mueller@{{alias_domain}}"
     }
   ],
   "subject": "Die Hasen und die Frosche",
@@ -28,11 +28,11 @@
     "headers": [
       {
         "name": "Message-ID",
-        "value": " <4.2.0.58.20000519003556.00a918e0@pop.example.com>"
+        "value": " <4.2.0.58.20000519003556.00a918e0@pop.{{alias_domain}}>"
       },
       {
         "name": "X-Sender",
-        "value": " dwsauder@pop.example.com (Unverified)"
+        "value": " dwsauder@pop.{{alias_domain}} (Unverified)"
       },
       {
         "name": "X-Mailer",
@@ -48,11 +48,11 @@
       },
       {
         "name": "To",
-        "value": " Heinz =?iso-8859-1?Q?Muller?= <mueller@example.com>"
+        "value": " Heinz =?iso-8859-1?Q?Muller?= <mueller@{{alias_domain}}>"
       },
       {
         "name": "From",
-        "value": " Doug Sauder <dwsauder@example.com>"
+        "value": " Doug Sauder <dwsauder@{{alias_domain}}>"
       },
       {
         "name": "Subject",
@@ -134,7 +134,7 @@
               },
               {
                 "name": "Content-ID",
-                "value": " <4.2.0.58.20000519003556.00a918e0@pop.example.com.2>"
+                "value": " <4.2.0.58.20000519003556.00a918e0@pop.{{alias_domain}}.2>"
               },
               {
                 "name": "Content-Transfer-Encoding",
@@ -148,7 +148,7 @@
             "name": "2aa3ed95.png",
             "type": "image/png",
             "disposition": "inline",
-            "cid": "4.2.0.58.20000519003556.00a918e0@pop.example.com.2"
+            "cid": "4.2.0.58.20000519003556.00a918e0@pop.{{alias_domain}}.2"
           },
           {
             "partId": "6",
@@ -161,7 +161,7 @@
               },
               {
                 "name": "Content-ID",
-                "value": " <4.2.0.58.20000519003556.00a918e0@pop.example.com.3>"
+                "value": " <4.2.0.58.20000519003556.00a918e0@pop.{{alias_domain}}.3>"
               },
               {
                 "name": "Content-Transfer-Encoding",
@@ -175,7 +175,7 @@
             "name": "2aa3edd1.png",
             "type": "image/png",
             "disposition": "inline",
-            "cid": "4.2.0.58.20000519003556.00a918e0@pop.example.com.3"
+            "cid": "4.2.0.58.20000519003556.00a918e0@pop.{{alias_domain}}.3"
           }
         ]
       },
@@ -287,7 +287,7 @@
         },
         {
           "name": "Content-ID",
-          "value": " <4.2.0.58.20000519003556.00a918e0@pop.example.com.2>"
+          "value": " <4.2.0.58.20000519003556.00a918e0@pop.{{alias_domain}}.2>"
         },
         {
           "name": "Content-Transfer-Encoding",
@@ -301,7 +301,7 @@
       "name": "2aa3ed95.png",
       "type": "image/png",
       "disposition": "inline",
-      "cid": "4.2.0.58.20000519003556.00a918e0@pop.example.com.2"
+      "cid": "4.2.0.58.20000519003556.00a918e0@pop.{{alias_domain}}.2"
     },
     {
       "partId": "6",
@@ -314,7 +314,7 @@
         },
         {
           "name": "Content-ID",
-          "value": " <4.2.0.58.20000519003556.00a918e0@pop.example.com.3>"
+          "value": " <4.2.0.58.20000519003556.00a918e0@pop.{{alias_domain}}.3>"
         },
         {
           "name": "Content-Transfer-Encoding",
@@ -328,7 +328,7 @@
       "name": "2aa3edd1.png",
       "type": "image/png",
       "disposition": "inline",
-      "cid": "4.2.0.58.20000519003556.00a918e0@pop.example.com.3"
+      "cid": "4.2.0.58.20000519003556.00a918e0@pop.{{alias_domain}}.3"
     },
     {
       "partId": "7",

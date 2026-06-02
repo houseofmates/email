@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -158,27 +158,27 @@ mod tests {
     const EXAMPLE_JSON: &str = r#"{
     "protocols": {
         "jmap": {
-            "url": "https://jmap.example.com/session"
+            "url": "https://jmap.{{alias_domain}}/session"
         },
         "imap": {
-            "host": "imap.example.com"
+            "host": "imap.{{alias_domain}}"
         },
         "pop3": {
-            "host": "pop3.example.com"
+            "host": "pop3.{{alias_domain}}"
         },
         "smtp": {
-            "host": "smtp.example.com"
+            "host": "smtp.{{alias_domain}}"
         },
         "caldav": {
-            "url": "https://sync.example.com/calendar/"
+            "url": "https://sync.{{alias_domain}}/calendar/"
         },
         "carddav": {
-            "url": "https://sync.example.com/contacts/"
+            "url": "https://sync.{{alias_domain}}/contacts/"
         }
     },
     "authentication": {
         "oauth-public": {
-            "issuer": "https://auth.example.com/"
+            "issuer": "https://auth.{{alias_domain}}/"
         },
         "password": true
     },
@@ -209,27 +209,27 @@ mod tests {
         // Protocols
         assert_eq!(
             config.protocols.jmap.as_ref().unwrap().url,
-            "https://jmap.example.com/session"
+            "https://jmap.{{alias_domain}}/session"
         );
         assert_eq!(
             config.protocols.imap.as_ref().unwrap().host,
-            "imap.example.com"
+            "imap.{{alias_domain}}"
         );
         assert_eq!(
             config.protocols.smtp.as_ref().unwrap().host,
-            "smtp.example.com"
+            "smtp.{{alias_domain}}"
         );
         assert_eq!(
             config.protocols.pop3.as_ref().unwrap().host,
-            "pop3.example.com"
+            "pop3.{{alias_domain}}"
         );
         assert_eq!(
             config.protocols.caldav.as_ref().unwrap().url,
-            "https://sync.example.com/calendar/"
+            "https://sync.{{alias_domain}}/calendar/"
         );
         assert_eq!(
             config.protocols.carddav.as_ref().unwrap().url,
-            "https://sync.example.com/contacts/"
+            "https://sync.{{alias_domain}}/contacts/"
         );
         assert!(config.protocols.webdav.is_none());
         assert!(config.protocols.managesieve.is_none());
@@ -239,7 +239,7 @@ mod tests {
         assert!(auth.password);
         assert_eq!(
             auth.oauth_public.as_ref().unwrap().issuer,
-            "https://auth.example.com/"
+            "https://auth.{{alias_domain}}/"
         );
 
         // Info
@@ -292,8 +292,8 @@ mod tests {
     fn ignores_unknown_properties() {
         let json = r#"{
             "protocols": {
-                "imap": { "host": "imap.example.com" },
-                "future-protocol": { "endpoint": "wss://example.com" }
+                "imap": { "host": "imap.{{alias_domain}}" },
+                "future-protocol": { "endpoint": "wss://{{alias_domain}}" }
             },
             "info": {
                 "provider": { "name": "Test" }
@@ -303,7 +303,7 @@ mod tests {
         let config: Configuration = serde_json::from_str(json).expect("should ignore unknowns");
         assert_eq!(
             config.protocols.imap.as_ref().unwrap().host,
-            "imap.example.com"
+            "imap.{{alias_domain}}"
         );
     }
 
@@ -316,17 +316,17 @@ mod tests {
                     "name": "Test",
                     "logo": [
                         {
-                            "url": "https://example.com/logo.svg",
+                            "url": "https://{{alias_domain}}/logo.svg",
                             "content-type": "image/svg+xml"
                         },
                         {
-                            "url": "https://example.com/logo-128.png",
+                            "url": "https://{{alias_domain}}/logo-128.png",
                             "content-type": "image/png",
                             "width": 128,
                             "height": 128
                         },
                         {
-                            "url": "https://example.com/logo-512.png",
+                            "url": "https://{{alias_domain}}/logo-512.png",
                             "content-type": "image/png",
                             "width": 512,
                             "height": 512
@@ -346,7 +346,7 @@ mod tests {
     #[test]
     fn password_only_auth() {
         let json = r#"{
-            "protocols": { "imap": { "host": "mail.example.com" } },
+            "protocols": { "imap": { "host": "mail.{{alias_domain}}" } },
             "authentication": { "password": true },
             "info": { "provider": { "name": "PW Only" } }
         }"#;

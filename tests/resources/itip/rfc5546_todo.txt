@@ -1,22 +1,22 @@
 # RFC5546 - Todo Request
 
 # A sample todo is sent from "A" to "B", "C", and "D".
-> put a@example.com calsrv.example.com-873970198738777-00@example.com
+> put a@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Example/ExampleCalendarClient//EN
 METHOD:REQUEST
 VERSION:2.0
 BEGIN:VTODO
-ORGANIZER:mailto:a@example.com
-ATTENDEE;ROLE=CHAIR:mailto:a@example.com
-ATTENDEE;RSVP=TRUE:mailto:b@example.com
-ATTENDEE;RSVP=TRUE:mailto:c@example.com
-ATTENDEE;RSVP=TRUE:mailto:d@example.com
+ORGANIZER:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=CHAIR:mailto:a@{{alias_domain}}
+ATTENDEE;RSVP=TRUE:mailto:b@{{alias_domain}}
+ATTENDEE;RSVP=TRUE:mailto:c@{{alias_domain}}
+ATTENDEE;RSVP=TRUE:mailto:d@{{alias_domain}}
 DTSTART:19970701T170000Z
 DUE:19970722T170000Z
 PRIORITY:1
 SUMMARY:Create the requirements document
-UID:calsrv.example.com-873970198738777-00@example.com
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 SEQUENCE:0
 DTSTAMP:19970717T200000Z
 STATUS:NEEDS-ACTION
@@ -24,10 +24,10 @@ END:VTODO
 END:VCALENDAR
 
 > expect
-from: a@example.com
-to: b@example.com, c@example.com, d@example.com
+from: a@{{alias_domain}}
+to: b@{{alias_domain}}, c@{{alias_domain}}, d@{{alias_domain}}
 summary: invite
-summary.attendee: Participants([ItipParticipant { email: "a@example.com", name: None, is_organizer: true }, ItipParticipant { email: "b@example.com", name: None, is_organizer: false }, ItipParticipant { email: "c@example.com", name: None, is_organizer: false }, ItipParticipant { email: "d@example.com", name: None, is_organizer: false }])
+summary.attendee: Participants([ItipParticipant { email: "a@{{alias_domain}}", name: None, is_organizer: true }, ItipParticipant { email: "b@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "c@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "d@{{alias_domain}}", name: None, is_organizer: false }])
 summary.dtstart: Time(ItipTime { start: 867776400, tz_id: 32768 })
 summary.summary: Text("Create the requirements document")
 BEGIN:VCALENDAR
@@ -40,12 +40,12 @@ STATUS:NEEDS-ACTION
 SUMMARY:Create the requirements document
 DUE:19970722T170000Z
 DTSTART:19970701T170000Z
-ATTENDEE;ROLE=CHAIR;PARTSTAT=NEEDS-ACTION:mailto:a@example.com
-ATTENDEE;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:mailto:b@example.com
-ATTENDEE;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:mailto:c@example.com
-ATTENDEE;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:mailto:d@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777-00@example.com
+ATTENDEE;ROLE=CHAIR;PARTSTAT=NEEDS-ACTION:mailto:a@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:mailto:b@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:mailto:c@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:mailto:d@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:1
 END:VTODO
@@ -55,7 +55,7 @@ END:VCALENDAR
 > send
 
 # Make sure B received the todo
-> get b@example.com calsrv.example.com-873970198738777-00@example.com
+> get b@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Stalwart Labs LLC//Stalwart Server//EN
 VERSION:2.0
@@ -65,26 +65,26 @@ STATUS:NEEDS-ACTION
 SUMMARY:Create the requirements document
 DUE:19970722T170000Z
 DTSTART:19970701T170000Z
-ATTENDEE;ROLE=CHAIR;PARTSTAT=NEEDS-ACTION:mailto:a@example.com
-ATTENDEE;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:mailto:b@example.com
-ATTENDEE;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:mailto:c@example.com
-ATTENDEE;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:mailto:d@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777-00@example.com
+ATTENDEE;ROLE=CHAIR;PARTSTAT=NEEDS-ACTION:mailto:a@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:mailto:b@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:mailto:c@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;PARTSTAT=NEEDS-ACTION:mailto:d@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:1
 END:VTODO
 END:VCALENDAR
 
 # "B" accepts the to-do.
-> put b@example.com calsrv.example.com-873970198738777-00@example.com
+> put b@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Example/ExampleCalendarClient//EN
 VERSION:2.0
 BEGIN:VTODO
-ORGANIZER:mailto:a@example.com
-ATTENDEE;PARTSTAT=ACCEPTED:mailto:b@example.com
-UID:calsrv.example.com-873970198738777-00@example.com
+ORGANIZER:mailto:a@{{alias_domain}}
+ATTENDEE;PARTSTAT=ACCEPTED:mailto:b@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 COMMENT:I'll send you my input by email
 SEQUENCE:1
 PRIORITY:1
@@ -96,10 +96,10 @@ END:VTODO
 END:VCALENDAR
 
 > expect
-from: b@example.com
-to: a@example.com
+from: b@{{alias_domain}}
+to: a@{{alias_domain}}
 summary: rsvp ACCEPTED
-summary.attendee: Participants([ItipParticipant { email: "a@example.com", name: None, is_organizer: true }, ItipParticipant { email: "b@example.com", name: None, is_organizer: false }])
+summary.attendee: Participants([ItipParticipant { email: "a@{{alias_domain}}", name: None, is_organizer: true }, ItipParticipant { email: "b@{{alias_domain}}", name: None, is_organizer: false }])
 summary.dtstart: Time(ItipTime { start: 867776400, tz_id: 32768 })
 BEGIN:VCALENDAR
 METHOD:REPLY
@@ -109,9 +109,9 @@ BEGIN:VTODO
 STATUS:IN-PROCESS
 DUE:19970722T170000Z
 DTSTART:19970701T170000Z
-ATTENDEE;PARTSTAT=ACCEPTED:mailto:b@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777-00@example.com
+ATTENDEE;PARTSTAT=ACCEPTED:mailto:b@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:1
 REQUEST-STATUS:2.0;Success
@@ -122,7 +122,7 @@ END:VCALENDAR
 > send
 
 # Make sure "A" received the reply
-> get a@example.com calsrv.example.com-873970198738777-00@example.com
+> get a@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 BEGIN:VCALENDAR
 METHOD:REQUEST
 PRODID:-//Example/ExampleCalendarClient//EN
@@ -133,27 +133,27 @@ STATUS:IN-PROCESS
 SUMMARY:Create the requirements document
 DUE:19970722T170000Z
 DTSTART:19970701T170000Z
-ATTENDEE;PARTSTAT=ACCEPTED;SCHEDULE-STATUS=2.0:mailto:b@example.com
-ATTENDEE;ROLE=CHAIR:mailto:a@example.com
-ATTENDEE;RSVP=TRUE:mailto:c@example.com
-ATTENDEE;RSVP=TRUE:mailto:d@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777-00@example.com
+ATTENDEE;PARTSTAT=ACCEPTED;SCHEDULE-STATUS=2.0:mailto:b@{{alias_domain}}
+ATTENDEE;ROLE=CHAIR:mailto:a@{{alias_domain}}
+ATTENDEE;RSVP=TRUE:mailto:c@{{alias_domain}}
+ATTENDEE;RSVP=TRUE:mailto:d@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 DTSTAMP:1
 SEQUENCE:1
 END:VTODO
 END:VCALENDAR
 
 # "B" updates percent completion of the to-do.
-> put b@example.com calsrv.example.com-873970198738777-00@example.com
+> put b@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Example/ExampleCalendarClient//EN
 VERSION:2.0
 BEGIN:VTODO
-ORGANIZER:mailto:a@example.com
+ORGANIZER:mailto:a@{{alias_domain}}
 PERCENT-COMPLETE:75
-ATTENDEE;PARTSTAT=IN-PROCESS:mailto:b@example.com
-UID:calsrv.example.com-873970198738777-00@example.com
+ATTENDEE;PARTSTAT=IN-PROCESS:mailto:b@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 COMMENT:I'll send you my input by email
 SEQUENCE:1
 PRIORITY:1
@@ -165,10 +165,10 @@ END:VTODO
 END:VCALENDAR
 
 > expect
-from: b@example.com
-to: a@example.com
+from: b@{{alias_domain}}
+to: a@{{alias_domain}}
 summary: rsvp IN-PROCESS
-summary.attendee: Participants([ItipParticipant { email: "a@example.com", name: None, is_organizer: true }, ItipParticipant { email: "b@example.com", name: None, is_organizer: false }])
+summary.attendee: Participants([ItipParticipant { email: "a@{{alias_domain}}", name: None, is_organizer: true }, ItipParticipant { email: "b@{{alias_domain}}", name: None, is_organizer: false }])
 summary.dtstart: Time(ItipTime { start: 867776400, tz_id: 32768 })
 BEGIN:VCALENDAR
 METHOD:REPLY
@@ -179,9 +179,9 @@ PERCENT-COMPLETE:75
 STATUS:IN-PROCESS
 DUE:19970722T170000Z
 DTSTART:19970701T170000Z
-ATTENDEE;PARTSTAT=IN-PROCESS:mailto:b@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777-00@example.com
+ATTENDEE;PARTSTAT=IN-PROCESS:mailto:b@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:1
 REQUEST-STATUS:2.0;Success
@@ -192,7 +192,7 @@ END:VCALENDAR
 > send
 
 # Make sure "A" received the reply
-> get a@example.com calsrv.example.com-873970198738777-00@example.com
+> get a@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 BEGIN:VCALENDAR
 METHOD:REQUEST
 PRODID:-//Example/ExampleCalendarClient//EN
@@ -204,26 +204,26 @@ STATUS:IN-PROCESS
 SUMMARY:Create the requirements document
 DUE:19970722T170000Z
 DTSTART:19970701T170000Z
-ATTENDEE;PARTSTAT=IN-PROCESS;SCHEDULE-STATUS=2.0:mailto:b@example.com
-ATTENDEE;ROLE=CHAIR:mailto:a@example.com
-ATTENDEE;RSVP=TRUE:mailto:c@example.com
-ATTENDEE;RSVP=TRUE:mailto:d@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777-00@example.com
+ATTENDEE;PARTSTAT=IN-PROCESS;SCHEDULE-STATUS=2.0:mailto:b@{{alias_domain}}
+ATTENDEE;ROLE=CHAIR:mailto:a@{{alias_domain}}
+ATTENDEE;RSVP=TRUE:mailto:c@{{alias_domain}}
+ATTENDEE;RSVP=TRUE:mailto:d@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 DTSTAMP:1
 SEQUENCE:1
 END:VTODO
 END:VCALENDAR
 
 # "D" completed the to-do.
-> put d@example.com calsrv.example.com-873970198738777-00@example.com
+> put d@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Example/ExampleCalendarClient//EN
 VERSION:2.0
 BEGIN:VTODO
-ORGANIZER:mailto:a@example.com
-ATTENDEE;PARTSTAT=COMPLETED:mailto:d@example.com
-UID:calsrv.example.com-873970198738777-00@example.com
+ORGANIZER:mailto:a@{{alias_domain}}
+ATTENDEE;PARTSTAT=COMPLETED:mailto:d@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 COMMENT:I'll send you my input by email
 SEQUENCE:1
 PRIORITY:1
@@ -234,10 +234,10 @@ END:VTODO
 END:VCALENDAR
 
 > expect
-from: d@example.com
-to: a@example.com
+from: d@{{alias_domain}}
+to: a@{{alias_domain}}
 summary: rsvp COMPLETED
-summary.attendee: Participants([ItipParticipant { email: "a@example.com", name: None, is_organizer: true }, ItipParticipant { email: "d@example.com", name: None, is_organizer: false }])
+summary.attendee: Participants([ItipParticipant { email: "a@{{alias_domain}}", name: None, is_organizer: true }, ItipParticipant { email: "d@{{alias_domain}}", name: None, is_organizer: false }])
 summary.dtstart: Time(ItipTime { start: 867776400, tz_id: 32768 })
 BEGIN:VCALENDAR
 METHOD:REPLY
@@ -246,9 +246,9 @@ VERSION:2.0
 BEGIN:VTODO
 DUE:19970722T170000Z
 DTSTART:19970701T170000Z
-ATTENDEE;PARTSTAT=COMPLETED:mailto:d@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777-00@example.com
+ATTENDEE;PARTSTAT=COMPLETED:mailto:d@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:1
 REQUEST-STATUS:2.0;Success
@@ -259,7 +259,7 @@ END:VCALENDAR
 > send
 
 # Make sure "A" received the reply
-> get a@example.com calsrv.example.com-873970198738777-00@example.com
+> get a@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 BEGIN:VCALENDAR
 METHOD:REQUEST
 PRODID:-//Example/ExampleCalendarClient//EN
@@ -271,32 +271,32 @@ STATUS:IN-PROCESS
 SUMMARY:Create the requirements document
 DUE:19970722T170000Z
 DTSTART:19970701T170000Z
-ATTENDEE;PARTSTAT=COMPLETED;SCHEDULE-STATUS=2.0:mailto:d@example.com
-ATTENDEE;PARTSTAT=IN-PROCESS;SCHEDULE-STATUS=2.0:mailto:b@example.com
-ATTENDEE;ROLE=CHAIR:mailto:a@example.com
-ATTENDEE;RSVP=TRUE:mailto:c@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777-00@example.com
+ATTENDEE;PARTSTAT=COMPLETED;SCHEDULE-STATUS=2.0:mailto:d@{{alias_domain}}
+ATTENDEE;PARTSTAT=IN-PROCESS;SCHEDULE-STATUS=2.0:mailto:b@{{alias_domain}}
+ATTENDEE;ROLE=CHAIR:mailto:a@{{alias_domain}}
+ATTENDEE;RSVP=TRUE:mailto:c@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 DTSTAMP:1
 SEQUENCE:1
 END:VTODO
 END:VCALENDAR
 
 # Recurring to-do request
-> put a@example.com calsrv.example.com-873970198738777-00@example.com
+> put a@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Example/ExampleCalendarClient//EN
 VERSION:2.0
 BEGIN:VTODO
-ORGANIZER:mailto:a@example.com
-ATTENDEE;ROLE=CHAIR:mailto:a@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:b@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:d@example.com
+ORGANIZER:mailto:a@{{alias_domain}}
+ATTENDEE;ROLE=CHAIR:mailto:a@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:b@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:d@{{alias_domain}}
 RRULE:FREQ=MONTHLY;COUNT=10;BYDAY=1FR
 DTSTART:19980101T100000Z
 DUE:19980103T100000Z
 SUMMARY:Send Status Reports to Area Managers
-UID:calsrv.example.com-873970198738777-00@example.com
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 SEQUENCE:0
 DTSTAMP:19970717T200000Z
 STATUS:NEEDS-ACTION
@@ -305,14 +305,14 @@ END:VTODO
 END:VCALENDAR
 
 > expect
-from: a@example.com
-to: b@example.com, d@example.com
+from: a@{{alias_domain}}
+to: b@{{alias_domain}}, d@{{alias_domain}}
 summary: update REQUEST
-summary.attendee: Participants([ItipParticipant { email: "a@example.com", name: None, is_organizer: true }, ItipParticipant { email: "b@example.com", name: None, is_organizer: false }, ItipParticipant { email: "d@example.com", name: None, is_organizer: false }])
+summary.attendee: Participants([ItipParticipant { email: "a@{{alias_domain}}", name: None, is_organizer: true }, ItipParticipant { email: "b@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "d@{{alias_domain}}", name: None, is_organizer: false }])
 summary.dtstart: Time(ItipTime { start: 883648800, tz_id: 32768 })
 summary.rrule: Rrule(ICalendarRecurrenceRule { freq: Monthly, until: None, count: Some(10), interval: None, bysecond: [], byminute: [], byhour: [], byday: [ICalendarDay { ordwk: Some(1), weekday: Friday }], bymonthday: [], byyearday: [], byweekno: [], bymonth: [], bysetpos: [], wkst: None, rscale: None, skip: None })
 summary.summary: Text("Send Status Reports to Area Managers")
-~summary.attendee: Participants([ItipParticipant { email: "a@example.com", name: None, is_organizer: true }, ItipParticipant { email: "b@example.com", name: None, is_organizer: false }, ItipParticipant { email: "c@example.com", name: None, is_organizer: false }, ItipParticipant { email: "d@example.com", name: None, is_organizer: false }])
+~summary.attendee: Participants([ItipParticipant { email: "a@{{alias_domain}}", name: None, is_organizer: true }, ItipParticipant { email: "b@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "c@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "d@{{alias_domain}}", name: None, is_organizer: false }])
 ~summary.dtstart: Time(ItipTime { start: 867776400, tz_id: 32768 })
 ~summary.summary: Text("Create the requirements document")
 BEGIN:VCALENDAR
@@ -325,23 +325,23 @@ STATUS:NEEDS-ACTION
 SUMMARY:Send Status Reports to Area Managers
 DUE:19980103T100000Z
 DTSTART:19980101T100000Z
-ATTENDEE;ROLE=CHAIR;PARTSTAT=NEEDS-ACTION:mailto:a@example.com
+ATTENDEE;ROLE=CHAIR;PARTSTAT=NEEDS-ACTION:mailto:a@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;PARTSTAT=NEEDS-ACTION:mailto:b@example.
  com
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;PARTSTAT=NEEDS-ACTION:mailto:d@example.
  com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777-00@example.com
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 RRULE:FREQ=MONTHLY;COUNT=10;BYDAY=1FR
 DTSTAMP:0
 SEQUENCE:1
 END:VTODO
 END:VCALENDAR
 ================================
-from: a@example.com
-to: c@example.com
+from: a@{{alias_domain}}
+to: c@{{alias_domain}}
 summary: cancel
-summary.attendee: Participants([ItipParticipant { email: "a@example.com", name: None, is_organizer: true }, ItipParticipant { email: "b@example.com", name: None, is_organizer: false }, ItipParticipant { email: "c@example.com", name: None, is_organizer: false }, ItipParticipant { email: "d@example.com", name: None, is_organizer: false }])
+summary.attendee: Participants([ItipParticipant { email: "a@{{alias_domain}}", name: None, is_organizer: true }, ItipParticipant { email: "b@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "c@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "d@{{alias_domain}}", name: None, is_organizer: false }])
 summary.dtstart: Time(ItipTime { start: 867776400, tz_id: 32768 })
 summary.rrule: Rrule(ICalendarRecurrenceRule { freq: Monthly, until: None, count: Some(10), interval: None, bysecond: [], byminute: [], byhour: [], byday: [ICalendarDay { ordwk: Some(1), weekday: Friday }], bymonthday: [], byyearday: [], byweekno: [], bymonth: [], bysetpos: [], wkst: None, rscale: None, skip: None })
 summary.summary: Text("Create the requirements document")
@@ -354,9 +354,9 @@ STATUS:CANCELLED
 SUMMARY:Create the requirements document
 DUE:19970722T170000Z
 DTSTART:19970701T170000Z
-ATTENDEE;RSVP=TRUE:mailto:c@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777-00@example.com
+ATTENDEE;RSVP=TRUE:mailto:c@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:2
 END:VTODO
@@ -365,7 +365,7 @@ END:VCALENDAR
 > send
 
 # Make sure "C" received the cancel request
-> get c@example.com calsrv.example.com-873970198738777-00@example.com
+> get c@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Stalwart Labs LLC//Stalwart Server//EN
 VERSION:2.0
@@ -375,15 +375,15 @@ STATUS:CANCELLED
 SUMMARY:Create the requirements document
 DUE:19970722T170000Z
 DTSTART:19970701T170000Z
-ATTENDEE;RSVP=TRUE:mailto:c@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777-00@example.com
+ATTENDEE;RSVP=TRUE:mailto:c@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 DTSTAMP:0
 END:VTODO
 END:VCALENDAR
 
 # Make sure "B" received the updated to-do
-> get b@example.com calsrv.example.com-873970198738777-00@example.com
+> get b@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Example/ExampleCalendarClient//EN
 VERSION:2.0
@@ -394,13 +394,13 @@ STATUS:NEEDS-ACTION
 SUMMARY:Send Status Reports to Area Managers
 DUE:19980103T100000Z
 DTSTART:19980101T100000Z
-ATTENDEE;ROLE=CHAIR;PARTSTAT=NEEDS-ACTION:mailto:a@example.com
+ATTENDEE;ROLE=CHAIR;PARTSTAT=NEEDS-ACTION:mailto:a@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;PARTSTAT=NEEDS-ACTION:mailto:b@example.
  com
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;PARTSTAT=NEEDS-ACTION:mailto:d@example.
  com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777-00@example.com
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 RRULE:FREQ=MONTHLY;COUNT=10;BYDAY=1FR
 DTSTAMP:0
 SEQUENCE:1
@@ -408,7 +408,7 @@ END:VTODO
 END:VCALENDAR
 
 # Reply to an instance of a recurring to-do
-> put b@example.com calsrv.example.com-873970198738777-00@example.com
+> put b@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Example/ExampleCalendarClient//EN
 VERSION:2.0
@@ -419,22 +419,22 @@ STATUS:NEEDS-ACTION
 SUMMARY:Send Status Reports to Area Managers
 DUE:19980103T100000Z
 DTSTART:19980101T100000Z
-ATTENDEE;ROLE=CHAIR;PARTSTAT=NEEDS-ACTION:mailto:a@example.com
+ATTENDEE;ROLE=CHAIR;PARTSTAT=NEEDS-ACTION:mailto:a@{{alias_domain}}
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;PARTSTAT=NEEDS-ACTION:mailto:b@example.
  com
 ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL;PARTSTAT=NEEDS-ACTION:mailto:d@example.
  com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777-00@example.com
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 RRULE:FREQ=MONTHLY;COUNT=10;BYDAY=1FR
 DTSTAMP:19970717T233000Z
 SEQUENCE:1
 END:VTODO
 BEGIN:VTODO
-ORGANIZER:mailto:a@example.com
-ATTENDEE;PARTSTAT=IN-PROCESS:mailto:b@example.com
+ORGANIZER:mailto:a@{{alias_domain}}
+ATTENDEE;PARTSTAT=IN-PROCESS:mailto:b@{{alias_domain}}
 PERCENT-COMPLETE:75
-UID:calsrv.example.com-873970198738777-00@example.com
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 DTSTAMP:19970717T233000Z
 RECURRENCE-ID:19980101T170000Z
 SEQUENCE:1
@@ -442,10 +442,10 @@ END:VTODO
 END:VCALENDAR
 
 > expect
-from: b@example.com
-to: a@example.com
+from: b@{{alias_domain}}
+to: a@{{alias_domain}}
 summary: rsvp NEEDS-ACTION
-summary.attendee: Participants([ItipParticipant { email: "a@example.com", name: None, is_organizer: true }, ItipParticipant { email: "b@example.com", name: None, is_organizer: false }, ItipParticipant { email: "d@example.com", name: None, is_organizer: false }])
+summary.attendee: Participants([ItipParticipant { email: "a@{{alias_domain}}", name: None, is_organizer: true }, ItipParticipant { email: "b@{{alias_domain}}", name: None, is_organizer: false }, ItipParticipant { email: "d@{{alias_domain}}", name: None, is_organizer: false }])
 summary.dtstart: Time(ItipTime { start: 883648800, tz_id: 32768 })
 summary.rrule: Rrule(ICalendarRecurrenceRule { freq: Monthly, until: None, count: Some(10), interval: None, bysecond: [], byminute: [], byhour: [], byday: [ICalendarDay { ordwk: Some(1), weekday: Friday }], bymonthday: [], byyearday: [], byweekno: [], bymonth: [], bysetpos: [], wkst: None, rscale: None, skip: None })
 summary.summary: Text("Send Status Reports to Area Managers")
@@ -455,10 +455,10 @@ PRODID:-//Stalwart Labs LLC//Stalwart Server//EN
 VERSION:2.0
 BEGIN:VTODO
 PERCENT-COMPLETE:75
-ATTENDEE;PARTSTAT=IN-PROCESS:mailto:b@example.com
-ORGANIZER:mailto:a@example.com
+ATTENDEE;PARTSTAT=IN-PROCESS:mailto:b@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
 RECURRENCE-ID:19980101T170000Z
-UID:calsrv.example.com-873970198738777-00@example.com
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:1
 REQUEST-STATUS:2.0;Success
@@ -468,7 +468,7 @@ END:VCALENDAR
 > send
 
 # Make sure "A" received the reply
-> get a@example.com calsrv.example.com-873970198738777-00@example.com
+> get a@{{alias_domain}} calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 BEGIN:VCALENDAR
 PRODID:-//Example/ExampleCalendarClient//EN
 VERSION:2.0
@@ -478,21 +478,21 @@ STATUS:NEEDS-ACTION
 SUMMARY:Send Status Reports to Area Managers
 DUE:19980103T100000Z
 DTSTART:19980101T100000Z
-ATTENDEE;ROLE=CHAIR:mailto:a@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:b@example.com
-ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:d@example.com
-ORGANIZER:mailto:a@example.com
-UID:calsrv.example.com-873970198738777-00@example.com
+ATTENDEE;ROLE=CHAIR:mailto:a@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:b@{{alias_domain}}
+ATTENDEE;RSVP=TRUE;CUTYPE=INDIVIDUAL:mailto:d@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 RRULE:FREQ=MONTHLY;COUNT=10;BYDAY=1FR
 DTSTAMP:1
 SEQUENCE:1
 END:VTODO
 BEGIN:VTODO
 PERCENT-COMPLETE:75
-ATTENDEE;PARTSTAT=IN-PROCESS:mailto:b@example.com
-ORGANIZER:mailto:a@example.com
+ATTENDEE;PARTSTAT=IN-PROCESS:mailto:b@{{alias_domain}}
+ORGANIZER:mailto:a@{{alias_domain}}
 RECURRENCE-ID:19980101T170000Z
-UID:calsrv.example.com-873970198738777-00@example.com
+UID:calsrv.{{alias_domain}}-873970198738777-00@{{alias_domain}}
 DTSTAMP:0
 SEQUENCE:1
 END:VTODO

@@ -24,11 +24,11 @@
     },
     {
       "name": null,
-      "email": "jane@example.com"
+      "email": "jane@{{alias_domain}}"
     },
     {
       "name": "John Smîth",
-      "email": "john@example.com"
+      "email": "john@{{alias_domain}}"
     }
   ],
   "subject": "Why not both importing AND exporting? ☺",
@@ -53,7 +53,7 @@
       },
       {
         "name": "To",
-        "value": " \"Colleagues\": \"James Smythe\" <james@vandelay.com>; \r\n\t\"Friends\": <jane@example.com>, \r\n\t\"=?utf-8?Q?John_Sm=C3=AEth?=\" <john@example.com>;"
+        "value": " \"Colleagues\": \"James Smythe\" <james@vandelay.com>; \r\n\t\"Friends\": <jane@{{alias_domain}}>, \r\n\t\"=?utf-8?Q?John_Sm=C3=AEth?=\" <john@{{alias_domain}}>;"
       },
       {
         "name": "MIME-Version",

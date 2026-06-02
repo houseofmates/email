@@ -13,13 +13,13 @@
   "from": [
     {
       "name": "Joe Bloggs",
-      "email": "joe@example.com"
+      "email": "joe@{{alias_domain}}"
     }
   ],
   "to": [
     {
       "name": "John",
-      "email": "john@example.com"
+      "email": "john@{{alias_domain}}"
     }
   ],
   "subject": "World domination",
@@ -32,7 +32,7 @@
       },
       {
         "name": "From",
-        "value": " \"Joe Bloggs\" <joe@example.com>"
+        "value": " \"Joe Bloggs\" <joe@{{alias_domain}}>"
       },
       {
         "name": "Message-ID",
@@ -44,7 +44,7 @@
       },
       {
         "name": "To",
-        "value": " \"John\" <john@example.com>"
+        "value": " \"John\" <john@{{alias_domain}}>"
       },
       {
         "name": "MIME-Version",

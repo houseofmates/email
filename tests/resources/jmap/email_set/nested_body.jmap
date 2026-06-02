@@ -13,7 +13,7 @@
   "from": [
     {
       "name": "Joe Bloggs",
-      "email": "joe@example.com"
+      "email": "joe@{{alias_domain}}"
     }
   ],
   "subject": "RFC 8621 Section 4.1.4 test",
@@ -26,7 +26,7 @@
       },
       {
         "name": "From",
-        "value": " \"Joe Bloggs\" <joe@example.com>"
+        "value": " \"Joe Bloggs\" <joe@{{alias_domain}}>"
       },
       {
         "name": "Message-ID",

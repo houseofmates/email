@@ -2,18 +2,18 @@
   "mailboxIds": null,
   "size": 872,
   "messageId": [
-    "random-message-id@example.com"
+    "random-message-id@{{alias_domain}}"
   ],
   "from": [
     {
       "name": "Name",
-      "email": "email@example.com"
+      "email": "email@{{alias_domain}}"
     }
   ],
   "to": [
     {
-      "name": "email@example.com",
-      "email": "email@example.com"
+      "name": "email@{{alias_domain}}",
+      "email": "email@{{alias_domain}}"
     }
   ],
   "subject": "HTML test",
@@ -22,11 +22,11 @@
     "headers": [
       {
         "name": "To",
-        "value": " \"email@example.com\" <email@example.com>"
+        "value": " \"email@{{alias_domain}}\" <email@{{alias_domain}}>"
       },
       {
         "name": "From",
-        "value": " Name <email@example.com>"
+        "value": " Name <email@{{alias_domain}}>"
       },
       {
         "name": "Subject",
@@ -34,7 +34,7 @@
       },
       {
         "name": "Message-ID",
-        "value": " <random-message-id@example.com>"
+        "value": " <random-message-id@{{alias_domain}}>"
       },
       {
         "name": "Date",

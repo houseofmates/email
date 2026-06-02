@@ -2,7 +2,7 @@
   "aces": [
     {
       "principal": {
-        "Href": "http://www.example.com/users/esedlar"
+        "Href": "http://www.{{alias_domain}}/users/esedlar"
       },
       "invert": true,
       "grant_deny": {
@@ -11,7 +11,7 @@
         ]
       },
       "protected": true,
-      "inherited": "http://www.example.com/container/"
+      "inherited": "http://www.{{alias_domain}}/container/"
     }
   ]
 }

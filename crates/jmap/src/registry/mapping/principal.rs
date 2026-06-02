@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -39,7 +39,7 @@ pub(crate) async fn validate_account(
     old_account: AccountUpdate<'_>,
 ) -> ValidationResult {
     // SPDX-SnippetBegin
-    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
     // SPDX-License-Identifier: LicenseRef-SEL
     #[cfg(feature = "enterprise")]
     if set.server.core.is_enterprise_edition()
@@ -357,7 +357,7 @@ pub(crate) async fn validate_role(
 }
 
 // SPDX-SnippetBegin
-// SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+// SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
 // SPDX-License-Identifier: LicenseRef-SEL
 #[cfg(feature = "enterprise")]
 pub(crate) async fn validate_tenant_quota(
@@ -437,7 +437,7 @@ pub(crate) async fn schedule_account_destruction(
     account: &Account,
 ) -> trc::Result<()> {
     // SPDX-SnippetBegin
-    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+    // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
     // SPDX-License-Identifier: LicenseRef-SEL
     #[cfg(feature = "enterprise")]
     let status = server

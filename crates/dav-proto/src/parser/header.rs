@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -590,10 +590,10 @@ mod tests {
                 ],
             ),
             (
-                r#"<http://www.example.com/specs/>
+                r#"<http://www.{{alias_domain}}/specs/>
             (<urn:uuid:181d4fae-7d8c-11d0-a765-00a0c91e6bf2>)"#,
                 vec![If {
-                    resource: "http://www.example.com/specs/".into(),
+                    resource: "http://www.{{alias_domain}}/specs/".into(),
                     list: vec![Condition::StateToken {
                         is_not: false,
                         token: "urn:uuid:181d4fae-7d8c-11d0-a765-00a0c91e6bf2",

@@ -10,13 +10,13 @@
   "from": [
     {
       "name": null,
-      "email": "sender@example.com"
+      "email": "sender@{{alias_domain}}"
     }
   ],
   "to": [
     {
       "name": null,
-      "email": "recipient@example.com"
+      "email": "recipient@{{alias_domain}}"
     }
   ],
   "subject": "Multipart Email Example",
@@ -24,11 +24,11 @@
     "headers": [
       {
         "name": "From",
-        "value": " sender@example.com"
+        "value": " sender@{{alias_domain}}"
       },
       {
         "name": "To",
-        "value": " recipient@example.com"
+        "value": " recipient@{{alias_domain}}"
       },
       {
         "name": "Subject",

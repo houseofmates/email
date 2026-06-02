@@ -1,8 +1,8 @@
-From: "Doug Sauder" <doug@example.com>
-To: "Joe Blow" <jblow@example.com>
+From: "Doug Sauder" <doug@{{alias_domain}}>
+To: "Joe Blow" <jblow@{{alias_domain}}>
 Subject: Test message from Microsoft Outlook 00
 Date: Wed, 17 May 2000 19:36:13 -0400
-Message-ID: <NDBBIAKOPKHFGPLCODIGOEKECHAA.doug@example.com>
+Message-ID: <NDBBIAKOPKHFGPLCODIGOEKECHAA.doug@{{alias_domain}}>
 MIME-Version: 1.0
 Content-Type: multipart/mixed;
 	boundary="----=_NextPart_000_0004_01BFC037.28F2FA90"

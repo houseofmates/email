@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -394,9 +394,9 @@ async fn sieve_scripts() {
         .assert_contains("From: no-reply@my.domain")
         .assert_contains("To: Suzie Q <suzie@shopping.example.net>")
         .assert_contains("Subject: Is dinner ready?")
-        .assert_contains("Message-ID: <20030712040037.46341.5F8J@football.example.com>")
+        .assert_contains("Message-ID: <20030712040037.46341.5F8J@football.{{alias_domain}}>")
         .assert_contains("Received: ")
-        .assert_not_contains("From: Joe SixPack <joe@football.example.com>");
+        .assert_not_contains("From: Joe SixPack <joe@football.{{alias_domain}}>");
     test.assert_no_events();
 
     // Expect an intact redirected message
@@ -422,8 +422,8 @@ async fn sieve_scripts() {
         .assert_not_contains("From: no-reply@my.domain")
         .assert_contains("To: Suzie Q <suzie@shopping.example.net>")
         .assert_contains("Subject: Is dinner ready?")
-        .assert_contains("Message-ID: <20030712040037.46341.5F8J@football.example.com>")
-        .assert_contains("From: Joe SixPack <joe@football.example.com>")
+        .assert_contains("Message-ID: <20030712040037.46341.5F8J@football.{{alias_domain}}>")
+        .assert_contains("From: Joe SixPack <joe@football.{{alias_domain}}>")
         .assert_contains("Received: ")
         .assert_contains("Authentication-Results: ");
     test.assert_no_events();

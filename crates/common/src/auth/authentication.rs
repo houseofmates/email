@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -508,7 +508,7 @@ impl Server {
         domain_name: &str,
     ) -> trc::Result<Option<&Arc<Directory>>> {
         // SPDX-SnippetBegin
-        // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+        // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
         // SPDX-License-Identifier: LicenseRef-SEL
         #[cfg(feature = "enterprise")]
         if self.core.is_enterprise_edition() {
@@ -527,7 +527,7 @@ impl Server {
 
     pub fn get_directory_for_cached_domain(&self, domain: &DomainCache) -> Option<&Arc<Directory>> {
         // SPDX-SnippetBegin
-        // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+        // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
         // SPDX-License-Identifier: LicenseRef-SEL
         #[cfg(feature = "enterprise")]
         if self.core.is_enterprise_edition() {

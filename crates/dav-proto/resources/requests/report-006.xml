@@ -9,7 +9,7 @@
          <C:comp-filter name="VEVENT">
            <C:prop-filter name="UID">
              <C:text-match collation="i;octet"
-             >DC6C50A017428C5216A2F1CD@example.com</C:text-match>
+             >DC6C50A017428C5216A2F1CD@{{alias_domain}}</C:text-match>
            </C:prop-filter>
          </C:comp-filter>
        </C:comp-filter>

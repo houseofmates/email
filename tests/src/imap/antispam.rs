@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -24,8 +24,8 @@ use store::{
 
 pub async fn test(test: &TestServer) {
     println!("Running Spam classifier tests...");
-    let admin = test.account("admin@example.com");
-    let account = test.account("sgd@example.com");
+    let admin = test.account("admin@{{alias_domain}}");
+    let account = test.account("sgd@{{alias_domain}}");
     let mut imap = account.imap_client().await;
     let account_id = account.id();
 
@@ -88,7 +88,7 @@ pub async fn test(test: &TestServer) {
     // Send 3 test emails
     for message in TEST {
         let mut lmtp = SmtpConnection::connect().await;
-        lmtp.ingest("bill@example.com", &["sgd@example.com"], message)
+        lmtp.ingest("bill@{{alias_domain}}", &["sgd@{{alias_domain}}"], message)
             .await;
     }
     tokio::time::sleep(std::time::Duration::from_millis(200)).await;
@@ -122,7 +122,7 @@ pub async fn test(test: &TestServer) {
 
     // Make sure spam traps trigger spam classification
     let mut lmtp = SmtpConnection::connect().await;
-    lmtp.ingest("bill@example.com", &["spamtrap@example.com"], SPAM[4])
+    lmtp.ingest("bill@{{alias_domain}}", &["spamtrap@{{alias_domain}}"], SPAM[4])
         .await;
     tokio::time::sleep(std::time::Duration::from_millis(200)).await;
     let samples = admin.spam_training_samples().await;

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -21,7 +21,7 @@ use tokio::sync::mpsc;
 
 pub async fn test(test: &TestServer) {
     println!("Running Calendar Alarm tests...");
-    let account = test.account("jdoe@example.com");
+    let account = test.account("jdoe@{{alias_domain}}");
     let account_id = account.id_string();
     let client = account.jmap_client().await;
     let client_ws = account.jmap_client().await;

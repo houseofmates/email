@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -190,14 +190,14 @@ mod tests {
         let r = r#"<?xml version="1.0" encoding="utf-8"?>
             <Autodiscover xmlns="http://schemas.microsoft.com/exchange/autodiscover/outlook/requestschema/2006">
                 <Request>
-                        <EMailAddress>email@example.com</EMailAddress>
+                        <EMailAddress>email@{{alias_domain}}</EMailAddress>
                         <AcceptableResponseSchema>http://schemas.microsoft.com/exchange/autodiscover/outlook/responseschema/2006a</AcceptableResponseSchema>
                 </Request>
             </Autodiscover>"#;
 
         assert_eq!(
             super::parse_autodiscover_request(r.as_bytes()).unwrap(),
-            "email@example.com"
+            "email@{{alias_domain}}"
         );
     }
 }

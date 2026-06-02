@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -10,7 +10,7 @@ use groupware::DavResourceName;
 use hyper::StatusCode;
 
 pub async fn test(test: &TestServer) {
-    let client = test.account("john@example.com").webdav_client();
+    let client = test.account("john@{{alias_domain}}").webdav_client();
 
     for resource_type in [DavResourceName::Cal, DavResourceName::Card] {
         println!(
@@ -22,7 +22,7 @@ pub async fn test(test: &TestServer) {
         for name in ["file1", "file2"] {
             let contents = resource_type.generate();
             let path = format!(
-                "{}/john%40example.com/default/{}",
+                "{}/john%40{{alias_domain}}/default/{}",
                 resource_type.base_path(),
                 name
             );
@@ -36,7 +36,7 @@ pub async fn test(test: &TestServer) {
         }
 
         if resource_type == DavResourceName::Cal {
-            let path = format!("{}/john%40example.com", resource_type.base_path());
+            let path = format!("{}/john%40{{alias_domain}}", resource_type.base_path());
             let response = client
                 .multiget_calendar(&path, &[&paths[0].0, &paths[1].0])
                 .await;
@@ -52,7 +52,7 @@ pub async fn test(test: &TestServer) {
                     .with_values([contents.as_str()]);
             }
         } else {
-            let path = format!("{}/john%40example.com", resource_type.base_path());
+            let path = format!("{}/john%40{{alias_domain}}", resource_type.base_path());
             let response = client
                 .multiget_addressbook(&path, &[&paths[0].0, &paths[1].0])
                 .await;

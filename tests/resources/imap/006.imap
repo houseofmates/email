@@ -29,8 +29,8 @@ BODYSTRUCTURE (
 )
 
 BODY[] {617}
-From: sender@example.com
-To: recipient@example.com
+From: sender@{{alias_domain}}
+To: recipient@{{alias_domain}}
 Subject: Multipart Email Example
 Content-Type: multipart/alternative; boundary="boundary-string"
 
@@ -54,8 +54,8 @@ Content-Disposition: inline
 
 
 BINARY[] {617}
-From: sender@example.com
-To: recipient@example.com
+From: sender@{{alias_domain}}
+To: recipient@{{alias_domain}}
 Subject: Multipart Email Example
 Content-Type: multipart/alternative; boundary="boundary-string"
 
@@ -81,8 +81,8 @@ Content-Disposition: inline
 BINARY.SIZE[] 617
 ----------------------------------
 BODY[HEADER] {149}
-From: sender@example.com
-To: recipient@example.com
+From: sender@{{alias_domain}}
+To: recipient@{{alias_domain}}
 Subject: Multipart Email Example
 Content-Type: multipart/alternative; boundary="boundary-string"
 
@@ -193,23 +193,23 @@ BINARY[2.1] {93}
 BINARY.SIZE[2.1] 93
 ----------------------------------
 BODY[HEADER.FIELDS (FROM TO)] {53}
-From: sender@example.com
-To: recipient@example.com
+From: sender@{{alias_domain}}
+To: recipient@{{alias_domain}}
 
 
 ----------------------------------
 BODY[HEADER.FIELDS (FROM TO)]<10> {25}
-er@example.com
+er@{{alias_domain}}
 To: recipi
 ----------------------------------
 BODY[HEADER.FIELDS.NOT (SUBJECT CC)] {117}
-From: sender@example.com
-To: recipient@example.com
+From: sender@{{alias_domain}}
+To: recipient@{{alias_domain}}
 Content-Type: multipart/alternative; boundary="boundary-string"
 
 
 ----------------------------------
 BODY[HEADER.FIELDS.NOT (SUBJECT CC)]<10> {25}
-er@example.com
+er@{{alias_domain}}
 To: recipi
 ----------------------------------

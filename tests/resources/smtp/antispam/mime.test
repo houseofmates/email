@@ -180,14 +180,14 @@ Content-Type: multipart/alternative;
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
-Find me at http://www.example.com or http://www.example.org
+Find me at http://www.{{alias_domain}} or http://www.example.org
 
 --boundary
 Content-Type: text/html; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
 <html>
-<p>Find me at http://www.example.com or</p>
+<p>Find me at http://www.{{alias_domain}} or</p>
 </html>
 --boundary--
 <!-- NEXT TEST -->
@@ -201,14 +201,14 @@ Content-Type: multipart/alternative;
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
-Find me at http://www.example.com or http://www.example.org
+Find me at http://www.{{alias_domain}} or http://www.example.org
 
 --boundary
 Content-Type: text/html; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
 <html>
-<p>Find me at http://www.example.com or http://example.org</p>
+<p>Find me at http://www.{{alias_domain}} or http://example.org</p>
 </html>
 --boundary--
 <!-- NEXT TEST -->

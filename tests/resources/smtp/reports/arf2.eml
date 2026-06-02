@@ -1,4 +1,4 @@
-From: <abusedesk@example.com>
+From: <abusedesk@{{alias_domain}}>
 Date: Thu, 8 Mar 2005 17:40:36 EDT
 Subject: FW: Earn money
 To: <abuse@example.net>
@@ -21,16 +21,16 @@ Feedback-Type: abuse
 User-Agent: SomeGenerator/1.0
 Version: 1
 Original-Mail-From: <somespammer@example.net>
-Original-Rcpt-To: <user@example.com>
+Original-Rcpt-To: <user@{{alias_domain}}>
 Arrival-Date: Thu, 8 Mar 2005 14:00:00 EDT
-Reporting-MTA: dns; mail.example.com
+Reporting-MTA: dns; mail.{{alias_domain}}
 Source-IP: 192.0.2.1
-Authentication-Results: mail.example.com;
-                spf=fail smtp.mail=somespammer@example.com
+Authentication-Results: mail.{{alias_domain}};
+                spf=fail smtp.mail=somespammer@{{alias_domain}}
 Reported-Domain: example.net
 Reported-Uri: http://example.net/earn_money.html
-Reported-Uri: mailto:user@example.com
-Removal-Recipient: user@example.com
+Reported-Uri: mailto:user@{{alias_domain}}
+Removal-Recipient: user@{{alias_domain}}
 
 --part1_13d.2e68ed54_boundary
 Content-Type: message/rfc822
@@ -38,7 +38,7 @@ Content-Disposition: inline
 
 From: <somespammer@example.net>
 Received: from mailserver.example.net (mailserver.example.net
-    [192.0.2.1]) by example.com with ESMTP id M63d4137594e46;
+    [192.0.2.1]) by {{alias_domain}} with ESMTP id M63d4137594e46;
     Thu, 08 Mar 2005 14:00:00 -0400
 
 To: <Undisclosed Recipients>

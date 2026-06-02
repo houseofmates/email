@@ -6,7 +6,7 @@
     "from": [
         {
             "name": "Joe Bloggs",
-            "email": "joe@example.com"
+            "email": "joe@{{alias_domain}}"
         }
     ],
     "subject": "World domination",

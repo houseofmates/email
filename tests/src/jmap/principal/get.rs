@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -11,10 +11,10 @@ use crate::utils::{jmap::JmapUtils, server::TestServer};
 
 pub async fn test(test: &TestServer) {
     println!("Running Principal get/query tests...");
-    let john = test.account("jdoe@example.com");
-    let jane = test.account("jane.smith@example.com");
-    let bill = test.account("bill@example.com");
-    let sales = test.account("sales@example.com");
+    let john = test.account("jdoe@{{alias_domain}}");
+    let jane = test.account("jane.smith@{{alias_domain}}");
+    let bill = test.account("bill@{{alias_domain}}");
+    let sales = test.account("sales@{{alias_domain}}");
 
     let john_id = john.id_string();
     let jane_id = jane.id_string();
@@ -61,7 +61,7 @@ pub async fn test(test: &TestServer) {
       },
       "accounts": {
         john_id: {
-          "name": "jdoe@example.com",
+          "name": "jdoe@{{alias_domain}}",
           "isPersonal": true,
           "isReadOnly": false,
           "accountCapabilities": {
@@ -258,7 +258,7 @@ pub async fn test(test: &TestServer) {
         "urn:ietf:params:jmap:mail:share": john_id,
         "urn:email:jmap": john_id
       },
-      "username": "jdoe@example.com",
+      "username": "jdoe@{{alias_domain}}",
       "apiUrl": "https://127.0.0.1:8899/jmap/",
       "downloadUrl":
       "https://127.0.0.1:8899/jmap/download/{accountId}/{blobId}/{name}?accept={type}",
@@ -273,7 +273,7 @@ pub async fn test(test: &TestServer) {
     let response = john
         .jmap_query(
             MethodObject::Principal,
-            [("email", "john.doe@example.com")],
+            [("email", "john.doe@{{alias_domain}}")],
             ["name"],
             Vec::<(&str, &str)>::new(),
         )
@@ -282,7 +282,7 @@ pub async fn test(test: &TestServer) {
     let response = john
         .jmap_query(
             MethodObject::Principal,
-            [("name", "bill@example.com")],
+            [("name", "bill@{{alias_domain}}")],
             ["name"],
             Vec::<(&str, &str)>::new(),
         )
@@ -330,9 +330,9 @@ pub async fn test(test: &TestServer) {
     list[0].assert_is_equal(json!({
       "id": john_id,
       "type": "individual",
-      "email": "jdoe@example.com",
+      "email": "jdoe@{{alias_domain}}",
       "description": "John Doe",
-      "name": "jdoe@example.com",
+      "name": "jdoe@{{alias_domain}}",
       "timezone": null,
       "capabilities": {
         "urn:ietf:params:jmap:mail": {},
@@ -349,7 +349,7 @@ pub async fn test(test: &TestServer) {
             "accountId": john_id,
             "mayGetAvailability": true,
             "mayShareWith": true,
-            "calendarAddress": "mailto:jdoe@example.com"
+            "calendarAddress": "mailto:jdoe@{{alias_domain}}"
           },
           "urn:ietf:params:jmap:filenode": {},
           "urn:ietf:params:jmap:principals": {},
@@ -363,9 +363,9 @@ pub async fn test(test: &TestServer) {
     list[1].assert_is_equal(json!({
       "id": jane_id,
       "type": "individual",
-      "email": "jane.smith@example.com",
+      "email": "jane.smith@{{alias_domain}}",
       "description": "Jane Smith",
-      "name": "jane.smith@example.com",
+      "name": "jane.smith@{{alias_domain}}",
       "timezone": null,
       "capabilities": {
         "urn:ietf:params:jmap:mail": {},
@@ -382,7 +382,7 @@ pub async fn test(test: &TestServer) {
             "accountId": jane_id,
             "mayGetAvailability": true,
             "mayShareWith": true,
-            "calendarAddress": "mailto:jane.smith@example.com"
+            "calendarAddress": "mailto:jane.smith@{{alias_domain}}"
           },
           "urn:ietf:params:jmap:filenode": {},
           "urn:ietf:params:jmap:principals": {},
@@ -396,9 +396,9 @@ pub async fn test(test: &TestServer) {
     list[2].assert_is_equal(json!({
       "id": bill_id,
       "type": "individual",
-      "email": "bill@example.com",
+      "email": "bill@{{alias_domain}}",
       "description": "Bill Foobar",
-      "name": "bill@example.com",
+      "name": "bill@{{alias_domain}}",
       "timezone": null,
       "capabilities": {
         "urn:ietf:params:jmap:mail": {},
@@ -415,7 +415,7 @@ pub async fn test(test: &TestServer) {
             "accountId": bill_id,
             "mayGetAvailability": true,
             "mayShareWith": true,
-            "calendarAddress": "mailto:bill@example.com"
+            "calendarAddress": "mailto:bill@{{alias_domain}}"
           },
           "urn:ietf:params:jmap:filenode": {},
           "urn:ietf:params:jmap:principals": {},
@@ -429,9 +429,9 @@ pub async fn test(test: &TestServer) {
     list[3].assert_is_equal(json!({
       "id": sales_id,
       "type": "group",
-      "email": "sales@example.com",
+      "email": "sales@{{alias_domain}}",
       "description": "Sales Group",
-      "name": "sales@example.com",
+      "name": "sales@{{alias_domain}}",
       "timezone": null,
       "capabilities": {
         "urn:ietf:params:jmap:mail": {},
@@ -448,7 +448,7 @@ pub async fn test(test: &TestServer) {
             "accountId": sales_id,
             "mayGetAvailability": true,
             "mayShareWith": true,
-            "calendarAddress": "mailto:sales@example.com"
+            "calendarAddress": "mailto:sales@{{alias_domain}}"
           },
           "urn:ietf:params:jmap:filenode": {},
           "urn:ietf:params:jmap:principals": {},

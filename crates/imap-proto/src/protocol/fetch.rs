@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -987,7 +987,7 @@ mod tests {
                         subject: Some("Group test".into()),
                         from: vec![Address::Single(EmailAddress {
                             name: Some("Bill Foobar".into()),
-                            address: "foobar@example.com".into(),
+                            address: "foobar@{{alias_domain}}".into(),
                         })],
                         sender: vec![],
                         reply_to: vec![],
@@ -996,11 +996,11 @@ mod tests {
                             addresses: vec![
                                 EmailAddress {
                                     name: Some("John Doe".into()),
-                                    address: "jdoe@example.com".into(),
+                                    address: "jdoe@{{alias_domain}}".into(),
                                 },
                                 EmailAddress {
                                     name: Some("Jane Smith".into()),
-                                    address: "jane.smith@example.com".into(),
+                                    address: "jane.smith@{{alias_domain}}".into(),
                                 },
                             ],
                         })],
@@ -1013,12 +1013,12 @@ mod tests {
                 concat!(
                     "ENVELOPE (\"Wed, 17 Jul 1996 02:23:25 +0000\" ",
                     "\"Group test\" ",
-                    "((\"Bill Foobar\" NIL \"foobar\" \"example.com\")) ",
-                    "((\"Bill Foobar\" NIL \"foobar\" \"example.com\")) ",
-                    "((\"Bill Foobar\" NIL \"foobar\" \"example.com\")) ",
+                    "((\"Bill Foobar\" NIL \"foobar\" \"{{alias_domain}}\")) ",
+                    "((\"Bill Foobar\" NIL \"foobar\" \"{{alias_domain}}\")) ",
+                    "((\"Bill Foobar\" NIL \"foobar\" \"{{alias_domain}}\")) ",
                     "((NIL NIL \"Friends and Family\" NIL)",
-                    "(\"John Doe\" NIL \"jdoe\" \"example.com\")",
-                    "(\"Jane Smith\" NIL \"jane.smith\" \"example.com\")",
+                    "(\"John Doe\" NIL \"jdoe\" \"{{alias_domain}}\")",
+                    "(\"Jane Smith\" NIL \"jane.smith\" \"{{alias_domain}}\")",
                     "(NIL NIL NIL NIL)) ",
                     "NIL NIL NIL \"<B27397-0100000@cac.washington.ed>\")"
                 ),

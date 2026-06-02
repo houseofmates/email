@@ -1,8 +1,8 @@
-From: "Doug Sauder" <doug@example.com>
-To: =?iso-8859-1?B?SvxyZ2VuIFNjaG38cmdlbg==?= <schmuergen@example.com>
+From: "Doug Sauder" <doug@{{alias_domain}}>
+To: =?iso-8859-1?B?SvxyZ2VuIFNjaG38cmdlbg==?= <schmuergen@{{alias_domain}}>
 Subject: =?iso-8859-1?Q?Die_Hasen_und_die_Fr=F6sche_=28Microsoft_Outlook_00=29?=
 Date: Wed, 17 May 2000 19:15:35 -0400
-Message-ID: <NDBBIAKOPKHFGPLCODIGIEKCCHAA.doug@example.com>
+Message-ID: <NDBBIAKOPKHFGPLCODIGIEKCCHAA.doug@{{alias_domain}}>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"

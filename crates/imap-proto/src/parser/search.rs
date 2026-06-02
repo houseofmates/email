@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -634,7 +634,7 @@ mod tests {
             (
                 [
                     b"F282 SEARCH OR OR FROM hello@world.com TO ".to_vec(),
-                    b"test@example.com OR BCC jane@foobar.com ".to_vec(),
+                    b"test@{{alias_domain}} OR BCC jane@foobar.com ".to_vec(),
                     b"CC john@doe.com\r\n".to_vec(),
                 ]
                 .concat(),
@@ -645,7 +645,7 @@ mod tests {
                         Filter::Or,
                         Filter::Or,
                         Filter::From("hello@world.com".into()),
-                        Filter::To("test@example.com".into()),
+                        Filter::To("test@{{alias_domain}}".into()),
                         Filter::End,
                         Filter::Or,
                         Filter::Bcc("jane@foobar.com".into()),

@@ -5,7 +5,7 @@
         "type": "DeadProperty",
         "data": {
           "name": "prop0",
-          "attrs": "xmlns=\"http://example.com/neon/litmus/\""
+          "attrs": "xmlns=\"http://{{alias_domain}}/neon/litmus/\""
         }
       },
       "value": {
@@ -22,7 +22,7 @@
         "type": "DeadProperty",
         "data": {
           "name": "prop1",
-          "attrs": "xmlns=\"http://example.com/neon/litmus/\""
+          "attrs": "xmlns=\"http://{{alias_domain}}/neon/litmus/\""
         }
       },
       "value": {
@@ -39,7 +39,7 @@
         "type": "DeadProperty",
         "data": {
           "name": "prop2",
-          "attrs": "xmlns=\"http://example.com/neon/litmus/\""
+          "attrs": "xmlns=\"http://{{alias_domain}}/neon/litmus/\""
         }
       },
       "value": {
@@ -56,7 +56,7 @@
         "type": "DeadProperty",
         "data": {
           "name": "prop3",
-          "attrs": "xmlns=\"http://example.com/neon/litmus/\""
+          "attrs": "xmlns=\"http://{{alias_domain}}/neon/litmus/\""
         }
       },
       "value": {
@@ -73,7 +73,7 @@
         "type": "DeadProperty",
         "data": {
           "name": "prop4",
-          "attrs": "xmlns=\"http://example.com/neon/litmus/\""
+          "attrs": "xmlns=\"http://{{alias_domain}}/neon/litmus/\""
         }
       },
       "value": {
@@ -90,7 +90,7 @@
         "type": "DeadProperty",
         "data": {
           "name": "prop5",
-          "attrs": "xmlns=\"http://example.com/neon/litmus/\""
+          "attrs": "xmlns=\"http://{{alias_domain}}/neon/litmus/\""
         }
       },
       "value": {
@@ -107,7 +107,7 @@
         "type": "DeadProperty",
         "data": {
           "name": "prop6",
-          "attrs": "xmlns=\"http://example.com/neon/litmus/\""
+          "attrs": "xmlns=\"http://{{alias_domain}}/neon/litmus/\""
         }
       },
       "value": {
@@ -124,7 +124,7 @@
         "type": "DeadProperty",
         "data": {
           "name": "prop7",
-          "attrs": "xmlns=\"http://example.com/neon/litmus/\""
+          "attrs": "xmlns=\"http://{{alias_domain}}/neon/litmus/\""
         }
       },
       "value": {
@@ -141,7 +141,7 @@
         "type": "DeadProperty",
         "data": {
           "name": "prop8",
-          "attrs": "xmlns=\"http://example.com/neon/litmus/\""
+          "attrs": "xmlns=\"http://{{alias_domain}}/neon/litmus/\""
         }
       },
       "value": {
@@ -158,7 +158,7 @@
         "type": "DeadProperty",
         "data": {
           "name": "prop9",
-          "attrs": "xmlns=\"http://example.com/neon/litmus/\""
+          "attrs": "xmlns=\"http://{{alias_domain}}/neon/litmus/\""
         }
       },
       "value": {

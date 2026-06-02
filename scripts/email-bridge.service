@@ -1,0 +1,15 @@
+[Unit]
+Description=email unified bridge
+After=network.target
+
+[Service]
+Type=simple
+User=house
+WorkingDirectory=/home/house/email/bridge
+ExecStart=/home/house/.nvm/versions/node/v22.22.2/bin/node /home/house/email/bridge/server.js
+Restart=on-failure
+RestartSec=5
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=default.target

@@ -1,11 +1,11 @@
-From: tlsrpt@mail.sender.example.com
+From: tlsrpt@mail.sender.{{alias_domain}}
 Date: Fri, May 09 2017 16:54:30 -0800
 To: mts-sts-tlsrpt@example.net
 Subject: Report Domain: example.net
-    Submitter: mail.sender.example.com
+    Submitter: mail.sender.{{alias_domain}}
     Report-ID: <735ff.e317+bf22029@example.net>
 TLS-Report-Domain: example.net
-TLS-Report-Submitter: mail.sender.example.com
+TLS-Report-Submitter: mail.sender.{{alias_domain}}
 MIME-Version: 1.0
 Content-Type: multipart/report; report-type="tlsrpt";
     boundary="----=_NextPart_000_024E_01CC9B0A.AFE54C00"
@@ -17,13 +17,13 @@ This is a multipart message in MIME format.
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
-This is an aggregate TLS report from mail.sender.example.com
+This is an aggregate TLS report from mail.sender.{{alias_domain}}
 
 ------=_NextPart_000_024E_01CC9B0A.AFE54C00
 Content-Type: application/tlsrpt+gzip
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment;
-    filename="mail.sender.example!example.com!1013662812!1013749130.json.gz"
+    filename="mail.sender.example!{{alias_domain}}!1013662812!1013749130.json.gz"
 
 H4sICCpFtWMAA3JwdDAxLmpzb24uMQCtVVtr2zAYfe+vEN7bmFzZjt3EMLbRhu1hdCUJI+soRpGU
 VMy2jCSHZCX/fZIvzVLHpc0WDDHSOfqOznfxwxkwP0fIFc75b6y5yGGOM+bEwLkUWYHzLZw772oU

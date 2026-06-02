@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -15,7 +15,7 @@ use hyper::StatusCode;
 use types::dead_property::DeadElementTag;
 
 pub async fn test(test: &TestServer, assisted_discovery: bool) {
-    let client = test.account("jane@example.com").webdav_client();
+    let client = test.account("jane@{{alias_domain}}").webdav_client();
 
     for resource_type in [
         DavResourceName::File,
@@ -26,8 +26,8 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
             "Running PROPFIND/PROPPATCH tests ({})...",
             resource_type.base_path()
         );
-        let user_base_path = format!("{}/jane%40example.com", resource_type.base_path());
-        let group_base_path = format!("{}/support%40example.com", resource_type.base_path());
+        let user_base_path = format!("{}/jane%40{{alias_domain}}", resource_type.base_path());
+        let group_base_path = format!("{}/support%40{{alias_domain}}", resource_type.base_path());
 
         // Create a new test container and file
         let test_base_path = format!("{user_base_path}/PropFind_Folder/");
@@ -209,14 +209,14 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
             properties
                 .get(DavProperty::WebDav(WebDavProperty::CurrentUserPrincipal))
                 .with_values([format!(
-                    "D:href:{}/jane%40example.com/",
+                    "D:href:{}/jane%40{{alias_domain}}/",
                     DavResourceName::Principal.base_path()
                 )
                 .as_str()]);
             properties
                 .get(DavProperty::WebDav(WebDavProperty::Owner))
                 .with_values([format!(
-                    "D:href:{}/jane%40example.com/",
+                    "D:href:{}/jane%40{{alias_domain}}/",
                     DavResourceName::Principal.base_path()
                 )
                 .as_str()]);
@@ -444,7 +444,7 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
             ] {
                 properties.get(prop).with_some_values([
                     format!(
-                        "D:response.D:href:{}/jane%40example.com/",
+                        "D:response.D:href:{}/jane%40{{alias_domain}}/",
                         DavResourceName::Principal.base_path(),
                     )
                     .as_str(),
@@ -506,7 +506,7 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
                         (
                             DavProperty::DeadProperty(DeadElementTag::new(
                                 "my-dead-element".to_string(),
-                                Some("xmlns=\"http://example.com/ns/\" prop=\"abc\"".to_string()),
+                                Some("xmlns=\"http://{{alias_domain}}/ns/\" prop=\"abc\"".to_string()),
                             )),
                             "this is a dead but exciting element",
                         ),
@@ -519,7 +519,7 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
                     [(
                         DavProperty::DeadProperty(DeadElementTag::new(
                             "my-dead-element".to_string(),
-                            Some("xmlns=\"http://example.com/ns/\" prop=\"xyz\"".to_string()),
+                            Some("xmlns=\"http://{{alias_domain}}/ns/\" prop=\"xyz\"".to_string()),
                         )),
                         "this is a modified dead but exciting element",
                     )],
@@ -531,7 +531,7 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
                 (
                     DavProperty::DeadProperty(DeadElementTag::new(
                         "my-dead-element".to_string(),
-                        Some("xmlns=\"http://example.com/ns/\"".to_string()),
+                        Some("xmlns=\"http://{{alias_domain}}/ns/\"".to_string()),
                     )),
                     "",
                 ),
@@ -621,7 +621,7 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
                 DavProperty::WebDav(WebDavProperty::DisplayName),
                 DavProperty::DeadProperty(DeadElementTag::new(
                     "my-chunky-dead-element".to_string(),
-                    Some("xmlns=\"http://example.com/ns/\"".to_string()),
+                    Some("xmlns=\"http://{{alias_domain}}/ns/\"".to_string()),
                 )),
             ];
             if !is_file {
@@ -707,7 +707,7 @@ pub async fn test(test: &TestServer, assisted_discovery: bool) {
 
     client.delete_default_containers().await;
     client
-        .delete_default_containers_by_account("support@example.com")
+        .delete_default_containers_by_account("support@{{alias_domain}}")
         .await;
     test.assert_is_empty().await;
 }

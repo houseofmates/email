@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -433,7 +433,7 @@ impl RegistrySet for Server {
                             validate_role(&set, role, modification.as_role()).await?
                         }
                         // SPDX-SnippetBegin
-                        // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+                        // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
                         // SPDX-License-Identifier: LicenseRef-SEL
                         #[cfg(feature = "enterprise")]
                         ObjectInner::MaskedEmail(masked_email) => {
@@ -687,7 +687,7 @@ impl RegistrySet for Server {
             | ObjectType::TlsInternalReport => report_set(set).await.map(|set| set.into_response()),
 
             // SPDX-SnippetBegin
-            // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+            // SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
             // SPDX-License-Identifier: LicenseRef-SEL
             #[cfg(feature = "enterprise")]
             ObjectType::ArchivedItem => super::mapping::archived_item::archived_item_set(set)

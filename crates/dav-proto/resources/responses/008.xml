@@ -1,7 +1,7 @@
    <?xml version="1.0" encoding="utf-8" ?>
    <D:multistatus xmlns:D="DAV:" xmlns:A="urn:ietf:params:xml:ns:caldav">
      <D:response>
-       <D:href>http://cal.example.com/bernard/work/abcd2.ics</D:href>
+       <D:href>http://cal.{{alias_domain}}/bernard/work/abcd2.ics</D:href>
        <D:propstat>
          <D:prop>
            <D:getetag>"fffff-abcd2"</D:getetag>
@@ -12,7 +12,7 @@ DTSTART;TZID=US/Eastern:20060106T140000
 DURATION:PT1H
 RECURRENCE-ID;TZID=US/Eastern:20060106T120000
 SUMMARY:Event #2 bis bis
-UID:00959BC664CA650E933C892C@example.com
+UID:00959BC664CA650E933C892C@{{alias_domain}}
 END:VEVENT
 END:VCALENDAR
 ]]></A:calendar-data>
@@ -21,7 +21,7 @@ END:VCALENDAR
        </D:propstat>
      </D:response>
      <D:response>
-       <D:href>http://cal.example.com/bernard/work/abcd3.ics</D:href>
+       <D:href>http://cal.{{alias_domain}}/bernard/work/abcd3.ics</D:href>
        <D:propstat>
          <D:prop>
            <D:getetag>"fffff-abcd3"</D:getetag>
@@ -32,7 +32,7 @@ BEGIN:VEVENT
 DTSTART;TZID=US/Eastern:20060104T100000
 DURATION:PT1H
 SUMMARY:Event #3
-UID:DC6C50A017428C5216A2F1CD@example.com
+UID:DC6C50A017428C5216A2F1CD@{{alias_domain}}
 END:VEVENT
 END:VCALENDAR
 ]]></A:calendar-data>

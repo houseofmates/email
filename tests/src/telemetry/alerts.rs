@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -35,10 +35,10 @@ pub async fn test(test: &TestServer) {
                     "domains and %{cluster.publisher-error}% cluster errors."
                 )
                 .to_string(),
-                from_address: "alert@example.com".to_string(),
+                from_address: "alert@{{alias_domain}}".to_string(),
                 from_name: "Alert Subsystem".to_string().into(),
                 subject: "Found %{cluster.publisher-error}% cluster errors".to_string(),
-                to: Map::new(vec!["jdoe@example.com".to_string()]),
+                to: Map::new(vec!["jdoe@{{alias_domain}}".to_string()]),
             }),
             event_alert: AlertEvent::Enabled(AlertEventProperties {
                 event_message: "Yikes! Found %{cluster.publisher-error}% cluster errors!"
@@ -91,8 +91,8 @@ pub async fn test(test: &TestServer) {
         .unwrap()
         .pop()
         .unwrap();
-    assert_eq!(message.from, "alert@example.com");
-    assert_eq!(message.to, vec!["jdoe@example.com".to_string()]);
+    assert_eq!(message.from, "alert@{{alias_domain}}");
+    assert_eq!(message.to, vec!["jdoe@{{alias_domain}}".to_string()]);
     let body = String::from_utf8(message.body).unwrap();
     assert!(
         body.contains("Sorry for the bad news, but we found 3 domains and 5 cluster errors."),
@@ -100,10 +100,10 @@ pub async fn test(test: &TestServer) {
     );
     assert!(body.contains("Subject: Found 5 cluster errors"), "{body:?}");
     assert!(
-        body.contains("From: \"Alert Subsystem\" <alert@example.com>"),
+        body.contains("From: \"Alert Subsystem\" <alert@{{alias_domain}}>"),
         "{body:?}"
     );
-    assert!(body.contains("To: <jdoe@example.com>"), "{body:?}");
+    assert!(body.contains("To: <jdoe@{{alias_domain}}>"), "{body:?}");
 
     // Make sure the event was triggered
     assert_eq!(Collector::read_metric(MetricType::TelemetryAlertEvent), 1.0);

@@ -6,7 +6,7 @@
     "from": [
         {
             "name": "Joe Bloggs",
-            "email": "joe@example.com"
+            "email": "joe@{{alias_domain}}"
         }
     ],
     "subject": "Headers test",
@@ -26,7 +26,7 @@
     "sender": [
         {
             "name": "ハロー・ワールド",
-            "email": "joe@example.com"
+            "email": "joe@{{alias_domain}}"
         }
     ],
     "to": [
@@ -46,23 +46,23 @@
     "cc": [
         {
             "name": "Привет, мир",
-            "email": "addr0@example.com"
+            "email": "addr0@{{alias_domain}}"
         }
     ],
     "bcc": [
         {
             "name": "¡El ñandú comió ñoquis!",
-            "email": "addr1@example.com"
+            "email": "addr1@{{alias_domain}}"
         }
     ],
     "replyTo": [
         {
             "name": "안녕하세요 세계",
-            "email": "addr2@example.com"
+            "email": "addr2@{{alias_domain}}"
         },
         {
             "name": "Antoine de Saint-Exupéry",
-            "email": "addr3@example.com"
+            "email": "addr3@{{alias_domain}}"
         }
     ],
     "header:Resent-Date:asDate:all": [
@@ -173,7 +173,7 @@
         {
             "type": "text/html",
             "partId": "a49d",
-            "location": "https://example.com/html-body.html",
+            "location": "https://{{alias_domain}}/html-body.html",
             "name": "html-body.html"
         }
     ],

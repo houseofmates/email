@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -33,30 +33,30 @@ pub async fn jmap_tests() {
         .await;
 
     // Create admin account
-    let admin = test.create_admin_account("admin@example.com").await;
+    let admin = test.create_admin_account("admin@{{alias_domain}}").await;
 
     // Create test users
     for (name, secret, description, aliases) in [
         (
-            "jdoe@example.com",
+            "jdoe@{{alias_domain}}",
             "12345 + extra safety",
             "John Doe",
-            &["john.doe@example.com"][..],
+            &["john.doe@{{alias_domain}}"][..],
         ),
         (
-            "jane.smith@example.com",
+            "jane.smith@{{alias_domain}}",
             "abcde + extra safety",
             "Jane Smith",
-            &["jane@example.com"],
+            &["jane@{{alias_domain}}"],
         ),
         (
-            "bill@example.com",
+            "bill@{{alias_domain}}",
             "098765 + extra safety",
             "Bill Foobar",
-            &["bill.foobar@example.com"],
+            &["bill.foobar@{{alias_domain}}"],
         ),
         (
-            "robert@example.com",
+            "robert@{{alias_domain}}",
             "aabbcc + extra safety",
             "Robert Foobar",
             &[][..],
@@ -77,7 +77,7 @@ pub async fn jmap_tests() {
     // Create test group
     test.insert_account(
         admin
-            .create_group_account("sales@example.com", "Sales Group", &[])
+            .create_group_account("sales@{{alias_domain}}", "Sales Group", &[])
             .await,
     );
 
@@ -125,7 +125,7 @@ pub async fn jmap_tests() {
             route: Expression {
                 match_: List::from_iter([
                     ExpressionMatch {
-                        if_: "rcpt_domain == 'example.com'".into(),
+                        if_: "rcpt_domain == '{{alias_domain}}'".into(),
                         then: "'local'".into(),
                     },
                     ExpressionMatch {

@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -257,7 +257,7 @@ mod tests {
             .to_string(),
             // 002.xml
             MultiStatus::new(vec![Response::new_propstat(
-                "http://www.example.com/file",
+                "http://www.{{alias_domain}}/file",
                 vec![
                     PropStat::new(DavPropertyValue::new(
                         WebDavProperty::DisplayName,
@@ -326,7 +326,7 @@ mod tests {
             // 004.xml
             MultiStatus::new(vec![
                 Response::new_status(
-                    ["http://www.example.com/container/resource3"],
+                    ["http://www.{{alias_domain}}/container/resource3"],
                     StatusCode::LOCKED,
                 )
                 .with_error(BaseCondition::LockTokenSubmitted(List(vec![]))),
@@ -337,7 +337,7 @@ mod tests {
                 WebDavProperty::LockDiscovery,
                 vec![
                     ActiveLock::new(
-                        "http://example.com/workspace/webdav/proposal.doc",
+                        "http://{{alias_domain}}/workspace/webdav/proposal.doc",
                         LockScope::Exclusive,
                     )
                     .with_owner(DeadProperty(vec![
@@ -355,11 +355,11 @@ mod tests {
             .to_string(),
             // 006.xml
             MultiStatus::new(vec![Response::new_propstat(
-                "http://www.example.com/container/",
+                "http://www.{{alias_domain}}/container/",
                 vec![PropStat::new_list(vec![DavPropertyValue::new(
                     WebDavProperty::LockDiscovery,
                     vec![
-                        ActiveLock::new("http://www.example.com/container/", LockScope::Shared)
+                        ActiveLock::new("http://www.{{alias_domain}}/container/", LockScope::Shared)
                             .with_owner(DeadProperty(vec![DeadPropertyTag::Text(
                                 "Jane Smith".to_string(),
                             )]))
@@ -377,7 +377,7 @@ mod tests {
             // 008.xml
             MultiStatus::new(vec![
                 Response::new_propstat(
-                    "http://cal.example.com/bernard/work/abcd2.ics",
+                    "http://cal.{{alias_domain}}/bernard/work/abcd2.ics",
                     vec![PropStat::new_list(vec![
                         DavPropertyValue::new(WebDavProperty::GetETag, "\"fffff-abcd2\""),
                         DavPropertyValue::new(
@@ -390,7 +390,7 @@ DTSTART;TZID=US/Eastern:20060106T140000
 DURATION:PT1H
 RECURRENCE-ID;TZID=US/Eastern:20060106T120000
 SUMMARY:Event #2 bis bis
-UID:00959BC664CA650E933C892C@example.com
+UID:00959BC664CA650E933C892C@{{alias_domain}}
 END:VEVENT
 END:VCALENDAR
 "#
@@ -400,7 +400,7 @@ END:VCALENDAR
                     ])],
                 ),
                 Response::new_propstat(
-                    "http://cal.example.com/bernard/work/abcd3.ics",
+                    "http://cal.{{alias_domain}}/bernard/work/abcd3.ics",
                     vec![PropStat::new_list(vec![
                         DavPropertyValue::new(WebDavProperty::GetETag, "\"fffff-abcd3\""),
                         DavPropertyValue::new(
@@ -413,7 +413,7 @@ BEGIN:VEVENT
 DTSTART;TZID=US/Eastern:20060104T100000
 DURATION:PT1H
 SUMMARY:Event #3
-UID:DC6C50A017428C5216A2F1CD@example.com
+UID:DC6C50A017428C5216A2F1CD@{{alias_domain}}
 END:VEVENT
 END:VCALENDAR
 "#
@@ -444,9 +444,9 @@ END:VCALENDAR
                             r#"BEGIN:VCARD
 VERSION:3.0
 NICKNAME:me
-UID:34222-232@example.com
+UID:34222-232@{{alias_domain}}
 FN:Cyrus Daboo
-EMAIL:daboo@example.com
+EMAIL:daboo@{{alias_domain}}
 END:VCARD
 "#
                             .to_string(),
@@ -495,7 +495,7 @@ END:VCARD
             .to_string(),
             // 014.xml
             MultiStatus::new(vec![Response::new_propstat(
-                "http://www.example.com/papers/",
+                "http://www.{{alias_domain}}/papers/",
                 vec![PropStat::new_list(vec![DavPropertyValue::new(
                     WebDavProperty::SupportedPrivilegeSet,
                     vec![
@@ -540,7 +540,7 @@ END:VCARD
             .to_string(),
             // 015.xml
             MultiStatus::new(vec![Response::new_propstat(
-                "http://www.example.com/papers/",
+                "http://www.{{alias_domain}}/papers/",
                 vec![PropStat::new_list(vec![DavPropertyValue::new(
                     WebDavProperty::CurrentUserPrivilegeSet,
                     vec![Privilege::Read],
@@ -549,13 +549,13 @@ END:VCARD
             .to_string(),
             // 016.xml
             MultiStatus::new(vec![Response::new_propstat(
-                "http://www.example.com/papers/",
+                "http://www.{{alias_domain}}/papers/",
                 vec![PropStat::new_list(vec![DavPropertyValue::new(
                     WebDavProperty::Acl,
                     vec![
                         Ace::new(
                             Principal::Href(Href(
-                                "http://www.example.com/acl/groups/maintainers".to_string(),
+                                "http://www.{{alias_domain}}/acl/groups/maintainers".to_string(),
                             )),
                             GrantDeny::grant(vec![Privilege::Write]),
                         ),
@@ -566,7 +566,7 @@ END:VCARD
             .to_string(),
             // 017.xml
             MultiStatus::new(vec![Response::new_propstat(
-                "http://www.example.com/papers/",
+                "http://www.{{alias_domain}}/papers/",
                 vec![PropStat::new_list(vec![DavPropertyValue::new(
                     WebDavProperty::AclRestrictions,
                     AclRestrictions::new()
@@ -577,23 +577,23 @@ END:VCARD
             .to_string(),
             // 018.xml
             MultiStatus::new(vec![Response::new_propstat(
-                "http://www.example.com/papers/",
+                "http://www.{{alias_domain}}/papers/",
                 vec![PropStat::new_list(vec![DavPropertyValue::new(
                     WebDavProperty::PrincipalCollectionSet,
                     vec![
-                        Href("http://www.example.com/acl/users/".to_string()),
-                        Href("http://www.example.com/acl/groups/".to_string()),
+                        Href("http://www.{{alias_domain}}/acl/users/".to_string()),
+                        Href("http://www.{{alias_domain}}/acl/groups/".to_string()),
                     ],
                 )])],
             )])
             .to_string(),
             // 019.xml
             MultiStatus::new(vec![Response::new_propstat(
-                "http://www.example.com/top/container/",
+                "http://www.{{alias_domain}}/top/container/",
                 vec![PropStat::new_list(vec![
                     DavPropertyValue::new(
                         WebDavProperty::Owner,
-                        vec![Href("http://www.example.com/users/gclemm".to_string())],
+                        vec![Href("http://www.{{alias_domain}}/users/gclemm".to_string())],
                     ),
                     DavPropertyValue::new(
                         WebDavProperty::SupportedPrivilegeSet,
@@ -627,7 +627,7 @@ END:VCARD
                         vec![
                             Ace::new(
                                 Principal::Href(Href(
-                                    "http://www.example.com/users/esedlar".to_string(),
+                                    "http://www.{{alias_domain}}/users/esedlar".to_string(),
                                 )),
                                 GrantDeny::grant(vec![
                                     Privilege::Read,
@@ -637,7 +637,7 @@ END:VCARD
                             ),
                             Ace::new(
                                 Principal::Href(Href(
-                                    "http://www.example.com/groups/mrktng".to_string(),
+                                    "http://www.{{alias_domain}}/groups/mrktng".to_string(),
                                 )),
                                 GrantDeny::deny(vec![Privilege::Read]),
                             ),
@@ -649,7 +649,7 @@ END:VCARD
                                 GrantDeny::grant(vec![Privilege::ReadAcl, Privilege::WriteAcl]),
                             ),
                             Ace::new(Principal::All, GrantDeny::grant(vec![Privilege::Read]))
-                                .with_inherited("http://www.example.com/top"),
+                                .with_inherited("http://www.{{alias_domain}}/top"),
                         ],
                     ),
                 ])],
@@ -659,7 +659,7 @@ END:VCARD
             ScheduleResponse {
                 items: List(vec![
                     ScheduleResponseItem {
-                        recipient: Href("mailto:wilfredo@example.com".to_string()),
+                        recipient: Href("mailto:wilfredo@{{alias_domain}}".to_string()),
                         request_status: "2.0;Success".into(),
                         calendar_data: Some("BEGIN:VCALENDAR".to_string()),
                     },

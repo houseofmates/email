@@ -4,14 +4,14 @@ capabilities: CATENATE
 "" delete ${mailbox}2
 
 ok append $mailbox (\seen \flagged) catenate (text {{{
-From: foo@example.com
+From: foo@{{alias_domain}}
 
 Hello world body
 
 }}})
 
 ok append $mailbox (\seen \flagged) catenate (text {{{
-From: foo2@example.com
+From: foo2@{{alias_domain}}
 
 Lookslike: header
 
@@ -24,13 +24,13 @@ ok select $mailbox
 
 ok fetch 1:2 (uid body.peek[])
 * 1 fetch (uid $uid body[] {{{
-From: foo@example.com
+From: foo@{{alias_domain}}
 
 Hello world body
 
 }}})
 * 2 fetch (uid $uid2 body[] {{{
-From: foo2@example.com
+From: foo2@{{alias_domain}}
 
 Lookslike: header
 
@@ -61,7 +61,7 @@ body4
 }}})
 
 ok append ${mailbox}2 (\seen \flagged) catenate (text {{{
-From: new@example.com
+From: new@{{alias_domain}}
 Subject: test header
 
 
@@ -72,7 +72,7 @@ suffix
 }}})
 
 ok append ${mailbox}2 (\seen \flagged) catenate (text {{{
-From: hdr1@example.com
+From: hdr1@{{alias_domain}}
 
 }}} text {{{
 Subject: hdr2
@@ -154,13 +154,13 @@ no append ${mailbox}2 (\seen \flagged) catenate (url "/$mailbox_url/;uid=$uid/;s
 ok select ${mailbox}2
 ok fetch 1:* body.peek[]
 * 1 fetch (body[] {{{
-From: foo@example.com
+From: foo@{{alias_domain}}
 
 body1
 
 }}})
 * 2 fetch (body[] {{{
-From: foo@example.com
+From: foo@{{alias_domain}}
 
 body2
 
@@ -180,7 +180,7 @@ body4
 
 }}})
 * 5 fetch (body[] {{{
-From: new@example.com
+From: new@{{alias_domain}}
 Subject: test header
 
 Hello world body
@@ -189,7 +189,7 @@ suffix
 
 }}})
 * 6 fetch (body[] {{{
-From: hdr1@example.com
+From: hdr1@{{alias_domain}}
 Subject: hdr2
 
 body6

@@ -1,10 +1,10 @@
-Message-Id: <4.2.0.58.20000519003556.00a918e0@pop.example.com>
-X-Sender: dwsauder@pop.example.com (Unverified)
+Message-Id: <4.2.0.58.20000519003556.00a918e0@pop.{{alias_domain}}>
+X-Sender: dwsauder@pop.{{alias_domain}} (Unverified)
 X-Mailer: QUALCOMM Windows Eudora Pro Version 4.2.0.58 
 X-Priority: 2 (High)
 Date: Fri, 19 May 2000 00:36:58 -0400
-To: Heinz =?iso-8859-1?Q?Muller?= <mueller@example.com>
-From: Doug Sauder <dwsauder@example.com>
+To: Heinz =?iso-8859-1?Q?Muller?= <mueller@{{alias_domain}}>
+From: Doug Sauder <dwsauder@{{alias_domain}}>
 Subject: =?iso-8859-1?Q?Die_Hasen_und_die_Frosche?=
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
@@ -66,16 +66,16 @@ Ers=E4ufen noch ein wenig aufschieben, denn auch uns f=FCrchten, wie ihr
 seht, einige Tiere, welche also wohl noch ungl=FCcklicher sein m=FCssen als
 wir.&quot; <br>
 <br>
-</font><img src=3D"cid:4.2.0.58.20000519003556.00a918e0@pop.example.com.2"=
+</font><img src=3D"cid:4.2.0.58.20000519003556.00a918e0@pop.{{alias_domain}}.2"=
  width=3D27 height=3D27 alt=3D"2aa3ed95.png"><img=
- src=3D"cid:4.2.0.58.20000519003556.00a918e0@pop.example.com.3" width=3D27=
+ src=3D"cid:4.2.0.58.20000519003556.00a918e0@pop.{{alias_domain}}.3" width=3D27=
  height=3D27 alt=3D"2aa3edd1.png"></html>
 
 --=====================_715392550==_.ALT--
 
 --=====================_715392540==_.REL
 Content-Type: image/png; name="2aa3ed95.png"
-Content-ID: <4.2.0.58.20000519003556.00a918e0@pop.example.com.2>
+Content-ID: <4.2.0.58.20000519003556.00a918e0@pop.{{alias_domain}}.2>
 Content-Transfer-Encoding: base64
 Content-Disposition: inline; filename="2aa3ed95.png"
 
@@ -105,7 +105,7 @@ GwtzlqqlFFIuOqv0a1ZEZrUkWICLLFW266y1KvWE1zV/iDAH1EopnVLCiygZCIomH3NCKX0lnI+B
 O7wAAAAASUVORK5CYII=
 --=====================_715392540==_.REL
 Content-Type: image/png; name="2aa3edd1.png"
-Content-ID: <4.2.0.58.20000519003556.00a918e0@pop.example.com.3>
+Content-ID: <4.2.0.58.20000519003556.00a918e0@pop.{{alias_domain}}.3>
 Content-Transfer-Encoding: base64
 Content-Disposition: inline; filename="2aa3edd1.png"
 

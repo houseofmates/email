@@ -8,9 +8,9 @@
         <B:address-data><![CDATA[BEGIN:VCARD
 VERSION:3.0
 NICKNAME:me
-UID:34222-232@example.com
+UID:34222-232@{{alias_domain}}
 FN:Cyrus Daboo
-EMAIL:daboo@example.com
+EMAIL:daboo@{{alias_domain}}
 END:VCARD
 ]]></B:address-data>
          </D:prop>

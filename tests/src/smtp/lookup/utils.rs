@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -52,16 +52,16 @@ async fn strategies() {
         "10.0.0.4".parse().unwrap(),
     ];
     let ipv4_hosts = [
-        "test1.example.com".to_string(),
-        "test2.example.com".to_string(),
-        "test3.example.com".to_string(),
-        "test4.example.com".to_string(),
+        "test1.{{alias_domain}}".to_string(),
+        "test2.{{alias_domain}}".to_string(),
+        "test3.{{alias_domain}}".to_string(),
+        "test4.{{alias_domain}}".to_string(),
     ];
     let ipv6_hosts = [
-        "test5.example.com".to_string(),
-        "test6.example.com".to_string(),
-        "test7.example.com".to_string(),
-        "test8.example.com".to_string(),
+        "test5.{{alias_domain}}".to_string(),
+        "test6.{{alias_domain}}".to_string(),
+        "test7.{{alias_domain}}".to_string(),
+        "test8.{{alias_domain}}".to_string(),
     ];
 
     let mut test = TestServerBuilder::new("smtp_strategies_test")
@@ -79,39 +79,39 @@ async fn strategies() {
     admin
         .registry_create_object(MtaConnectionStrategy {
             name: "test".into(),
-            ehlo_hostname: "test.example.com".to_string().into(),
+            ehlo_hostname: "test.{{alias_domain}}".to_string().into(),
             connect_timeout: 10_000u64.into(),
             source_ips: List::from_iter([
                 MtaConnectionIpHost {
-                    ehlo_hostname: "test1.example.com".to_string().into(),
+                    ehlo_hostname: "test1.{{alias_domain}}".to_string().into(),
                     source_ip: IpAddr::from_str("10.0.0.1").unwrap(),
                 },
                 MtaConnectionIpHost {
-                    ehlo_hostname: "test2.example.com".to_string().into(),
+                    ehlo_hostname: "test2.{{alias_domain}}".to_string().into(),
                     source_ip: IpAddr::from_str("10.0.0.2").unwrap(),
                 },
                 MtaConnectionIpHost {
-                    ehlo_hostname: "test3.example.com".to_string().into(),
+                    ehlo_hostname: "test3.{{alias_domain}}".to_string().into(),
                     source_ip: IpAddr::from_str("10.0.0.3").unwrap(),
                 },
                 MtaConnectionIpHost {
-                    ehlo_hostname: "test4.example.com".to_string().into(),
+                    ehlo_hostname: "test4.{{alias_domain}}".to_string().into(),
                     source_ip: IpAddr::from_str("10.0.0.4").unwrap(),
                 },
                 MtaConnectionIpHost {
-                    ehlo_hostname: "test5.example.com".to_string().into(),
+                    ehlo_hostname: "test5.{{alias_domain}}".to_string().into(),
                     source_ip: IpAddr::from_str("a:b::1").unwrap(),
                 },
                 MtaConnectionIpHost {
-                    ehlo_hostname: "test6.example.com".to_string().into(),
+                    ehlo_hostname: "test6.{{alias_domain}}".to_string().into(),
                     source_ip: IpAddr::from_str("a:b::2").unwrap(),
                 },
                 MtaConnectionIpHost {
-                    ehlo_hostname: "test7.example.com".to_string().into(),
+                    ehlo_hostname: "test7.{{alias_domain}}".to_string().into(),
                     source_ip: IpAddr::from_str("a:b::3").unwrap(),
                 },
                 MtaConnectionIpHost {
-                    ehlo_hostname: "test8.example.com".to_string().into(),
+                    ehlo_hostname: "test8.{{alias_domain}}".to_string().into(),
                     source_ip: IpAddr::from_str("a:b::4").unwrap(),
                 },
             ]),
@@ -158,7 +158,7 @@ async fn strategies() {
         .get("test")
         .unwrap();
 
-    assert_eq!(conn.ehlo_hostname.as_ref().unwrap(), "test.example.com");
+    assert_eq!(conn.ehlo_hostname.as_ref().unwrap(), "test.{{alias_domain}}");
 
     for is_ipv4 in [true, false] {
         for _ in 0..10 {
@@ -189,7 +189,7 @@ async fn strategies() {
         blob_hash: Default::default(),
         received_from_ip: "1.2.3.4".parse().unwrap(),
         received_via_port: 7911,
-        return_path: "test@example.com".into(),
+        return_path: "test@{{alias_domain}}".into(),
         recipients: vec![Recipient {
             address: "recipient@foobar.com".into(),
             retry: Schedule::now(),
@@ -197,7 +197,7 @@ async fn strategies() {
             expires: QueueExpiry::Ttl(3600),
             queue: QueueName::new("test").unwrap(),
             status: Status::TemporaryFailure(ErrorDetails {
-                entity: "test.example.com".into(),
+                entity: "test.{{alias_domain}}".into(),
                 details: Error::TlsError("TLS handshake failed".into()),
             }),
             flags: 0,
@@ -269,17 +269,17 @@ fn parse_policy() {
         (
             r"version: STSv1
 mode: enforce
-mx: mail.example.com
+mx: mail.{{alias_domain}}
 mx: *.example.net
-mx: backupmx.example.com
+mx: backupmx.{{alias_domain}}
 max_age: 604800",
             Policy {
                 id: "abc".to_string(),
                 mode: Mode::Enforce,
                 mx: vec![
-                    MxPattern::Equals("mail.example.com".to_string()),
+                    MxPattern::Equals("mail.{{alias_domain}}".to_string()),
                     MxPattern::StartsWith("example.net".to_string()),
-                    MxPattern::Equals("backupmx.example.com".to_string()),
+                    MxPattern::Equals("backupmx.{{alias_domain}}".to_string()),
                 ]
                 .into_boxed_slice(),
                 max_age: 604800,

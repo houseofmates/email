@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -51,42 +51,42 @@ pub async fn imap_tests() {
         .await;
 
     // Create admin account
-    let admin = test.create_admin_account("admin@example.com").await;
+    let admin = test.create_admin_account("admin@{{alias_domain}}").await;
 
     // Create test users
     for (name, secret, description, aliases) in [
         (
-            "jdoe@example.com",
+            "jdoe@{{alias_domain}}",
             "12345 + extra safety",
             "John Doe",
-            &["john.doe@example.com"][..],
+            &["john.doe@{{alias_domain}}"][..],
         ),
         (
-            "jane.smith@example.com",
+            "jane.smith@{{alias_domain}}",
             "abcde + extra safety",
             "Jane Smith",
-            &["jane@example.com"][..],
+            &["jane@{{alias_domain}}"][..],
         ),
         (
-            "foobar@example.com",
+            "foobar@{{alias_domain}}",
             "098765 + extra safety",
             "Bill Foobar",
-            &["bill.foobar@example.com"][..],
+            &["bill.foobar@{{alias_domain}}"][..],
         ),
         (
-            "popper@example.com",
+            "popper@{{alias_domain}}",
             "a_pop3_safe_secret_with_extra_safety",
             "Karl Popper",
-            &["karl.popper@example.com"][..],
+            &["karl.popper@{{alias_domain}}"][..],
         ),
         (
-            "sgd@example.com",
+            "sgd@{{alias_domain}}",
             "secret2 + extra safety",
             "Sigmund Gudmund Dudmundsson",
             &[][..],
         ),
         (
-            "spamtrap@example.com",
+            "spamtrap@{{alias_domain}}",
             "secret3 + extra safety",
             "Spam Trap",
             &[][..],
@@ -107,16 +107,16 @@ pub async fn imap_tests() {
     // Create test group
     test.insert_account(
         admin
-            .create_group_account("support@example.com", "Support Group", &[])
+            .create_group_account("support@{{alias_domain}}", "Support Group", &[])
             .await,
     );
 
     // Add Jane to the Support group
-    let support_id = test.account("support@example.com").id();
+    let support_id = test.account("support@{{alias_domain}}").id();
     admin
         .registry_update_object(
             ObjectType::Account,
-            test.account("jane.smith@example.com").id(),
+            test.account("jane.smith@{{alias_domain}}").id(),
             json!({
                 "memberGroupIds": { support_id: true },
             }),
@@ -175,7 +175,7 @@ pub async fn imap_tests() {
         .registry_create_object(MtaStageData {
             add_delivered_to_header: false,
             enable_spam_filter: Expression {
-                else_: "recipients[0] != 'popper@example.com'".into(),
+                else_: "recipients[0] != 'popper@{{alias_domain}}'".into(),
                 ..Default::default()
             },
             ..Default::default()
@@ -227,7 +227,7 @@ pub async fn imap_tests() {
     basic::test(&mut imap, &mut imap_check).await;
 
     // Login
-    let account = test.account("jdoe@example.com");
+    let account = test.account("jdoe@{{alias_domain}}");
     for imap in [&mut imap, &mut imap_check] {
         imap.authenticate(account.name(), account.secret()).await;
     }

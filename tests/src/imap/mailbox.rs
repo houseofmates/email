@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -22,7 +22,7 @@ pub async fn test(
     mailbox_matches_pattern();
 
     // Create third connection for testing
-    let mut other_conn = test.account("jdoe@example.com").imap_client().await;
+    let mut other_conn = test.account("jdoe@{{alias_domain}}").imap_client().await;
 
     // List folders
     imap.send("LIST \"\" \"*\"").await;
@@ -328,19 +328,19 @@ pub async fn test(
     imap.assert_read(Type::Tagged, ResponseType::Ok).await;
 
     // Shared folder creation tests
-    let mut imap_jane = test.account("jane.smith@example.com").imap_client().await;
+    let mut imap_jane = test.account("jane.smith@{{alias_domain}}").imap_client().await;
     imap_jane
-        .send("CREATE \"Shared Folders/support@example.com/INBOX/Test\"")
+        .send("CREATE \"Shared Folders/support@{{alias_domain}}/INBOX/Test\"")
         .await;
     imap_jane.assert_read(Type::Tagged, ResponseType::Ok).await;
 
     imap_jane
-        .send("CREATE \"Shared Folders/support@example.com/Test\"")
+        .send("CREATE \"Shared Folders/support@{{alias_domain}}/Test\"")
         .await;
     imap_jane.assert_read(Type::Tagged, ResponseType::Ok).await;
 
     imap_jane
-        .send("CREATE \"Shared Folders/support@example.com/Test/TestSubfolder\"")
+        .send("CREATE \"Shared Folders/support@{{alias_domain}}/Test/TestSubfolder\"")
         .await;
     imap_jane.assert_read(Type::Tagged, ResponseType::Ok).await;
     imap_jane.send("LIST \"\" \"*\"").await;
@@ -355,16 +355,16 @@ pub async fn test(
                 ("Junk Mail", [""]),
                 ("Sent Items", [""]),
                 ("Shared Folders", [""]),
-                ("Shared Folders/support@example.com", [""]),
-                ("Shared Folders/support@example.com/Deleted Items", [""]),
-                ("Shared Folders/support@example.com/Drafts", [""]),
-                ("Shared Folders/support@example.com/INBOX", [""]),
-                ("Shared Folders/support@example.com/INBOX/Test", [""]),
-                ("Shared Folders/support@example.com/Junk Mail", [""]),
-                ("Shared Folders/support@example.com/Sent Items", [""]),
-                ("Shared Folders/support@example.com/Test", [""]),
+                ("Shared Folders/support@{{alias_domain}}", [""]),
+                ("Shared Folders/support@{{alias_domain}}/Deleted Items", [""]),
+                ("Shared Folders/support@{{alias_domain}}/Drafts", [""]),
+                ("Shared Folders/support@{{alias_domain}}/INBOX", [""]),
+                ("Shared Folders/support@{{alias_domain}}/INBOX/Test", [""]),
+                ("Shared Folders/support@{{alias_domain}}/Junk Mail", [""]),
+                ("Shared Folders/support@{{alias_domain}}/Sent Items", [""]),
+                ("Shared Folders/support@{{alias_domain}}/Test", [""]),
                 (
-                    "Shared Folders/support@example.com/Test/TestSubfolder",
+                    "Shared Folders/support@{{alias_domain}}/Test/TestSubfolder",
                     [""],
                 ),
             ],

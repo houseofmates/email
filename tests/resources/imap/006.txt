@@ -1,5 +1,5 @@
-From: sender@example.com
-To: recipient@example.com
+From: sender@{{alias_domain}}
+To: recipient@{{alias_domain}}
 Subject: Multipart Email Example
 Content-Type: multipart/alternative; boundary="boundary-string"
 

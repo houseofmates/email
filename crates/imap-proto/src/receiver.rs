@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -972,10 +972,10 @@ mod tests {
                 vec![
                     "A003 APPEND saved-messages (\\Seen) {297+}\r\n",
                     "Date: Mon, 7 Feb 1994 21:52:25 -0800 (PST)\r\n",
-                    "From: Fred Foobar <foobar@example.com>\r\n",
+                    "From: Fred Foobar <foobar@{{alias_domain}}>\r\n",
                     "Subject: afternoon meeting\r\n",
-                    "To: mooch@example.com\r\n",
-                    "Message-Id: <B27397-0100000@example.com>\r\n",
+                    "To: mooch@{{alias_domain}}\r\n",
+                    "Message-Id: <B27397-0100000@{{alias_domain}}>\r\n",
                     "MIME-Version: 1.0\r\n",
                     "Content-Type: TEXT/PLAIN; CHARSET=US-ASCII\r\n",
                     "\r\n",
@@ -992,10 +992,10 @@ mod tests {
                         Token::Argument(
                             concat!(
                                 "Date: Mon, 7 Feb 1994 21:52:25 -0800 (PST)\r\n",
-                                "From: Fred Foobar <foobar@example.com>\r\n",
+                                "From: Fred Foobar <foobar@{{alias_domain}}>\r\n",
                                 "Subject: afternoon meeting\r\n",
-                                "To: mooch@example.com\r\n",
-                                "Message-Id: <B27397-0100000@example.com>\r\n",
+                                "To: mooch@{{alias_domain}}\r\n",
+                                "Message-Id: <B27397-0100000@{{alias_domain}}>\r\n",
                                 "MIME-Version: 1.0\r\n",
                                 "Content-Type: TEXT/PLAIN; CHARSET=US-ASCII\r\n",
                                 "\r\n",

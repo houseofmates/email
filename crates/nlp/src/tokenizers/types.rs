@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -2103,8 +2103,8 @@ mod test {
                 vec![TokenType::Url("http://example.org/¢/")],
             ),
             (
-                "http://xn--c1h.example.com/",
-                vec![TokenType::Url("http://xn--c1h.example.com/")],
+                "http://xn--c1h.{{alias_domain}}/",
+                vec![TokenType::Url("http://xn--c1h.{{alias_domain}}/")],
             ),
             ("üñîçøðé.com", vec![TokenType::UrlNoScheme("üñîçøðé.com")]),
             (
@@ -2128,8 +2128,8 @@ mod test {
                 vec![TokenType::UrlNoScheme("example.org/¢/")],
             ),
             (
-                "xn--c1h.example.com/",
-                vec![TokenType::UrlNoScheme("xn--c1h.example.com/")],
+                "xn--c1h.{{alias_domain}}/",
+                vec![TokenType::UrlNoScheme("xn--c1h.{{alias_domain}}/")],
             ),
             (
                 "example.",
@@ -2162,7 +2162,7 @@ mod test {
                 ],
             ),
             ("example.co", vec![TokenType::UrlNoScheme("example.co")]),
-            ("example.com", vec![TokenType::UrlNoScheme("example.com")]),
+            ("{{alias_domain}}", vec![TokenType::UrlNoScheme("{{alias_domain}}")]),
             ("e.com", vec![TokenType::UrlNoScheme("e.com")]),
             (
                 "exampl.e.c",
@@ -2201,8 +2201,8 @@ mod test {
                 vec![TokenType::Email("foo.bar@example.org")],
             ),
             (
-                "example.com@example.com",
-                vec![TokenType::Email("example.com@example.com")],
+                "{{alias_domain}}@{{alias_domain}}",
+                vec![TokenType::Email("{{alias_domain}}@{{alias_domain}}")],
             ),
             (
                 "Look, no scheme: example.org/foo email@foo.com",
@@ -2276,16 +2276,16 @@ mod test {
                 vec![TokenType::UrlNoHost("https://12-7.0.0.1/")],
             ),
             (
-                "https://user:pass@example.com/",
-                vec![TokenType::Url("https://user:pass@example.com/")],
+                "https://user:pass@{{alias_domain}}/",
+                vec![TokenType::Url("https://user:pass@{{alias_domain}}/")],
             ),
             (
-                "https://user:-.!$@example.com/",
-                vec![TokenType::Url("https://user:-.!$@example.com/")],
+                "https://user:-.!$@{{alias_domain}}/",
+                vec![TokenType::Url("https://user:-.!$@{{alias_domain}}/")],
             ),
             (
-                "https://user:!$&'()*+,;=@example.com/",
-                vec![TokenType::Url("https://user:!$&'()*+,;=@example.com/")],
+                "https://user:!$&'()*+,;=@{{alias_domain}}/",
+                vec![TokenType::Url("https://user:!$&'()*+,;=@{{alias_domain}}/")],
             ),
             (
                 "https://user:pass@ex@mple.com/",
@@ -2307,8 +2307,8 @@ mod test {
                 vec![TokenType::UrlNoHost("https://localhost:8080/")],
             ),
             (
-                "https://user:pass@example.com:8080/hi",
-                vec![TokenType::Url("https://user:pass@example.com:8080/hi")],
+                "https://user:pass@{{alias_domain}}:8080/hi",
+                vec![TokenType::Url("https://user:pass@{{alias_domain}}:8080/hi")],
             ),
             (
                 "https://127.0.0.1/",
@@ -2350,8 +2350,8 @@ mod test {
                 ],
             ),
             (
-                "https://example.com.:8080/test",
-                vec![TokenType::Url("https://example.com.:8080/test")],
+                "https://{{alias_domain}}.:8080/test",
+                vec![TokenType::Url("https://{{alias_domain}}.:8080/test")],
             ),
             (
                 "https://example.org'",
@@ -2361,8 +2361,8 @@ mod test {
                 ],
             ),
             (
-                "https://example.org'a@example.com",
-                vec![TokenType::Url("https://example.org'a@example.com")],
+                "https://example.org'a@{{alias_domain}}",
+                vec![TokenType::Url("https://example.org'a@{{alias_domain}}")],
             ),
             (
                 "https://a.com'https://b.com",
@@ -2375,9 +2375,9 @@ mod test {
                 ],
             ),
             (
-                "https://example.com...",
+                "https://{{alias_domain}}...",
                 vec![
-                    TokenType::Url("https://example.com"),
+                    TokenType::Url("https://{{alias_domain}}"),
                     TokenType::Punctuation('.'),
                     TokenType::Punctuation('.'),
                     TokenType::Punctuation('.'),
@@ -2395,8 +2395,8 @@ mod test {
                 ],
             ),
             (
-                "https://.www.example.com",
-                vec![TokenType::Url("https://.www.example.com")],
+                "https://.www.{{alias_domain}}",
+                vec![TokenType::Url("https://.www.{{alias_domain}}")],
             ),
             (
                 "-a.com",
@@ -2425,9 +2425,9 @@ mod test {
             ),
             ("https://a.b-.com", vec![TokenType::Url("https://a.b-.com")]),
             (
-                "https://example.com-/",
+                "https://{{alias_domain}}-/",
                 vec![
-                    TokenType::Url("https://example.com"),
+                    TokenType::Url("https://{{alias_domain}}"),
                     TokenType::Punctuation('-'),
                     TokenType::Punctuation('/'),
                 ],
@@ -2440,20 +2440,20 @@ mod test {
                 ],
             ),
             (
-                "example.com@about",
+                "{{alias_domain}}@about",
                 vec![
-                    TokenType::UrlNoScheme("example.com"),
+                    TokenType::UrlNoScheme("{{alias_domain}}"),
                     TokenType::Punctuation('@'),
                     TokenType::Alphabetic("about"),
                 ],
             ),
             (
-                "example.com/@about",
-                vec![TokenType::UrlNoScheme("example.com/@about")],
+                "{{alias_domain}}/@about",
+                vec![TokenType::UrlNoScheme("{{alias_domain}}/@about")],
             ),
             (
-                "https://example.com/@about",
-                vec![TokenType::Url("https://example.com/@about")],
+                "https://{{alias_domain}}/@about",
+                vec![TokenType::Url("https://{{alias_domain}}/@about")],
             ),
             (
                 "info@v1.1.1",
@@ -2519,12 +2519,12 @@ mod test {
                 ],
             ),
             (
-                "1abc://example.com",
-                vec![TokenType::Url("1abc://example.com")],
+                "1abc://{{alias_domain}}",
+                vec![TokenType::Url("1abc://{{alias_domain}}")],
             ),
             (
-                "¡¢example.com",
-                vec![TokenType::UrlNoScheme("¡¢example.com")],
+                "¡¢{{alias_domain}}",
+                vec![TokenType::UrlNoScheme("¡¢{{alias_domain}}")],
             ),
             ("foo", vec![TokenType::Alphabetic("foo")]),
             ("@", vec![TokenType::Punctuation('@')]),
@@ -2544,10 +2544,10 @@ mod test {
                     TokenType::Punctuation('@'),
                 ],
             ),
-            ("foo@example.com", vec![TokenType::Email("foo@example.com")]),
+            ("foo@{{alias_domain}}", vec![TokenType::Email("foo@{{alias_domain}}")]),
             (
-                "foo.bar@example.com",
-                vec![TokenType::Email("foo.bar@example.com")],
+                "foo.bar@{{alias_domain}}",
+                vec![TokenType::Email("foo.bar@{{alias_domain}}")],
             ),
             (
                 "#!$%&'*+-/=?^_`{}|~@example.org",
@@ -2578,97 +2578,97 @@ mod test {
                 vec![TokenType::Email("a@b.com"), TokenType::Space],
             ),
             (
-                "(a@example.com)",
+                "(a@{{alias_domain}})",
                 vec![
                     TokenType::Punctuation('('),
-                    TokenType::Email("a@example.com"),
+                    TokenType::Email("a@{{alias_domain}}"),
                     TokenType::Punctuation(')'),
                 ],
             ),
             (
-                "\"a@example.com\"",
+                "\"a@{{alias_domain}}\"",
                 vec![
                     TokenType::Punctuation('"'),
-                    TokenType::Email("a@example.com"),
+                    TokenType::Email("a@{{alias_domain}}"),
                     TokenType::Punctuation('"'),
                 ],
             ),
             (
-                "\"a@example.com\"",
+                "\"a@{{alias_domain}}\"",
                 vec![
                     TokenType::Punctuation('"'),
-                    TokenType::Email("a@example.com"),
+                    TokenType::Email("a@{{alias_domain}}"),
                     TokenType::Punctuation('"'),
                 ],
             ),
             (
-                ",a@example.com,",
+                ",a@{{alias_domain}},",
                 vec![
                     TokenType::Punctuation(','),
-                    TokenType::Email("a@example.com"),
+                    TokenType::Email("a@{{alias_domain}}"),
                     TokenType::Punctuation(','),
                 ],
             ),
             (
-                ":a@example.com:",
+                ":a@{{alias_domain}}:",
                 vec![
                     TokenType::Punctuation(':'),
-                    TokenType::Email("a@example.com"),
+                    TokenType::Email("a@{{alias_domain}}"),
                     TokenType::Punctuation(':'),
                 ],
             ),
             (
-                ";a@example.com;",
+                ";a@{{alias_domain}};",
                 vec![
                     TokenType::Punctuation(';'),
-                    TokenType::Email("a@example.com"),
+                    TokenType::Email("a@{{alias_domain}}"),
                     TokenType::Punctuation(';'),
                 ],
             ),
             (
-                ".@example.com",
+                ".@{{alias_domain}}",
                 vec![
                     TokenType::Punctuation('.'),
                     TokenType::Punctuation('@'),
-                    TokenType::UrlNoScheme("example.com"),
+                    TokenType::UrlNoScheme("{{alias_domain}}"),
                 ],
             ),
             (
-                "foo.@example.com",
+                "foo.@{{alias_domain}}",
                 vec![
                     TokenType::Alphabetic("foo"),
                     TokenType::Punctuation('.'),
                     TokenType::Punctuation('@'),
-                    TokenType::UrlNoScheme("example.com"),
+                    TokenType::UrlNoScheme("{{alias_domain}}"),
                 ],
             ),
             (
-                ".foo@example.com",
+                ".foo@{{alias_domain}}",
                 vec![
                     TokenType::Punctuation('.'),
-                    TokenType::Email("foo@example.com"),
+                    TokenType::Email("foo@{{alias_domain}}"),
                 ],
             ),
             (
-                ".foo@example.com",
+                ".foo@{{alias_domain}}",
                 vec![
                     TokenType::Punctuation('.'),
-                    TokenType::Email("foo@example.com"),
+                    TokenType::Email("foo@{{alias_domain}}"),
                 ],
             ),
             (
-                "a..b@example.com",
+                "a..b@{{alias_domain}}",
                 vec![
                     TokenType::Alphabetic("a"),
                     TokenType::Punctuation('.'),
                     TokenType::Punctuation('.'),
-                    TokenType::Email("b@example.com"),
+                    TokenType::Email("b@{{alias_domain}}"),
                 ],
             ),
             (
-                "a@example.com.",
+                "a@{{alias_domain}}.",
                 vec![
-                    TokenType::Email("a@example.com"),
+                    TokenType::Email("a@{{alias_domain}}"),
                     TokenType::Punctuation('.'),
                 ],
             ),
@@ -2694,9 +2694,9 @@ mod test {
                 vec![TokenType::Email("a@b.com"), TokenType::Punctuation('.')],
             ),
             (
-                "a@example.com-",
+                "a@{{alias_domain}}-",
                 vec![
-                    TokenType::Email("a@example.com"),
+                    TokenType::Email("a@{{alias_domain}}"),
                     TokenType::Punctuation('-'),
                 ],
             ),
@@ -2738,21 +2738,21 @@ mod test {
                 ],
             ),
             (
-                "a@example.com b@example.com",
+                "a@{{alias_domain}} b@{{alias_domain}}",
                 vec![
-                    TokenType::Email("a@example.com"),
+                    TokenType::Email("a@{{alias_domain}}"),
                     TokenType::Space,
-                    TokenType::Email("b@example.com"),
+                    TokenType::Email("b@{{alias_domain}}"),
                 ],
             ),
             (
-                "a@example.com @ b@example.com",
+                "a@{{alias_domain}} @ b@{{alias_domain}}",
                 vec![
-                    TokenType::Email("a@example.com"),
+                    TokenType::Email("a@{{alias_domain}}"),
                     TokenType::Space,
                     TokenType::Punctuation('@'),
                     TokenType::Space,
-                    TokenType::Email("b@example.com"),
+                    TokenType::Email("b@{{alias_domain}}"),
                 ],
             ),
             (
@@ -2766,14 +2766,14 @@ mod test {
                 ],
             ),
             (
-                "üñîçøðé@example.com",
-                vec![TokenType::Email("üñîçøðé@example.com")],
+                "üñîçøðé@{{alias_domain}}",
+                vec![TokenType::Email("üñîçøðé@{{alias_domain}}")],
             ),
             (
                 "üñîçøðé@üñîçøðé.com",
                 vec![TokenType::Email("üñîçøðé@üñîçøðé.com")],
             ),
-            ("www@example.com", vec![TokenType::Email("www@example.com")]),
+            ("www@{{alias_domain}}", vec![TokenType::Email("www@{{alias_domain}}")]),
             (
                 "a@a.xyϸ",
                 vec![

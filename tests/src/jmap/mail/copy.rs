@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <hello@stalw.art>
+ * SPDX-FileCopyrightText: 2020 Stalwart Labs LLC <{{stalwart_contact_email}}>
  *
  * SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-SEL
  */
@@ -10,7 +10,7 @@ use types::id::Id;
 
 pub async fn test(test: &TestServer) {
     println!("Running Email Copy tests...");
-    let account = test.account("admin@example.com");
+    let account = test.account("admin@{{alias_domain}}");
     let mut client = account.jmap_client().await;
 
     // Create a mailbox on account 1
@@ -25,8 +25,8 @@ pub async fn test(test: &TestServer) {
     let ac1_email_id = client
         .email_import(
             concat!(
-                "From: bill@example.com\r\n",
-                "To: jdoe@example.com\r\n",
+                "From: bill@{{alias_domain}}\r\n",
+                "To: jdoe@{{alias_domain}}\r\n",
                 "Subject: TPS Report\r\n",
                 "\r\n",
                 "I'm going to need those TPS reports ASAP. ",
