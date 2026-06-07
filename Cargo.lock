@@ -2140,7 +2140,7 @@ dependencies = [
 name = "email_lib"
 version = "0.16.7"
 dependencies = [
- "aes 0.8.4",
+ "aes 0.9.1",
  "aes-gcm",
  "aes-gcm-siv",
  "cbc 0.2.1",
