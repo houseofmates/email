@@ -1,30 +1,32 @@
-<div align="center">
-  <h1>email</h1>
-  <p>unified interface for stalwart, vaultwarden, and simplelogin</p>
-  <p>
-    <em>one email client, one password manager, one alias service — on your infra</em>
-  </p>
-</div>
+<h1 align="center">email</h1>
 
----
+<p align="center">unified interface for stalwart, vaultwarden, and simplelogin</p>
 
-## what is this?
+<p align="center">
+  <em>one email client, one password manager, one alias service — on your infra</em>
+</p>
 
-a self-hosted unified frontend for three services that live on your own hardware:
+<hr>
+
+<h2 align="center" id="what-is-this">what is this?</h2>
+
+<p align="center">a self-hosted unified frontend for three services that live on your own hardware:</p>
 
 - **stalwart** — email server (jmap, smtp, imap)
 - **vaultwarden** — password manager (bitwarden-compatible)
 - **simplelogin** — email aliases (optional)
 
-instead of maintaining three separate UIs, this project gives you:
+<p align="center">instead of maintaining three separate uis, this project gives you:</p>
+
 - one web app for email + passwords + aliases
 - one firefox extension for auto-fill and alias generation
 - two native android apps (email.apk + passwords.apk)
 
-## project structure
+<hr>
 
-```
-email/
+<h2 align="center" id="project-structure">project structure</h2>
+
+<pre align="center"><code>email/
 ├── frontend/          # react + vite + tailwind web app
 │   ├── src/
 │   │   ├── App.jsx       # unified routing + auth
@@ -54,42 +56,42 @@ email/
 │   └── email-bridge.service  # systemd service
 ├── .env               # environment config
 └── gen_icons*.py      # icon generators
-```
+</code></pre>
 
-## setup
+<hr>
 
-### 1. configure .env
+<h2 align="center" id="setup">setup</h2>
 
-```
-cp .env.example .env
-```
+<h3 align="center" id="1-configure-env">1. configure .env</h3>
 
-edit the values to match your services.
+<pre align="center"><code>cp .env.example .env
+</code></pre>
 
-### 2. start the bridge
+<p align="center">edit the values to match your services.</p>
 
-```
-cd bridge
+<h3 align="center" id="2-start-the-bridge">2. start the bridge</h3>
+
+<pre align="center"><code>cd bridge
 npm install
 node server.js
-```
+</code></pre>
 
-the bridge runs on `http://localhost:3099` and proxies:
+<p align="center">the bridge runs on <code>http://localhost:3099</code> and proxies:</p>
+
 - `/api/mail/*` → stalwart api
-- `/api/passwords/*` → vaultwarden api  
+- `/api/passwords/*` → vaultwarden api
 - `/api/aliases/*` → simplelogin or stalwart alias store
 - `/jmap/*` → stalwart jmap
 - serves the frontend from `frontend/dist`
 
-### 3. start the frontend (dev mode)
+<h3 align="center" id="3-start-the-frontend-dev">3. start the frontend (dev mode)</h3>
 
-```
-cd frontend
+<pre align="center"><code>cd frontend
 npm install
 npm run dev
-```
+</code></pre>
 
-### 4. install the firefox extension
+<h3 align="center" id="4-install-the-firefox-extension">4. install the firefox extension</h3>
 
 1. go to `about:debugging#/runtime/this-firefox`
 2. click "load temporary add-on"
@@ -97,29 +99,38 @@ npm run dev
 4. right-click the extension icon → "manage extension"
 5. enter your api base url (`http://localhost:3099`), alias domain, and auth token
 
-### 5. install the android apps
+<h3 align="center" id="5-install-the-android-apps">5. install the android apps</h3>
 
-```
-adb install mobile/android/app/build/outputs/apk/debug/app-debug.apk
+<pre align="center"><code>adb install mobile/android/app/build/outputs/apk/debug/app-debug.apk
 adb install mobile-passwords/android/app/build/outputs/apk/debug/app-debug.apk
-```
+</code></pre>
 
-## building everything
+<hr>
 
-```
-bash scripts/build-all.sh
-```
+<h2 align="center" id="building-everything">building everything</h2>
 
-## the pkm aesthetic
+<pre align="center"><code>bash scripts/build-all.sh
+</code></pre>
 
-every pixel of this project follows the same design language:
+<hr>
 
-| token | hex | use |
-|---|---|---|
-| `#050505` | bg | main background |
-| `#f6b012` | gold | primary accent, ctas |
-| `#3c9fdd` | sky | secondary accent, info |
-| `#ffffff` | white | body text |
+<h2 align="center" id="the-pkm-aesthetic">the pkm aesthetic</h2>
+
+<p align="center">every pixel of this project follows the same design language:</p>
+
+<div align="center">
+<table>
+  <thead>
+    <tr><th>token</th><th>hex</th><th>use</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>#050505</code></td><td>bg</td><td>main background</td></tr>
+    <tr><td><code>#f6b012</code></td><td>gold</td><td>primary accent, ctas</td></tr>
+    <tr><td><code>#3c9fdd</code></td><td>sky</td><td>secondary accent, info</td></tr>
+    <tr><td><code>#ffffff</code></td><td>white</td><td>body text</td></tr>
+  </tbody>
+</table>
+</div>
 
 - **varela round** font everywhere
 - **strictly lowercase** ui text
@@ -127,10 +138,11 @@ every pixel of this project follows the same design language:
 - 44x44pt minimum touch targets
 - `min-h-[100dvh]` not `h-screen`
 
-## architecture
+<hr>
 
-```
-                     ┌──────────────────┐
+<h2 align="center" id="architecture">architecture</h2>
+
+<pre align="center"><code>                     ┌──────────────────┐
                      │   firefox ext    │
                      │  (content.js)    │
                      └────────┬─────────┘
@@ -146,11 +158,17 @@ every pixel of this project follows the same design language:
      │  stalwart  │  │ vaultwarden│  │simplelogin │
      │  (:8080)   │  │  (:8085)   │  │ (optional) │
      └────────────┘  └────────────┘  └────────────┘
-```
+</code></pre>
 
-## services integration
+<hr>
+
+<h2 align="center" id="services-integration">services integration</h2>
 
 - **auth**: login against stalwart's oauth, credentials shared across all views
 - **passwords**: stored in stalwart's credential store (also syncable with vaultwarden via bitwarden api)
 - **aliases**: managed via stalwart's alias api, with optional simplelogin backend
 - **extension**: detects signup pages (distinguishes from login), generates site-specific aliases, offers autofill from stored credentials
+
+<h2 align="center" id="license">license</h2>
+
+<p align="center"><a href="./license">mates license (with disclaimer)</a></p>
