@@ -194,7 +194,6 @@ export default function CalendarTimeGrid({ days, events, onCreate, onOpen, onMov
                       <div
                         key={ev.id}
                         onPointerDown={(e) => eventDown(e, ev, di, "move")}
-                        onClick={(e) => { e.stopPropagation(); if (e.pointerType !== "mouse") onOpen(ev) }}
                         className={`absolute left-0.5 right-0.5 overflow-hidden rounded-md px-1.5 py-0.5 text-[11px] text-pkm-900 shadow-sm lowercase ${
                           hidden ? "opacity-0" : "cursor-grab active:cursor-grabbing"
                         }`}
