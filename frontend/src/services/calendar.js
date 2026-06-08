@@ -91,6 +91,11 @@ async function call(methodCalls) {
 
 const pad = (n) => String(n).padStart(2, "0")
 
+/** Date -> utc rfc3339 without fractional seconds ("2026-06-08T00:00:00Z"). */
+function rfc3339(d) {
+  return d.toISOString().replace(/\.\d{3}Z$/, "Z")
+}
+
 /** local Date -> jscalendar wall-clock "YYYY-MM-DDTHH:MM:SS". */
 export function toLocalDateTime(d) {
   return (
@@ -190,7 +195,9 @@ export async function listEvents(from, to) {
       "CalendarEvent/query",
       {
         accountId: acc,
-        filter: { after: from.toISOString(), before: to.toISOString() },
+        // stalwart parses these with a strict rfc3339 reader that rejects the
+        // ".000" fractional seconds toISOString() emits — drop them.
+        filter: { after: rfc3339(from), before: rfc3339(to) },
       },
       "0",
     ],
