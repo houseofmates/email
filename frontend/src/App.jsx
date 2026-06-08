@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, createContext, useContext } from "react"
 import Login from "./login"
 import Inbox from "./inbox"
 import Mail from "./mail"
+import Calendar from "./calendar"
 import Passwords from "./passwords"
 import Aliases from "./aliases"
 import Settings from "./settings"
@@ -62,6 +63,7 @@ export default function App() {
     <AuthContext.Provider value={auth}>
       {page === "inbox" && <Inbox {...shared} />}
       {page === "mail" && <Mail {...shared} />}
+      {page === "calendar" && <Calendar {...shared} />}
       {page === "passwords" && <Passwords {...shared} />}
       {page === "aliases" && <Aliases {...shared} />}
       {page === "settings" && <Settings {...shared} />}
