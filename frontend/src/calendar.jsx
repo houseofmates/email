@@ -121,7 +121,7 @@ function CalendarInner({ authHeader, onNavigate, onLogout, userEmail }) {
     ? `${MONTHS[anchor.getMonth()]} ${anchor.getFullYear()}`
     : view === "day"
       ? `${MONTHS[anchor.getMonth()]} ${anchor.getDate()}`
-      : `${MONTHS[anchor.getMonth()]} ${anchor.getFullYear()}`
+      : `${MONTHS[days[0].getMonth()]} ${days[0].getDate()} - ${MONTHS[days[6].getMonth()]} ${days[6].getDate()}`
 
   return (
     <Layout currentPage="calendar" onNavigate={onNavigate} onLogout={onLogout} userEmail={userEmail}>
