@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Layout from "./layout"
 import { inputClass, goldBtn, ghostBtn } from "./components/ui"
 import { caldavUrl } from "./services/calendar"
@@ -235,11 +235,20 @@ function AdvancedSection({ userEmail }) {
 // a label + value with a copy button. shows a brief "copied" confirmation.
 function CopyRow({ label, value, multiline }) {
   const [copied, setCopied] = useState(false)
+  const timeoutRef = useRef(null)
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    }
+  }, [])
+
   async function copy() {
     try {
       await navigator.clipboard.writeText(value)
       setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      timeoutRef.current = setTimeout(() => setCopied(false), 1500)
     } catch { /* clipboard unavailable */ }
   }
   return (
