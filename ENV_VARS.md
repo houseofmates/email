@@ -23,6 +23,10 @@ Based on the scan of the email project, here are the placeholder variables that 
 - `CONFIG_ROOT` - Docker config root path
 - `DOCKER_STACK` - Docker stack path
 - `VAULTWARDEN_ADMIN_TOKEN` - Vaultwarden admin token (if enabled)
+- `PROTON_EMAIL` - Proton account used for inbound mail forwarding (optional)
+- `PROTON_PASSWORD` - Proton password / app-specific password (optional)
+- `PROTON_FORWARDING` - Set to `1` to enable proton forwarding on boot (optional)
+- `PROTON_BRIDGE_URL` - URL of the proton-bridge sidecar that performs the pull (optional)
 
 ## Notes
 1. The `.env.example` file should be copied to `.env` and filled with actual values

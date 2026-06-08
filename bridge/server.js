@@ -61,6 +61,70 @@ app.use('/api/aliases', (req, res, next) => {
   })(req, res, next)
 })
 
+// ── proton mail forwarding ────────────────────────────────
+// stores the proton bridge account used to pull mail into the local inbox and
+// exposes a manual sync trigger. credentials are kept in memory only (and in the
+// configured env for restart persistence); they are never returned to the client.
+//
+// note: for *outgoing* mail to appear as sent from a proton alias, stalwart's
+// smtp sender / identity must also be configured for that address — forwarding
+// here only covers the inbound pull.
+const protonState = {
+  email: process.env.PROTON_EMAIL || null,
+  password: process.env.PROTON_PASSWORD || null,
+  enabled: process.env.PROTON_FORWARDING === '1',
+  lastSync: null,
+}
+
+app.get('/api/forwarding/status', (req, res) => {
+  res.json({
+    email: protonState.email,
+    enabled: protonState.enabled,
+    lastSync: protonState.lastSync,
+    configured: !!(protonState.email && protonState.password),
+  })
+})
+
+app.post('/api/forwarding/proton-login', (req, res) => {
+  const { email, password, enabled } = req.body || {}
+  if (!email || !password) {
+    return res.status(400).json({ error: 'email and password required' })
+  }
+  protonState.email = email
+  protonState.password = password
+  protonState.enabled = enabled !== false
+  res.json({ ok: true, email: protonState.email, enabled: protonState.enabled })
+})
+
+app.post('/api/forwarding/proton-sync', async (req, res) => {
+  if (!protonState.email || !protonState.password) {
+    return res.status(400).json({ error: 'proton account not configured' })
+  }
+  if (!protonState.enabled) {
+    return res.status(409).json({ error: 'forwarding disabled' })
+  }
+  try {
+    // the actual pull is performed by the proton-bridge sidecar (configured out
+    // of band); this endpoint kicks it and records the timestamp. wire the real
+    // bridge call here when the sidecar url is provided via PROTON_BRIDGE_URL.
+    const bridgeUrl = process.env.PROTON_BRIDGE_URL
+    let synced = 0
+    if (bridgeUrl) {
+      const r = await fetch(`${bridgeUrl}/sync`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: protonState.email }),
+      })
+      const data = await r.json().catch(() => ({}))
+      synced = data.synced || 0
+    }
+    protonState.lastSync = new Date().toISOString()
+    res.json({ ok: true, synced, lastSync: protonState.lastSync })
+  } catch (err) {
+    res.status(502).json({ error: String(err.message || err) })
+  }
+})
+
 // ── serve frontend static build ───────────────────────────
 const frontendDist = path.resolve(__dirname, '..', 'frontend', 'dist')
 app.use(express.static(frontendDist))

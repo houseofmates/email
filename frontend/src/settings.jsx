@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react"
 import Layout from "./layout"
+import { inputClass, goldBtn, ghostBtn } from "./components/ui"
 
 export default function Settings({ authHeader, onNavigate, onLogout, userEmail }) {
   return (
@@ -20,13 +22,19 @@ export default function Settings({ authHeader, onNavigate, onLogout, userEmail }
             </div>
           </div>
 
+          {/* mail accounts / forwarding */}
+          <div>
+            <h2 className="text-sm text-gold lowercase mb-2">mail accounts</h2>
+            <ProtonForwarding authHeader={authHeader} />
+          </div>
+
           {/* services */}
           <div>
             <h2 className="text-sm text-gold lowercase mb-2">services</h2>
             <div className="space-y-2">
-              <ServiceCard name="stalwart mail" endpoint="/api/auth" authHeader={authHeader} />
-              <ServiceCard name="vaultwarden" endpoint="/identity/connect/token" authHeader={authHeader} isPassword />
-              <ServiceCard name="simplelogin" endpoint="/api/aliases" authHeader={authHeader} />
+              <ServiceCard name="stalwart mail" endpoint="/api/auth" />
+              <ServiceCard name="vaultwarden" endpoint="/identity/connect/token" />
+              <ServiceCard name="simplelogin" endpoint="/api/aliases" />
             </div>
           </div>
 
@@ -46,7 +54,135 @@ export default function Settings({ authHeader, onNavigate, onLogout, userEmail }
   )
 }
 
-function ServiceCard({ name, endpoint, authHeader, isPassword }) {
+// proton forwarding — pulls proton mail into the local inbox via the bridge.
+function ProtonForwarding({ authHeader }) {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [enabled, setEnabled] = useState(true)
+  const [status, setStatus] = useState(null) // server status
+  const [msg, setMsg] = useState(null) // { kind, text }
+  const [saving, setSaving] = useState(false)
+  const [syncing, setSyncing] = useState(false)
+
+  async function loadStatus() {
+    try {
+      const res = await fetch("/api/forwarding/status", {
+        credentials: "same-origin",
+        headers: { Authorization: authHeader },
+      })
+      if (!res.ok) return
+      const data = await res.json()
+      setStatus(data)
+      if (data.email) setEmail(data.email)
+      if (typeof data.enabled === "boolean") setEnabled(data.enabled)
+    } catch { /* status optional */ }
+  }
+
+  useEffect(() => {
+    loadStatus()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  async function sync() {
+    setSyncing(true)
+    try {
+      const res = await fetch("/api/forwarding/proton-sync", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { Authorization: authHeader },
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || "sync failed")
+      setMsg({ kind: "ok", text: `synced ${data.synced || 0} messages` })
+      await loadStatus()
+    } catch (err) {
+      setMsg({ kind: "err", text: String(err.message || err) })
+    } finally {
+      setSyncing(false)
+    }
+  }
+
+  async function save() {
+    if (!email.trim() || !password.trim()) {
+      setMsg({ kind: "err", text: "email and password required" })
+      return
+    }
+    setSaving(true)
+    setMsg(null)
+    try {
+      const res = await fetch("/api/forwarding/proton-login", {
+        method: "POST",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json", Authorization: authHeader },
+        body: JSON.stringify({ email, password, enabled }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || "save failed")
+      setMsg({ kind: "ok", text: "saved" })
+      setPassword("")
+      await loadStatus()
+      if (enabled) await sync()
+    } catch (err) {
+      setMsg({ kind: "err", text: String(err.message || err) })
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="rounded-lg border border-pkm-500 bg-pkm-800 p-4 space-y-3">
+      <div className="flex items-center justify-between">
+        <p className="text-sm text-text-primary lowercase">proton forwarding</p>
+        {status?.lastSync && (
+          <span className="text-xs text-text-info lowercase">
+            last sync {new Date(status.lastSync).toLocaleString()}
+          </span>
+        )}
+      </div>
+
+      <input
+        type="email"
+        placeholder="proton email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        className={inputClass(false)}
+      />
+      <input
+        type="password"
+        placeholder="password or app-specific password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className={inputClass(false)}
+      />
+
+      <label className="flex cursor-pointer items-center gap-2 text-xs text-text-info lowercase">
+        <input type="checkbox" checked={enabled} onChange={(e) => setEnabled(e.target.checked)} />
+        enable forwarding
+      </label>
+
+      <div className="flex items-center gap-2">
+        <button onClick={save} disabled={saving} className={goldBtn}>
+          {saving ? "saving..." : "save"}
+        </button>
+        <button onClick={sync} disabled={syncing || !status?.configured} className={ghostBtn}>
+          {syncing ? "syncing..." : "sync now"}
+        </button>
+      </div>
+
+      {msg && (
+        <p className={`text-xs lowercase ${msg.kind === "err" ? "text-danger" : "text-gold"}`}>{msg.text}</p>
+      )}
+
+      <p className="text-xs text-text-info lowercase leading-relaxed">
+        pulls proton mail into your inbox. to also send outgoing mail as your
+        proton alias, stalwart's smtp sender / identity must be configured for
+        that address — forwarding here only covers inbound mail.
+      </p>
+    </div>
+  )
+}
+
+function ServiceCard({ name, endpoint }) {
   return (
     <div className="rounded-lg border border-pkm-500 bg-pkm-800 p-4 flex items-center justify-between">
       <div className="flex items-center gap-3">
