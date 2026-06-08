@@ -51,6 +51,16 @@ export default function Aliases({ authHeader, onNavigate, onLogout, userEmail })
     return Object.keys(errors).length === 0
   }
 
+  // update a single form field and clear its inline error as the user types
+  function handleChange(field, value) {
+    setForm((prev) => ({ ...prev, [field]: value }))
+    setFormErrors((prev) => {
+      if (!prev[field]) return prev
+      const { [field]: _, ...rest } = prev
+      return rest
+    })
+  }
+
   async function handleSave(e) {
     e.preventDefault()
     if (!validate()) return
