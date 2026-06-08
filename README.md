@@ -18,9 +18,11 @@
 
 <p align="center">instead of maintaining three separate uis, this project gives you:</p>
 
-- one web app for email + passwords + aliases
+- one web app for email + **calendar** + passwords + aliases
 - one firefox extension for auto-fill and alias generation
 - two native android apps (email.apk + passwords.apk)
+
+<p align="center"><strong>a calm, all-in-one proton alternative — every feature works out of the box, the ui stays uncluttered.</strong></p>
 
 <hr>
 
@@ -31,6 +33,7 @@
 │   ├── src/
 │   │   ├── App.jsx       # unified routing + auth
 │   │   ├── inbox.jsx     # jmap email client
+│   │   ├── calendar.jsx  # jmap calendar (day/week/month, drag & drop)
 │   │   ├── passwords.jsx # credential manager
 │   │   ├── aliases.jsx   # email alias manager
 │   │   ├── settings.jsx  # service status + logout
@@ -81,8 +84,13 @@ node server.js
 - `/api/mail/*` → stalwart api
 - `/api/passwords/*` → vaultwarden api
 - `/api/aliases/*` → simplelogin or stalwart alias store
-- `/jmap/*` → stalwart jmap
+- `/jmap/*` → stalwart jmap (mail + calendar)
+- `/dav/*` → stalwart caldav / carddav (for external clients)
 - serves the frontend from `frontend/dist`
+
+> note: the bridge does **not** install a global `express.json()` body parser —
+> doing so drains proxied request bodies and makes every jmap `POST` hang and
+> return a `502`. body parsing is scoped to the local forwarding routes only.
 
 <h3 align="center" id="3-start-the-frontend-dev">3. start the frontend (dev mode)</h3>
 
@@ -107,10 +115,31 @@ adb install mobile-passwords/android/app/build/outputs/apk/debug/app-debug.apk
 
 <hr>
 
+<h2 align="center" id="calendar">calendar</h2>
+
+<p align="center">a full calendar lives in the sidebar / bottom-nav, backed by stalwart's
+<strong>jmap calendars</strong> api (jscalendar / rfc 8984) — no external caldav proxy
+needed for the app itself.</p>
+
+- **day / week / month** views, all responsive and touch-friendly
+- **drag to create** a time range, **drag** an event to reschedule, **resize** from the bottom edge
+- **right-click** (desktop) / **long-press** (mobile) an empty slot to add an event
+- add / edit / delete via a modal, with an all-day toggle
+- **copy your caldav url** (`/dav/calendars/<user>/`) from the *subscribe* button
+  or *settings → advanced* to sync thunderbird, apple calendar, etc.
+
+<p align="center">implementation notes for debugging live in
+<a href="./frontend/CALENDAR_JMAP.md">frontend/CALENDAR_JMAP.md</a>.</p>
+
+<hr>
+
 <h2 align="center" id="building-everything">building everything</h2>
 
 <pre align="center"><code>bash scripts/build-all.sh
 </code></pre>
+
+<p align="center">produces <code>frontend/dist/</code>, the extension <code>.xpi</code>, and the two debug apks
+(android sdk required for the apks).</p>
 
 <hr>
 
