@@ -78,7 +78,7 @@ compact_str = { version = "0.9.0", features = ["rkyv", "serde"] }
 lz4_flex = { version = "0.13", features = ["frame"], default-features = false }
 hickory-proto = "0.26"
 nohash-hasher = "0.2.0"
-quick_cache = "0.6.9"
+quick_cache = "0.6.23"
 rasn = "0.28"
 rasn-cms = "0.28"
 rasn-pkix = "0.28"
