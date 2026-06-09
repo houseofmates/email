@@ -3,12 +3,92 @@ require('dotenv').config({ path: require('path').resolve(__dirname, '..', '.env'
 const express = require('express')
 const { createProxyMiddleware, fixRequestBody } = require('http-proxy-middleware')
 const cors = require('cors')
+const helmet = require('helmet')
+const rateLimit = require('express-rate-limit')
 const path = require('path')
 
 const app = express()
 const PORT = process.env.BRIDGE_PORT || 3099
+const PROD = process.env.NODE_ENV === 'production'
+
+// trust the first reverse proxy hop (caddy/nginx) so that req.secure,
+// req.ip (for rate limiting) and x-forwarded-proto are read correctly.
+app.set('trust proxy', 1)
+
+// ── security headers (helmet) ─────────────────────────────
+// mounted BEFORE the proxies. helmet only sets response headers and never
+// reads the request body, so it does not interfere with the body-stream
+// ordering documented below.
+//
+// csp policy:
+//   - scriptSrc 'self' only — NO inline scripts (vite emits external modules)
+//   - styleSrc allows 'unsafe-inline' because tailwind injects a <style> tag
+//     and layout.jsx appends a runtime <style> for safe-area padding
+//   - fonts come from google fonts (see frontend/index.html)
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+      fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+      imgSrc: ["'self'", 'data:', 'blob:'],
+      connectSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      frameAncestors: ["'none'"], // anti-clickjacking
+      baseUri: ["'self'"],
+      formAction: ["'self'"],
+      // helmet enables this by default; keep it for prod (forces https
+      // subresources) but disable in dev so local http isn't force-upgraded.
+      'upgrade-insecure-requests': PROD ? [] : null,
+    },
+  },
+  // hsts only makes sense once served over https in production
+  hsts: PROD ? { maxAge: 31536000, includeSubDomains: true, preload: true } : false,
+  // allow the frontend to embed cross-origin font/img resources it requests
+  crossOriginEmbedderPolicy: false,
+}))
+
+// ── force https in production ─────────────────────────────
+// when running behind a reverse proxy that terminates tls, redirect any
+// plaintext request up to https. relies on trust proxy (set above).
+if (PROD) {
+  app.use((req, res, next) => {
+    if (req.secure || req.headers['x-forwarded-proto'] === 'https') return next()
+    return res.redirect(301, `https://${req.headers.host}${req.url}`)
+  })
+}
 
 app.use(cors())
+
+// ── rate limiting on auth endpoints ───────────────────────
+// brute-force protection for the credential-bearing endpoints. mounted before
+// the proxies for those exact paths so abusive clients are rejected at the
+// edge. generous enough for normal use (token refreshes, retries) but caps
+// password-guessing. note: option-b decrypt routes (added later) reuse this.
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 min
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'too many attempts, try again later' },
+})
+app.use('/identity/connect/token', authLimiter) // vaultwarden login
+app.use('/api/mail/auth', authLimiter)          // stalwart auth
+
+// ── log redaction ─────────────────────────────────────────
+// NEVER log Authorization headers or request bodies (they carry master
+// passwords / basic-auth credentials). this helper is the only sanctioned way
+// to emit request diagnostics; it strips secrets first. it is silent unless
+// BRIDGE_DEBUG=1, so production logs stay clean.
+function safeLog(req, extra) {
+  if (process.env.BRIDGE_DEBUG !== '1') return
+  // eslint-disable-next-line no-console
+  console.log(`[bridge] ${req.method} ${req.path}${extra ? ' ' + extra : ''}`)
+}
+// expose so later routes (e.g. option-b decrypt) can reuse it without
+// accidentally reaching for console.log directly.
+app.locals.safeLog = safeLog
 
 // IMPORTANT: do NOT install a global body parser here.
 //
