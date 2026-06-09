@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react"
 import Layout from "./layout"
+import { generate } from "./services/generator"
+
+// shared generator (services/generator.js). api keys skip symbols.
+const genPassword = (len = 24) => generate({ length: len })
+const genApiKey = (len = 32) => generate({ length: len, symbols: false })
 
 const TYPES = [
   { key: "login",    label: "logins",   icon: "🔑" },
@@ -28,24 +33,6 @@ function emptyItem(type) {
 
 function inputClass(err) {
   return `w-full rounded-lg border bg-pkm-700 px-4 py-2.5 text-sm text-text-primary placeholder:text-text-info outline-none transition focus:ring-1 lowercase ${err ? "border-danger focus:border-danger focus:ring-danger" : "border-pkm-500 focus:border-gold focus:ring-gold"}`
-}
-
-function genPassword(len = 24) {
-  const c = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*-_"
-  const a = new Uint32Array(len)
-  crypto.getRandomValues(a)
-  let o = ""
-  for (let i = 0; i < len; i++) o += c[a[i] % c.length]
-  return o
-}
-
-function genApiKey(len = 32) {
-  const c = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
-  const a = new Uint32Array(len)
-  crypto.getRandomValues(a)
-  let o = ""
-  for (let i = 0; i < len; i++) o += c[a[i] % c.length]
-  return o
 }
 
 function ImportJSON({ onImport, authHeader }) {
@@ -231,7 +218,7 @@ export default function Vault({ authHeader, onNavigate, onLogout, userEmail }) {
   }
 
   function copy(v) {
-    try { navigator.clipboard?.writeText(v) } catch {}
+    try { navigator.clipboard?.writeText(v) } catch { /* clipboard unavailable */ }
   }
 
   function typeCount(t) {

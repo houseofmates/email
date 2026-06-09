@@ -1,14 +1,7 @@
 import { useState, useEffect } from "react"
 import Layout from "./layout"
-
-export function generatePassword(len = 20) {
-  const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*-_"
-  const arr = new Uint32Array(len)
-  crypto.getRandomValues(arr)
-  let out = ""
-  for (let i = 0; i < len; i++) out += chars[arr[i] % chars.length]
-  return out
-}
+// single source of truth for credential generation (see services/generator.js)
+import { generatePassword } from "./services/generator"
 
 function emptyForm() {
   return { site: "", url: "", username: "", password: "", notes: "" }
