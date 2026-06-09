@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import Layout from "./layout"
+import { SkeletonList } from "./components/Skeleton"
 
 function emptyForm() {
   return { email: "", username: "", password: "", notes: "" }
@@ -56,7 +57,8 @@ export default function Aliases({ authHeader, onNavigate, onLogout, userEmail })
     setForm((prev) => ({ ...prev, [field]: value }))
     setFormErrors((prev) => {
       if (!prev[field]) return prev
-      const { [field]: _, ...rest } = prev
+      const rest = { ...prev }
+      delete rest[field]
       return rest
     })
   }
@@ -119,9 +121,7 @@ export default function Aliases({ authHeader, onNavigate, onLogout, userEmail })
         </div>
         <div className="flex-1 overflow-y-auto">
           {loading ? (
-            <div className="flex items-center justify-center p-8">
-              <div className="h-6 w-6 animate-spin rounded-full border-2 border-pkm-500 border-t-gold" />
-            </div>
+            <SkeletonList />
           ) : error ? (
             <div className="p-4">
               <p className="text-sm text-danger lowercase">{error}</p>
