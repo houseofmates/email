@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import Layout from "./layout"
 import { generate } from "./services/generator"
+import { SkeletonCardGrid } from "./components/Skeleton"
 
 // shared generator (services/generator.js). api keys skip symbols.
 const genPassword = (len = 24) => generate({ length: len })
@@ -303,9 +304,7 @@ export default function Vault({ authHeader, onNavigate, onLogout, userEmail }) {
         {/* list */}
         <div className="flex-1 overflow-y-auto">
           {loading ? (
-            <div className="flex items-center justify-center p-8">
-              <div className="h-6 w-6 animate-spin rounded-full border-2 border-pkm-500 border-t-gold" />
-            </div>
+            <SkeletonCardGrid />
           ) : error ? (
             <div className="p-4">
               <p className="text-sm text-danger lowercase">{error}</p>
