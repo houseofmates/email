@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react"
 import Layout from "./layout"
-import { vault, VaultLockedError } from "./services/vaultwarden"
+import { vault, VaultLockedError } from "./services/vault"
 import { generate } from "./services/generator"
 import { SkeletonCardGrid } from "./components/Skeleton"
 
@@ -48,20 +48,27 @@ function inputClass(err) {
   }`
 }
 
-// ── unlock screen ────────────────────────────────────────────────────────────
-function UnlockScreen({ authHeader, userEmail, onUnlocked }) {
-  const [email, setEmail] = useState(userEmail || "")
+// ── unlock / create screen ───────────────────────────────────────────────────
+function UnlockScreen({ authHeader, userEmail, initialized, onUnlocked }) {
+  const email = userEmail || "" // single-user: email is just a display label
   const [password, setPassword] = useState("")
+  const [confirm, setConfirm] = useState("")
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
+  const creating = !initialized
 
   async function submit(e) {
     e.preventDefault()
-    if (!email.trim() || !password) { setError("email and master password required"); return }
+    if (!password) { setError("master password required"); return }
+    if (creating) {
+      if (password.length < 8) { setError("use at least 8 characters"); return }
+      if (password !== confirm) { setError("passwords do not match"); return }
+    }
     setBusy(true); setError(null)
     try {
-      await vault.unlock(authHeader, email.trim(), password)
-      setPassword("")
+      if (creating) await vault.create(authHeader, email.trim(), password)
+      else await vault.unlock(authHeader, email.trim(), password)
+      setPassword(""); setConfirm("")
       onUnlocked()
     } catch (err) {
       setError(String(err.message || err))
@@ -74,24 +81,32 @@ function UnlockScreen({ authHeader, userEmail, onUnlocked }) {
     <div className="flex flex-1 items-center justify-center p-4">
       <form onSubmit={submit} className="w-full max-w-sm rounded-xl border border-pkm-500 bg-pkm-800 p-6 animate-fade-in space-y-4">
         <div>
-          <h2 className="text-base text-gold lowercase tracking-wide">unlock vault</h2>
-          <p className="mt-1 text-xs text-text-info lowercase">enter your vault master password to decrypt your passwords.</p>
-        </div>
-        <div>
-          <label className="mb-1.5 block text-sm font-semibold text-text-primary lowercase">email</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass(false)} autoComplete="username" />
+          <h2 className="text-base text-gold lowercase tracking-wide">{creating ? "create vault" : "unlock vault"}</h2>
+          <p className="mt-1 text-xs text-text-info lowercase">
+            {creating
+              ? "choose a master password. it encrypts your vault and cannot be recovered if lost."
+              : "enter your master password to decrypt your vault."}
+          </p>
         </div>
         <div>
           <label className="mb-1.5 block text-sm font-semibold text-text-primary lowercase">master password</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className={inputClass(error)} autoComplete="current-password" autoFocus />
-          {error && <p className="mt-1 text-xs text-danger lowercase">{error}</p>}
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className={inputClass(error)}
+            autoComplete={creating ? "new-password" : "current-password"} autoFocus />
         </div>
+        {creating && (
+          <div>
+            <label className="mb-1.5 block text-sm font-semibold text-text-primary lowercase">confirm password</label>
+            <input type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} className={inputClass(error)} autoComplete="new-password" />
+          </div>
+        )}
+        {error && <p className="text-xs text-danger lowercase">{error}</p>}
         <button type="submit" disabled={busy}
           className="w-full rounded-lg bg-gold px-4 py-2.5 text-sm font-semibold text-pkm-900 transition hover:brightness-110 active:scale-[0.98] disabled:opacity-50 lowercase">
-          {busy ? "unlocking..." : "unlock"}
+          {busy ? (creating ? "creating..." : "unlocking...") : creating ? "create vault" : "unlock"}
         </button>
         <p className="text-[11px] text-text-info lowercase leading-relaxed">
-          your master password is sent to the bridge (your server) once to decrypt — never stored, never logged.
+          your master password is sent to the bridge (your server) once to {creating ? "encrypt" : "decrypt"} a local
+          vault file — never stored, never logged. run the bridge over https.
         </p>
       </form>
     </div>
@@ -102,6 +117,7 @@ function UnlockScreen({ authHeader, userEmail, onUnlocked }) {
 export default function Passwords({ authHeader, onNavigate, onLogout, userEmail }) {
   const [checking, setChecking] = useState(true)
   const [locked, setLocked] = useState(true)
+  const [initialized, setInitialized] = useState(true)
   const [items, setItems] = useState([])
   const [folders, setFolders] = useState([])
   const [lastSync, setLastSync] = useState(null)
@@ -143,6 +159,7 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
       try {
         const s = await vault.status(authHeader)
         if (cancelled) return
+        setInitialized(s.initialized !== false)
         if (s.unlocked) { setLocked(false); await sync() }
         else setLocked(true)
       } catch { if (!cancelled) setLocked(true) }
@@ -274,7 +291,7 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
         {checking ? (
           <div className="p-4"><SkeletonCardGrid /></div>
         ) : locked ? (
-          <UnlockScreen authHeader={authHeader} userEmail={userEmail} onUnlocked={sync} />
+          <UnlockScreen authHeader={authHeader} userEmail={userEmail} initialized={initialized} onUnlocked={sync} />
         ) : (
           <>
             {/* type filter */}

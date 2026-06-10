@@ -136,7 +136,7 @@ function AccountsTab({ authHeader, userEmail, onLogout }) {
 
       <Section title="linked services">
         <ServiceCard name="stalwart mail" endpoint="/api/mail/oauth-metadata" authHeader={authHeader} />
-        <ServiceCard name="vaultwarden" endpoint="/identity/connect/token" authHeader={authHeader} />
+        <ServiceCard name="vault (local encrypted file)" endpoint="/api/passwords/status" authHeader={authHeader} />
         <ServiceCard name="simplelogin" endpoint="/api/aliases" authHeader={authHeader} />
       </Section>
 
@@ -225,13 +225,15 @@ function SecurityTab({ onNavigate, onLogout }) {
   const [confirmDelete, setConfirmDelete] = useState(false)
   return (
     <>
-      {/* option-b trust warning — required by the bridge-decrypts model */}
+      {/* trust note — the bridge decrypts a local encrypted vault file */}
       <div className="rounded-lg border border-gold bg-gold-dim p-4">
-        <p className="text-sm text-gold lowercase">how your passwords are decrypted</p>
+        <p className="text-sm text-gold lowercase">how your passwords are stored</p>
         <p className="mt-1 text-xs text-text-primary lowercase leading-relaxed">
-          your vault master password is sent to the bridge — your own server — once when you
-          unlock, so it can decrypt your passwords there. it is never stored and never logged.
-          run the bridge over https (a reverse proxy with hsts) and only on a network you trust.
+          your vault is a single file on your server, encrypted at rest with aes-256-gcm under a
+          key derived from your master password (argon2id). the master password is sent to the
+          bridge once when you unlock so it can decrypt the file in memory — never stored, never
+          logged. it cannot be recovered if lost. run the bridge over https (a reverse proxy with
+          hsts) and only on a network you trust.
         </p>
       </div>
 
