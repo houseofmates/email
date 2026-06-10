@@ -29,6 +29,13 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
 
   useEffect(() => { load() }, [])
 
+  // "u" keyboard shortcut → reload the list (see components/Shortcuts.jsx)
+  useEffect(() => {
+    const onRefresh = () => load()
+    window.addEventListener("shortcut:refresh", onRefresh)
+    return () => window.removeEventListener("shortcut:refresh", onRefresh)
+  }, [])
+
   async function load() {
     setLoading(true)
     setError(null)
