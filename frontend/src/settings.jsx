@@ -4,6 +4,7 @@ import { inputClass, goldBtn, ghostBtn } from "./components/ui"
 import { caldavUrl } from "./services/calendar"
 import { useSettings, getSettings, replaceSettings, DEFAULTS } from "./services/settings"
 import { vault } from "./services/vault"
+import SieveBuilder from "./components/SieveBuilder"
 
 const TABS = [
   { key: "general", label: "general" },
@@ -42,7 +43,7 @@ export default function Settings({ authHeader, onNavigate, onLogout, userEmail }
           <div className="mx-auto max-w-[760px] space-y-6">
             {tab === "general" && <GeneralTab settings={settings} update={update} />}
             {tab === "accounts" && <AccountsTab authHeader={authHeader} userEmail={userEmail} onLogout={onLogout} />}
-            {tab === "email" && <EmailTab userEmail={userEmail} />}
+            {tab === "email" && <EmailTab authHeader={authHeader} userEmail={userEmail} />}
             {tab === "security" && <SecurityTab authHeader={authHeader} onNavigate={onNavigate} onLogout={onLogout} />}
             {tab === "notifications" && <NotificationsTab settings={settings} update={update} />}
             {tab === "advanced" && <AdvancedTab settings={settings} update={update} />}
@@ -179,7 +180,8 @@ function ServiceCard({ name, endpoint, authHeader }) {
 }
 
 // ── email ────────────────────────────────────────────────────────────────────
-function EmailTab({ userEmail }) {
+function EmailTab({ authHeader, userEmail }) {
+  const [showRules, setShowRules] = useState(false)
   return (
     <>
       <Section title="external clients">
@@ -188,6 +190,24 @@ function EmailTab({ userEmail }) {
         </p>
         <ConnectionStrings userEmail={userEmail} />
       </Section>
+
+      <div>
+        <button onClick={() => setShowRules((v) => !v)} className="mb-2 flex items-center gap-2 text-sm text-gold lowercase">
+          <span>{showRules ? "▾" : "▸"}</span> filters &amp; auto-responder
+        </button>
+        {showRules ? (
+          <div className="rounded-lg border border-pkm-500 bg-pkm-800 p-4">
+            <p className="mb-3 text-xs text-text-info lowercase leading-relaxed">
+              build server-side rules (move, flag, forward, reject, auto-reply). saved to stalwart via
+              jmap and activated; you can also copy/download the generated sieve script.
+            </p>
+            <SieveBuilder authHeader={authHeader} />
+          </div>
+        ) : (
+          <p className="text-xs text-text-info lowercase">visual rule builder + vacation responder.</p>
+        )}
+      </div>
+
       <Section title="storage">
         <Row label="quota" hint="storage usage appears here once the email vertical is wired to jmap" />
       </Section>
