@@ -244,6 +244,23 @@ function createRouter() {
     } catch (err) { res.status(500).json({ error: String(err.message || err) }) }
   })
 
+  // hibp k-anonymity range proxy. the browser computes sha-1 locally and sends
+  // only a 5-hex-char prefix; the bridge fetches the matching range so the
+  // browser never talks to a third party (and csp connect-src stays 'self').
+  router.get("/hibp/:prefix", requireSession, async (req, res) => {
+    const prefix = String(req.params.prefix || "").toUpperCase()
+    if (!/^[0-9A-F]{5}$/.test(prefix)) return res.status(400).json({ error: "bad prefix" })
+    try {
+      const r = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`, {
+        headers: { "user-agent": "email-bridge", "add-padding": "true" },
+      })
+      if (!r.ok) throw new Error(`hibp ${r.status}`)
+      res.type("text/plain").send(await r.text())
+    } catch (err) {
+      res.status(502).json({ error: String(err.message || err) })
+    }
+  })
+
   router.get("/sync", requireSession, (req, res) => {
     const { ciphers, folders } = req.vault.data
     res.json({ ciphers: ciphers || [], folders: folders || [], lastSync: new Date().toISOString() })
