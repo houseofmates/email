@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react"
 import { listInbox, getEmail, emailText, sendEmail, setKeyword, searchEmails, listIdentities } from "./jmap"
 import { parseSearchQuery } from "./services/search"
 import { useSettings } from "./services/settings"
+import { getTemplates, saveTemplate } from "./services/templates"
 import { ToastProvider, useToast } from "./components/Toast"
 import Layout from "./layout"
 
@@ -27,6 +28,17 @@ function Compose({ authHeader, userEmail, initial, onSend, onClose }) {
   const [subject, setSubject] = useState(initial?.subject || "")
   const [body, setBody] = useState(initial?.body || "")
   const [err, setErr] = useState(null)
+  const [templates, setTemplates] = useState(getTemplates)
+
+  function insertTemplate(id) {
+    const t = templates.find((x) => x.id === id)
+    if (t) setBody((b) => (b ? `${b}\n\n${t.body}` : t.body))
+  }
+  function saveAsTemplate() {
+    const name = (window.prompt("template name") || "").trim()
+    if (!name) return
+    setTemplates(saveTemplate({ name, body }))
+  }
 
   // load send-as identities for the "from" selector
   useEffect(() => {
@@ -73,6 +85,14 @@ function Compose({ authHeader, userEmail, initial, onSend, onClose }) {
           <textarea placeholder="message" rows={8} value={body}
             onChange={(e) => setBody(e.target.value)}
             className="resize-y rounded-lg border border-pkm-500 bg-pkm-700 px-3 py-2 text-sm text-text-primary placeholder:text-text-info outline-none transition focus:border-sky" />
+          <div className="flex flex-wrap items-center gap-2">
+            <select value="" onChange={(e) => { insertTemplate(e.target.value); e.target.value = "" }}
+              className="rounded-md border border-pkm-500 bg-pkm-700 px-2 py-1.5 text-xs text-text-info outline-none focus:border-sky lowercase">
+              <option value="">insert template…</option>
+              {templates.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
+            </select>
+            <button type="button" onClick={saveAsTemplate} disabled={!body.trim()} className="rounded-md border border-pkm-500 px-2 py-1.5 text-xs text-text-info transition hover:border-sky hover:text-sky disabled:opacity-50 lowercase">save as template</button>
+          </div>
           <div className="flex items-center justify-between gap-3">
             <span className="text-xs text-danger lowercase">{err || ""}</span>
             <button type="submit"
@@ -189,6 +209,22 @@ function InboxInner({ authHeader, userEmail, onLogout, onNavigate }) {
     try { await setKeyword(authHeader, id, "$seen", true) } catch { /* best effort */ }
   }
 
+  // patch a message's keywords in the list(s) + the open message
+  function patchKeyword(id, keyword, value) {
+    const fn = (arr) => arr.map((m) => m.id === id ? { ...m, keywords: { ...m.keywords, [keyword]: value || undefined } } : m)
+    setEmails(fn)
+    setResults((r) => (r ? fn(r) : r))
+    setActive((a) => (a && a.id === id ? { ...a, keywords: { ...a.keywords, [keyword]: value || undefined } } : a))
+  }
+  async function toggleFlag(id, value) {
+    patchKeyword(id, "$flagged", value)
+    try { await setKeyword(authHeader, id, "$flagged", value) } catch { /* best effort */ }
+  }
+  async function markUnread(id) {
+    patchKeyword(id, "$seen", false)
+    try { await setKeyword(authHeader, id, "$seen", false) } catch { /* best effort */ }
+  }
+
   return (
     <Layout currentPage="inbox" onNavigate={onNavigate} onLogout={onLogout} userEmail={userEmail}>
       {/* mobile header */}
@@ -268,7 +304,7 @@ function InboxInner({ authHeader, userEmail, onLogout, onNavigate }) {
                       <p className={`truncate text-sm lowercase ${unread ? "text-gold font-semibold" : "text-text-primary"}`}>
                         {fromName(m)}
                       </p>
-                      <span className="shrink-0 text-xs text-text-info lowercase">{fmtDate(m.receivedAt)}</span>
+                      <span className="shrink-0 text-xs text-text-info lowercase">{m.keywords?.$flagged && <span className="text-gold">★ </span>}{fmtDate(m.receivedAt)}</span>
                     </div>
                     <p className="mt-0.5 truncate text-sm text-text-primary lowercase">{m.subject || "(no subject)"}</p>
                     <p className="mt-0.5 truncate text-xs text-text-info lowercase">{m.preview || ""}</p>
@@ -297,7 +333,19 @@ function InboxInner({ authHeader, userEmail, onLogout, onNavigate }) {
             </div>
           ) : (
             <div className="animate-fade-in">
-              <h2 className="text-lg text-text-primary lowercase">{active.subject || "(no subject)"}</h2>
+              <div className="flex items-start justify-between gap-2">
+                <h2 className="text-lg text-text-primary lowercase">{active.subject || "(no subject)"}</h2>
+                <div className="flex shrink-0 gap-1">
+                  <button onClick={() => toggleFlag(active.id, !active.keywords?.$flagged)}
+                    className={`rounded-md border px-2 py-1 text-xs transition active:scale-[0.98] lowercase ${active.keywords?.$flagged ? "border-gold text-gold" : "border-pkm-500 text-text-info hover:border-gold hover:text-gold"}`}>
+                    {active.keywords?.$flagged ? "★ flagged" : "☆ flag"}
+                  </button>
+                  <button onClick={() => markUnread(active.id)}
+                    className="rounded-md border border-pkm-500 px-2 py-1 text-xs text-text-info transition hover:border-sky hover:text-sky active:scale-[0.98] lowercase">
+                    mark unread
+                  </button>
+                </div>
+              </div>
               <p className="mt-2 text-xs text-text-info lowercase">
                 from: {active.from?.[0]?.email || ""} &middot; {fmtDate(active.receivedAt)}
               </p>
