@@ -134,30 +134,27 @@ const credentialStore = require('./credential-store')
 app.use('/api/passwords', credentialStore.createRouter())
 
 // ── simplelogin proxy (if configured) ─────────────────────
-app.use('/api/aliases', (req, res, next) => {
-  const slUrl = process.env.SIMPLELOGIN_URL
-  if (slUrl) {
-    return createProxyMiddleware({
-      target: slUrl,
-      changeOrigin: true,
-      on: {
-        proxyReq: (proxyReq, req2, res2) => {
-          if (process.env.SIMPLELOGIN_API_KEY) {
-            proxyReq.setHeader('Authentication', process.env.SIMPLELOGIN_API_KEY)
-          }
-          fixRequestBody(proxyReq, req2, res2)
-        },
-      },
-    })(req, res, next)
-  }
-  // fallback: use stalwart's own alias store at /api/aliases
-  return createProxyMiddleware({
+// which alias backend is active — the frontend uses this to decide whether to
+// show the full simplelogin ui or the basic stalwart-store ui.
+const SL_URL = process.env.SIMPLELOGIN_URL
+const SL_KEY = process.env.SIMPLELOGIN_API_KEY
+app.get('/api/aliases/config', (req, res) => {
+  res.json({ provider: SL_URL && SL_KEY ? 'simplelogin' : 'stalwart' })
+})
+
+if (SL_URL && SL_KEY) {
+  // full simplelogin feature set, with method/path translation (see simplelogin.js)
+  const simplelogin = require('./simplelogin')
+  app.use('/api/aliases', simplelogin.createRouter(SL_URL, SL_KEY))
+} else {
+  // fallback: stalwart's own alias store at /api/aliases (basic list/create/delete)
+  app.use('/api/aliases', createProxyMiddleware({
     target: (process.env.STALWART_URL || 'http://localhost:8080') + '/api',
     changeOrigin: true,
     pathRewrite: { '^/api/aliases': '/aliases' },
     on: { proxyReq: fixRequestBody },
-  })(req, res, next)
-})
+  }))
+}
 
 // ── proton mail forwarding ────────────────────────────────
 // stores the proton bridge account used to pull mail into the local inbox and
