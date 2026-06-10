@@ -73,8 +73,9 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
   message: { error: 'too many attempts, try again later' },
 })
-app.use('/identity/connect/token', authLimiter) // vaultwarden login
-app.use('/api/mail/auth', authLimiter)          // stalwart auth
+app.use('/api/passwords/unlock', authLimiter)   // vault unlock (master password)
+app.use('/api/passwords/create', authLimiter)   // vault creation
+app.use('/api/mail/auth', authLimiter)           // stalwart auth
 
 // ── log redaction ─────────────────────────────────────────
 // NEVER log Authorization headers or request bodies (they carry master
@@ -125,29 +126,12 @@ app.use('/dav', createProxyMiddleware({
   on: { proxyReq: fixRequestBody },
 }))
 
-// ── vaultwarden: option-b decrypt routes (frontend) ───────
-// the bridge decrypts on behalf of the calm web ui. mounted BEFORE the raw
-// proxy below — express routers call next() on unmatched paths, so anything
-// these routes don't handle (e.g. bitwarden mobile/extension clients pointed
-// at /api/passwords) falls through to the proxy with its body intact. the
-// option-b router scopes its json parser to write routes only, never globally,
-// to preserve that fall-through (see vaultwarden.js).
-const vaultwarden = require('./vaultwarden')
-app.use('/api/passwords', vaultwarden.createRouter())
-
-// ── vaultwarden raw proxy (bitwarden-protocol clients) ────
-app.use('/api/passwords', createProxyMiddleware({
-  target: process.env.VAULTWARDEN_URL || 'http://localhost:8085',
-  changeOrigin: true,
-  pathRewrite: { '^/api/passwords': '' },
-  on: { proxyReq: fixRequestBody },
-}))
-
-app.use('/identity', createProxyMiddleware({
-  target: process.env.VAULTWARDEN_URL || 'http://localhost:8085',
-  changeOrigin: true,
-  on: { proxyReq: fixRequestBody },
-}))
+// ── passwords: self-contained encrypted vault ─────────────
+// no external password service. the bridge owns an encrypted vault file and
+// serves decrypted json for the duration of an unlocked session. see
+// credential-store.js for the envelope-encryption design.
+const credentialStore = require('./credential-store')
+app.use('/api/passwords', credentialStore.createRouter())
 
 // ── simplelogin proxy (if configured) ─────────────────────
 app.use('/api/aliases', (req, res, next) => {
@@ -245,7 +229,7 @@ app.use(express.static(frontendDist))
 
 // SPA fallback middleware - handle all non-API routes by serving index.html
 app.use(function(req, res, next) {
-  if (req.path.startsWith('/api/') || req.path.startsWith('/jmap/') || req.path.startsWith('/identity/') || req.path.startsWith('/dav/')) {
+  if (req.path.startsWith('/api/') || req.path.startsWith('/jmap/') || req.path.startsWith('/dav/')) {
     return res.status(404).send('not found')
   }
   res.sendFile(path.join(frontendDist, 'index.html'))

@@ -1,6 +1,6 @@
 <h1 align="center">email</h1>
 
-<p align="center">unified interface for stalwart, vaultwarden, and simplelogin</p>
+<p align="center">unified interface for stalwart, a self-hosted encrypted vault, and simplelogin</p>
 
 <p align="center">
   <em>one email client, one password manager, one alias service — on your infra</em>
@@ -13,7 +13,7 @@
 <p align="center">a self-hosted unified frontend for three services that live on your own hardware:</p>
 
 - **stalwart** — email server (jmap, smtp, imap)
-- **vaultwarden** — password manager (bitwarden-compatible)
+- **vault** — a self-contained encrypted password store owned by the bridge (no external service)
 - **simplelogin** — email aliases (optional)
 
 <p align="center">instead of maintaining three separate uis, this project gives you:</p>
@@ -82,7 +82,7 @@ node server.js
 <p align="center">the bridge runs on <code>http://localhost:3099</code> and proxies:</p>
 
 - `/api/mail/*` → stalwart api
-- `/api/passwords/*` → vaultwarden api
+- `/api/passwords/*` → bridge encrypted vault (aes-256-gcm + argon2id)
 - `/api/aliases/*` → simplelogin or stalwart alias store
 - `/jmap/*` → stalwart jmap (mail + calendar)
 - `/dav/*` → stalwart caldav / carddav (for external clients)
@@ -184,8 +184,8 @@ needed for the app itself.</p>
               ┌─────────┘    │    └──────────┐
               ▼              ▼               ▼
      ┌────────────┐  ┌────────────┐  ┌────────────┐
-     │  stalwart  │  │ vaultwarden│  │simplelogin │
-     │  (:8080)   │  │  (:8085)   │  │ (optional) │
+     │  stalwart  │  │   vault    │  │simplelogin │
+     │  (:8080)   │  │ (encrypted)│  │ (optional) │
      └────────────┘  └────────────┘  └────────────┘
 </code></pre>
 
@@ -194,7 +194,7 @@ needed for the app itself.</p>
 <h2 align="center" id="services-integration">services integration</h2>
 
 - **auth**: login against stalwart's oauth, credentials shared across all views
-- **passwords**: stored in stalwart's credential store (also syncable with vaultwarden via bitwarden api)
+- **passwords**: stored in a single bridge-owned file, encrypted at rest with aes-256-gcm under an argon2id-derived key; decrypted in memory only while unlocked
 - **aliases**: managed via stalwart's alias api, with optional simplelogin backend
 - **extension**: detects signup pages (distinguishes from login), generates site-specific aliases, offers autofill from stored credentials
 

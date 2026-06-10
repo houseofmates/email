@@ -8,14 +8,16 @@ const mockVault = vi.hoisted(() => ({
   status: vi.fn(),
   sync: vi.fn(),
   unlock: vi.fn(),
+  create: vi.fn(),
   lock: vi.fn(),
+  changePassword: vi.fn(),
   saveCipher: vi.fn(),
   deleteCipher: vi.fn(),
   createFolder: vi.fn(),
   renameFolder: vi.fn(),
   deleteFolder: vi.fn(),
 }))
-vi.mock("./services/vaultwarden", () => ({
+vi.mock("./services/vault", () => ({
   vault: mockVault,
   VaultLockedError: class VaultLockedError extends Error {},
 }))
@@ -27,16 +29,23 @@ beforeEach(() => {
 })
 
 describe("Passwords (option-b flow)", () => {
-  it("shows the unlock screen when the vault is locked", async () => {
-    mockVault.status.mockResolvedValue({ unlocked: false })
+  it("shows the unlock screen when an initialized vault is locked", async () => {
+    mockVault.status.mockResolvedValue({ initialized: true, unlocked: false })
     render(<Passwords {...props} />)
     expect(await screen.findByText("unlock vault")).toBeInTheDocument()
-    // master password field is present
     expect(screen.getByText("master password")).toBeInTheDocument()
   })
 
+  it("shows the create screen on first run (no vault yet)", async () => {
+    mockVault.status.mockResolvedValue({ initialized: false, unlocked: false })
+    render(<Passwords {...props} />)
+    // create mode asks for confirmation (unique label)
+    expect(await screen.findByText("confirm password")).toBeInTheDocument()
+    expect(screen.getByRole("heading", { name: "create vault" })).toBeInTheDocument()
+  })
+
   it("unlocks and then syncs the vault", async () => {
-    mockVault.status.mockResolvedValue({ unlocked: false })
+    mockVault.status.mockResolvedValue({ initialized: true, unlocked: false })
     mockVault.unlock.mockResolvedValue({ token: "t" })
     mockVault.sync.mockResolvedValue({
       ciphers: [{ id: "1", type: "login", name: "github", username: "octocat", password: "hunter2" }],
@@ -56,7 +65,7 @@ describe("Passwords (option-b flow)", () => {
   })
 
   it("renders items directly when the vault is already unlocked", async () => {
-    mockVault.status.mockResolvedValue({ unlocked: true, email: "me@example.com" })
+    mockVault.status.mockResolvedValue({ initialized: true, unlocked: true, email: "me@example.com" })
     mockVault.sync.mockResolvedValue({
       ciphers: [{ id: "2", type: "card", name: "visa", number: "4111111111111111" }],
       folders: [],
