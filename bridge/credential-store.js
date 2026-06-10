@@ -116,6 +116,18 @@ async function persist(session) {
   await writeVaultFile({ ...session.header, vault: gcmEncrypt(session.dek, Buffer.from(JSON.stringify(session.data))) })
 }
 
+// verify a candidate password against the session's stored header by
+// re-deriving the KEK and confirming it unwraps to the same DEK.
+async function verifyPassword(session, password) {
+  try {
+    const kek = await deriveKEK(password, Buffer.from(session.header.kdf.salt, "base64"), session.header.kdf)
+    const dek = gcmDecrypt(kek, session.header.wrappedKey)
+    return crypto.timingSafeEqual(dek, session.dek)
+  } catch {
+    return false
+  }
+}
+
 // change master password: re-derive a fresh KEK from a new salt and re-wrap the
 // existing DEK (vault ciphertext is unchanged).
 async function changePassword(session, newPassword) {
@@ -209,12 +221,27 @@ function createRouter() {
   })
 
   router.post("/change-password", requireSession, json, async (req, res) => {
-    const { newPassword } = req.body || {}
+    const { currentPassword, newPassword } = req.body || {}
     if (!newPassword || String(newPassword).length < 8) {
       return res.status(400).json({ error: "new password must be at least 8 characters" })
     }
+    if (!currentPassword || !(await verifyPassword(req.vault, currentPassword))) {
+      return res.status(401).json({ error: "current password is incorrect" })
+    }
     try { await changePassword(req.vault, newPassword); res.json({ ok: true }) }
     catch (err) { res.status(500).json({ error: String(err.message || err) }) }
+  })
+
+  // bulk import — append already-normalized ciphers (the frontend handles
+  // format parsing + folder creation/remap) and persist once.
+  router.post("/import", requireSession, json, async (req, res) => {
+    try {
+      const incoming = Array.isArray(req.body?.items) ? req.body.items : []
+      const added = incoming.map((it) => ({ ...it, id: crypto.randomUUID() }))
+      req.vault.data.ciphers.push(...added)
+      await persist(req.vault)
+      res.json({ imported: added.length, ciphers: req.vault.data.ciphers })
+    } catch (err) { res.status(500).json({ error: String(err.message || err) }) }
   })
 
   router.get("/sync", requireSession, (req, res) => {
@@ -287,7 +314,7 @@ function createRouter() {
 module.exports = {
   createRouter,
   _internal: {
-    gcmEncrypt, gcmDecrypt, deriveKEK, createVault, unlockVault, persist, changePassword,
+    gcmEncrypt, gcmDecrypt, deriveKEK, createVault, unlockVault, persist, changePassword, verifyPassword,
     emptyVault, readVaultFile, writeVaultFile, VAULT_FILE, ARGON_DEFAULTS,
   },
 }

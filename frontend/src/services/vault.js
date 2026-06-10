@@ -86,13 +86,16 @@ export const vault = {
     setSession(null)
     return { ok: true }
   },
-  changePassword: (a, newPassword) => request(a, "/change-password", { method: "POST", body: { newPassword } }),
+  changePassword: (a, currentPassword, newPassword) =>
+    request(a, "/change-password", { method: "POST", body: { currentPassword, newPassword } }),
 
   sync: (a) => request(a, "/sync"),
 
   saveCipher: (a, cipher) =>
     request(a, cipher.id ? `/ciphers/${cipher.id}` : "/ciphers", { method: cipher.id ? "PUT" : "POST", body: cipher }),
   deleteCipher: (a, id) => request(a, `/ciphers/${id}`, { method: "DELETE" }),
+
+  importItems: (a, items) => request(a, "/import", { method: "POST", body: { items } }),
 
   createFolder: (a, name) => request(a, "/folders", { method: "POST", body: { name } }),
   renameFolder: (a, id, name) => request(a, `/folders/${id}`, { method: "PUT", body: { name } }),
