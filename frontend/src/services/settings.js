@@ -15,6 +15,7 @@ export const DEFAULTS = {
   timeFormat: "24h",      // "24h" | "12h"
   defaultView: "inbox",   // landing page after login
   sidebarCollapsed: false,
+  onboarded: false,       // first-run wizard completed
   notifyMail: true,
   notifyCalendar: true,
   notifySecurity: true,
