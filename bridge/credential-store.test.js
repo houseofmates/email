@@ -12,7 +12,7 @@ const VAULT_FILE = path.join(os.tmpdir(), `vault-test-${crypto.randomUUID()}.enc
 process.env.VAULT_FILE = VAULT_FILE
 
 const { _internal } = require("./credential-store")
-const { gcmEncrypt, gcmDecrypt, deriveKEK, createVault, unlockVault, persist, changePassword } = _internal
+const { gcmEncrypt, gcmDecrypt, deriveKEK, createVault, unlockVault, persist, changePassword, verifyPassword } = _internal
 
 function rm() { try { fs.unlinkSync(VAULT_FILE) } catch { /* ignore */ } }
 before(rm)
@@ -76,4 +76,11 @@ test("create -> unlock -> persist -> change-password lifecycle", async () => {
   await assert.rejects(() => unlockVault("correct horse battery"), /invalid master password/)
   const afterChange = await unlockVault("new master phrase")
   assert.equal(afterChange.data.ciphers[0].password, "hunter2")
+})
+
+test("verifyPassword accepts the right password and rejects others", async () => {
+  rm()
+  const session = await createVault("the right one")
+  assert.equal(await verifyPassword(session, "the right one"), true)
+  assert.equal(await verifyPassword(session, "the wrong one"), false)
 })

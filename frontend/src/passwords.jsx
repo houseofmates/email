@@ -1,8 +1,17 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import Layout from "./layout"
 import { vault, VaultLockedError } from "./services/vault"
-import { generate } from "./services/generator"
 import { SkeletonCardGrid } from "./components/Skeleton"
+import PasswordGenerator from "./components/PasswordGenerator"
+import { parseImport, toJSON, toCSV } from "./services/vault-io"
+
+function download(filename, content, type) {
+  const blob = new Blob([content], { type })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a")
+  a.href = url; a.download = filename; a.click()
+  URL.revokeObjectURL(url)
+}
 
 const TYPES = [
   { key: "login", label: "logins" },
@@ -135,6 +144,10 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
   const [deleting, setDeleting] = useState(false)
   const [revealed, setRevealed] = useState({})
   const [manageFolders, setManageFolders] = useState(false)
+  const [gen, setGen] = useState(null)       // null | { field? } — generator target
+  const [importMsg, setImportMsg] = useState(null)
+  const [exportOpen, setExportOpen] = useState(false)
+  const fileRef = useRef(null)
 
   const sync = useCallback(async () => {
     setLoading(true); setError(null)
@@ -179,13 +192,14 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
   useEffect(() => {
     function onKey(e) {
       if (e.key !== "Escape") return
-      if (showForm) { setShowForm(false); setEditing(null); setForm({}) }
+      if (gen) setGen(null)
+      else if (showForm) { setShowForm(false); setEditing(null); setForm({}) }
       else if (confirmDelete) setConfirmDelete(null)
       else if (manageFolders) setManageFolders(false)
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
-  }, [showForm, confirmDelete, manageFolders])
+  }, [showForm, confirmDelete, manageFolders, gen])
 
   async function lock() {
     await vault.lock(authHeader)
@@ -258,6 +272,41 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
     } catch (err) { setError(String(err.message || err)) }
   }
 
+  // ── import / export ──────────────────────────────────────────────────────
+  function exportVault(format) {
+    if (format === "csv") download("vault.csv", toCSV(items, folderName), "text/csv")
+    else download("vault.json", toJSON(items, folderName), "application/json")
+  }
+
+  async function handleImportFile(e) {
+    const file = e.target.files?.[0]
+    if (fileRef.current) fileRef.current.value = ""
+    if (!file) return
+    setImportMsg({ kind: "info", text: "importing…" }); setError(null)
+    try {
+      const { items: parsed, folders: parsedFolders } = parseImport(await file.text(), file.name)
+      if (!parsed.length) throw new Error("no items found in file")
+      // create any folders that don't exist yet, then map folder NAME -> id
+      const nameToId = new Map(folders.map((f) => [f.name, f.id]))
+      let liveFolders = folders
+      for (const pf of parsedFolders) {
+        if (!nameToId.has(pf.name)) {
+          const created = await vault.createFolder(authHeader, pf.name)
+          nameToId.set(created.name, created.id)
+          liveFolders = [...liveFolders, created]
+        }
+      }
+      setFolders(liveFolders)
+      const normalized = parsed.map(({ folder, ...rest }) => ({ ...rest, folderId: folder ? nameToId.get(folder) || null : null }))
+      const res = await vault.importItems(authHeader, normalized)
+      setItems(res.ciphers || [])
+      setImportMsg({ kind: "ok", text: `imported ${res.imported} item${res.imported === 1 ? "" : "s"}` })
+    } catch (err) {
+      if (err instanceof VaultLockedError) setLocked(true)
+      else setImportMsg({ kind: "err", text: String(err.message || err) })
+    }
+  }
+
   function toggleReveal(id) { setRevealed((p) => ({ ...p, [id]: !p[id] })) }
   function copy(v) { try { navigator.clipboard?.writeText(v) } catch { /* clipboard unavailable */ } }
 
@@ -280,10 +329,25 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
           </h1>
           {!locked && (
             <div className="flex items-center gap-2">
-              {lastSync && <span className="hidden sm:inline text-[11px] text-text-info lowercase">synced {new Date(lastSync).toLocaleTimeString()}</span>}
+              {lastSync && <span className="hidden lg:inline text-[11px] text-text-info lowercase">synced {new Date(lastSync).toLocaleTimeString()}</span>}
+              <button onClick={() => setGen({})} className="rounded-lg border border-pkm-500 px-3 py-1.5 text-xs text-text-info transition hover:border-sky hover:text-sky active:scale-[0.98] lowercase">generator</button>
+              <button onClick={() => fileRef.current?.click()} className="rounded-lg border border-pkm-500 px-3 py-1.5 text-xs text-text-info transition hover:border-sky hover:text-sky active:scale-[0.98] lowercase">import</button>
+              <div className="relative">
+                <button onClick={() => setExportOpen((o) => !o)} className="rounded-lg border border-pkm-500 px-3 py-1.5 text-xs text-text-info transition hover:border-sky hover:text-sky active:scale-[0.98] lowercase">export</button>
+                {exportOpen && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setExportOpen(false)} />
+                    <div className="absolute right-0 z-50 mt-1 w-36 rounded-lg border border-pkm-500 bg-pkm-800 p-1 shadow-xl">
+                      <button onClick={() => { exportVault("json"); setExportOpen(false) }} className="block w-full rounded-md px-3 py-2 text-left text-xs text-text-primary transition hover:bg-pkm-700 lowercase">json (full)</button>
+                      <button onClick={() => { exportVault("csv"); setExportOpen(false) }} className="block w-full rounded-md px-3 py-2 text-left text-xs text-text-primary transition hover:bg-pkm-700 lowercase">csv (logins)</button>
+                    </div>
+                  </>
+                )}
+              </div>
               <button onClick={lock} className="rounded-lg border border-pkm-500 px-3 py-1.5 text-xs text-text-info transition hover:border-sky hover:text-sky active:scale-[0.98] lowercase">lock</button>
               <button onClick={() => startAdd(activeType || "login")}
                 className="rounded-lg bg-gold px-3 py-1.5 text-xs font-semibold text-pkm-900 transition hover:brightness-110 active:scale-[0.98] lowercase">+ add</button>
+              <input ref={fileRef} type="file" accept=".json,.csv" onChange={handleImportFile} className="hidden" />
             </div>
           )}
         </div>
@@ -325,6 +389,13 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
               <input type="text" placeholder="search passwords..." value={query} onChange={(e) => setQuery(e.target.value)}
                 className="w-full rounded-lg border border-pkm-500 bg-pkm-700 px-3 py-2 text-sm text-text-primary placeholder:text-text-info outline-none transition focus:border-sky focus:ring-1 focus:ring-sky lowercase" />
             </div>
+
+            {importMsg && (
+              <div className="flex items-center justify-between gap-2 border-b border-pkm-500 px-4 py-2">
+                <span className={`text-xs lowercase ${importMsg.kind === "err" ? "text-danger" : importMsg.kind === "ok" ? "text-gold" : "text-text-info"}`}>{importMsg.text}</span>
+                <button onClick={() => setImportMsg(null)} className="text-xs text-text-info transition hover:text-sky lowercase" aria-label="dismiss">dismiss</button>
+              </div>
+            )}
 
             {/* list */}
             <div className="flex-1 overflow-y-auto p-4">
@@ -374,7 +445,7 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
                     ) : f.sensitive ? (
                       <div className="flex gap-2">
                         <input type="text" value={form[f.k] || ""} onChange={(e) => handleChange(f.k, e.target.value)} className={`flex-1 ${inputClass(formErrors[f.k])} font-mono`} />
-                        {f.gen && <button type="button" onClick={() => handleChange(f.k, generate())} className="shrink-0 rounded-lg border border-sky px-3 py-2 text-xs text-sky transition hover:bg-sky-dim lowercase">generate</button>}
+                        {f.gen && <button type="button" onClick={() => setGen({ field: f.k })} className="shrink-0 rounded-lg border border-sky px-3 py-2 text-xs text-sky transition hover:bg-sky-dim lowercase">generate</button>}
                       </div>
                     ) : (
                       <input type="text" value={form[f.k] || ""} onChange={(e) => handleChange(f.k, e.target.value)} className={inputClass(formErrors[f.k])} />
@@ -438,6 +509,14 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
               </div>
             </div>
           </div>
+        )}
+
+        {/* password generator (standalone or targeting a form field) */}
+        {gen && (
+          <PasswordGenerator
+            onClose={() => setGen(null)}
+            onUse={gen.field ? (v) => { handleChange(gen.field, v); setGen(null) } : undefined}
+          />
         )}
       </div>
     </Layout>

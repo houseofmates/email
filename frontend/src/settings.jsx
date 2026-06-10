@@ -3,6 +3,7 @@ import Layout from "./layout"
 import { inputClass, goldBtn, ghostBtn } from "./components/ui"
 import { caldavUrl } from "./services/calendar"
 import { useSettings, getSettings, replaceSettings, DEFAULTS } from "./services/settings"
+import { vault } from "./services/vault"
 
 const TABS = [
   { key: "general", label: "general" },
@@ -42,7 +43,7 @@ export default function Settings({ authHeader, onNavigate, onLogout, userEmail }
             {tab === "general" && <GeneralTab settings={settings} update={update} />}
             {tab === "accounts" && <AccountsTab authHeader={authHeader} userEmail={userEmail} onLogout={onLogout} />}
             {tab === "email" && <EmailTab userEmail={userEmail} />}
-            {tab === "security" && <SecurityTab onNavigate={onNavigate} onLogout={onLogout} />}
+            {tab === "security" && <SecurityTab authHeader={authHeader} onNavigate={onNavigate} onLogout={onLogout} />}
             {tab === "notifications" && <NotificationsTab settings={settings} update={update} />}
             {tab === "advanced" && <AdvancedTab settings={settings} update={update} />}
           </div>
@@ -221,7 +222,7 @@ function ConnectionStrings({ userEmail }) {
 }
 
 // ── security ─────────────────────────────────────────────────────────────────
-function SecurityTab({ onNavigate, onLogout }) {
+function SecurityTab({ authHeader, onNavigate, onLogout }) {
   const [confirmDelete, setConfirmDelete] = useState(false)
   return (
     <>
@@ -237,10 +238,8 @@ function SecurityTab({ onNavigate, onLogout }) {
         </p>
       </div>
 
-      <Section title="two-factor & keys">
-        <Row label="manage 2fa, recovery codes, security keys" hint="totp, duo, yubikey — handled in the vault">
-          <button onClick={() => onNavigate?.("passwords")} className={`${ghostBtn} min-h-[40px]`}>open vault</button>
-        </Row>
+      <Section title="vault master password">
+        <ChangeMasterPassword authHeader={authHeader} onNavigate={onNavigate} />
       </Section>
 
       <Section title="your data">
@@ -277,6 +276,59 @@ function SecurityTab({ onNavigate, onLogout }) {
         </div>
       )}
     </>
+  )
+}
+
+// change the vault master password. requires the vault to be unlocked (the
+// session proves you're in) and re-checks the current password on the bridge.
+function ChangeMasterPassword({ authHeader, onNavigate }) {
+  const [unlocked, setUnlocked] = useState(null) // null = checking
+  const [current, setCurrent] = useState("")
+  const [next, setNext] = useState("")
+  const [confirm, setConfirm] = useState("")
+  const [busy, setBusy] = useState(false)
+  const [msg, setMsg] = useState(null)
+
+  useEffect(() => {
+    let cancelled = false
+    vault.status(authHeader)
+      .then((s) => { if (!cancelled) setUnlocked(!!s.unlocked) })
+      .catch(() => { if (!cancelled) setUnlocked(false) })
+    return () => { cancelled = true }
+  }, [authHeader])
+
+  async function submit(e) {
+    e.preventDefault()
+    if (next.length < 8) { setMsg({ kind: "err", text: "new password must be at least 8 characters" }); return }
+    if (next !== confirm) { setMsg({ kind: "err", text: "new passwords do not match" }); return }
+    setBusy(true); setMsg(null)
+    try {
+      await vault.changePassword(authHeader, current, next)
+      setMsg({ kind: "ok", text: "master password changed" })
+      setCurrent(""); setNext(""); setConfirm("")
+    } catch (err) {
+      setMsg({ kind: "err", text: String(err.message || err) })
+    } finally { setBusy(false) }
+  }
+
+  if (unlocked === null) return <p className="text-xs text-text-info lowercase">checking vault…</p>
+  if (!unlocked) {
+    return (
+      <Row label="vault is locked" hint="unlock your vault to change its master password">
+        <button onClick={() => onNavigate?.("passwords")} className={`${ghostBtn} min-h-[40px]`}>open vault</button>
+      </Row>
+    )
+  }
+  return (
+    <form onSubmit={submit} className="space-y-3">
+      <input type="password" placeholder="current master password" value={current} onChange={(e) => setCurrent(e.target.value)} className={inputClass(false)} autoComplete="current-password" />
+      <input type="password" placeholder="new master password" value={next} onChange={(e) => setNext(e.target.value)} className={inputClass(false)} autoComplete="new-password" />
+      <input type="password" placeholder="confirm new password" value={confirm} onChange={(e) => setConfirm(e.target.value)} className={inputClass(false)} autoComplete="new-password" />
+      <div className="flex items-center gap-2">
+        <button type="submit" disabled={busy} className={goldBtn}>{busy ? "changing…" : "change password"}</button>
+        {msg && <span className={`text-xs lowercase ${msg.kind === "err" ? "text-danger" : "text-gold"}`}>{msg.text}</span>}
+      </div>
+    </form>
   )
 }
 
