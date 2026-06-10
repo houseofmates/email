@@ -18,6 +18,8 @@ export const DEFAULTS = {
   notifyMail: true,
   notifyCalendar: true,
   notifySecurity: true,
+  undoSendSeconds: 5,     // 0 disables the undo-send window
+  signature: "",          // appended to new compositions
   telemetry: false,       // opt-in only; nothing is collected unless true
   debug: false,           // mirror api request/response to the console
   endpointOverride: "",   // optional reverse-proxy base path

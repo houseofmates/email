@@ -224,6 +224,15 @@ export async function sendEmail(authHeader, { from, to, subject, text }) {
   throw new Error(err)
 }
 
+// list sending identities (the "from" addresses available to compose)
+export async function listIdentities(authHeader) {
+  const session = await getSession(authHeader)
+  const acc = accountId(session)
+  const responses = await call(authHeader, session,
+    [["Identity/get", { accountId: acc, ids: null }, "0"]], [CORE, MAIL, SUBMISSION])
+  return responses[0]?.[1]?.list || []
+}
+
 // ── advanced / full-text search ──────────────────────────────────────────────
 // `filter` is a jmap Email FilterCondition/FilterOperator (e.g.
 // { operator:"AND", conditions:[{ from:"x" },{ hasAttachment:true }] }).

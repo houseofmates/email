@@ -43,7 +43,7 @@ export default function Settings({ authHeader, onNavigate, onLogout, userEmail }
           <div className="mx-auto max-w-[760px] space-y-6">
             {tab === "general" && <GeneralTab settings={settings} update={update} />}
             {tab === "accounts" && <AccountsTab authHeader={authHeader} userEmail={userEmail} onLogout={onLogout} />}
-            {tab === "email" && <EmailTab authHeader={authHeader} userEmail={userEmail} />}
+            {tab === "email" && <EmailTab authHeader={authHeader} userEmail={userEmail} settings={settings} update={update} />}
             {tab === "security" && <SecurityTab authHeader={authHeader} onNavigate={onNavigate} onLogout={onLogout} />}
             {tab === "notifications" && <NotificationsTab settings={settings} update={update} />}
             {tab === "advanced" && <AdvancedTab settings={settings} update={update} />}
@@ -180,10 +180,22 @@ function ServiceCard({ name, endpoint, authHeader }) {
 }
 
 // ── email ────────────────────────────────────────────────────────────────────
-function EmailTab({ authHeader, userEmail }) {
+function EmailTab({ authHeader, userEmail, settings, update }) {
   const [showRules, setShowRules] = useState(false)
   return (
     <>
+      <Section title="composing">
+        <Row label="undo send window" hint="hold outgoing mail this long so you can cancel">
+          <Segmented value={settings.undoSendSeconds} onChange={(v) => update("undoSendSeconds", v)}
+            options={[{ value: 0, label: "off" }, { value: 5, label: "5s" }, { value: 10, label: "10s" }, { value: 20, label: "20s" }, { value: 30, label: "30s" }]} />
+        </Row>
+        <div>
+          <p className="mb-1.5 text-sm text-text-primary lowercase">signature</p>
+          <textarea value={settings.signature} onChange={(e) => update("signature", e.target.value)} rows={3}
+            placeholder="appended to new messages" className={`w-full resize-none ${inputClass(false)}`} />
+        </div>
+      </Section>
+
       <Section title="external clients">
         <p className="text-xs text-text-info lowercase">
           connection details for desktop / mobile mail, calendar and contacts clients.
