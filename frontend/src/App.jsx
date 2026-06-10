@@ -9,6 +9,7 @@ import Settings from "./settings"
 import { useSettings, getSettings } from "./services/settings"
 import { applyTheme } from "./services/theme"
 import { AuthContext } from "./auth-context"
+import Shortcuts from "./components/Shortcuts"
 
 export default function App() {
   const [authed, setAuthed] = useState(false)
@@ -77,6 +78,7 @@ export default function App() {
       {page === "passwords" && <Passwords {...shared} />}
       {page === "aliases" && <Aliases {...shared} />}
       {page === "settings" && <Settings {...shared} />}
+      <Shortcuts onNavigate={setPage} />
     </AuthContext.Provider>
   )
 }
