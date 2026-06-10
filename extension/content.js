@@ -197,11 +197,40 @@
     chip.addEventListener("mousedown", (e) => { e.preventDefault(); e.stopPropagation() })
     chip.addEventListener("click", (e) => {
       e.preventDefault(); e.stopPropagation()
-      fillLogin(field, matches[0])
-      removeChip()
+      if (matches.length > 1) placeChooser(field, matches)
+      else { fillLogin(field, matches[0]); removeChip() }
     })
     document.body.appendChild(chip)
     activeChip = chip
+  }
+
+  // when several logins match, show a small dropdown to choose
+  function placeChooser(field, matches) {
+    removeChip()
+    const rect = field.getBoundingClientRect()
+    const menu = document.createElement("div")
+    menu.style.cssText = `
+      position: fixed; z-index: 2147483647;
+      top: ${window.scrollY + rect.bottom + 4}px;
+      left: ${Math.max(8, window.scrollX + rect.left)}px;
+      min-width: 220px; max-width: 320px; padding: 4px;
+      border-radius: 8px; border: 1px solid #2a2a2a; background: #0a0a0a;
+      font-family: "Varela Round", sans-serif; text-transform: lowercase;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+    `
+    for (const m of matches) {
+      const item = document.createElement("button")
+      item.type = "button"
+      item.style.cssText = "display:block;width:100%;text-align:left;padding:6px 10px;border:none;background:transparent;color:#ffffff;font-family:inherit;font-size:12px;cursor:pointer;border-radius:6px;"
+      item.innerHTML = `<span style="color:#fff">${m.username || m.name}</span><br><span style="color:#3c9fdd;font-size:11px">${m.name}</span>`
+      item.onmouseenter = () => { item.style.background = "#111111" }
+      item.onmouseleave = () => { item.style.background = "transparent" }
+      item.addEventListener("mousedown", (e) => { e.preventDefault(); e.stopPropagation() })
+      item.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); fillLogin(field, m); removeChip() })
+      menu.appendChild(item)
+    }
+    document.body.appendChild(menu)
+    activeChip = menu
   }
 
   async function maybeOfferAutofill(field) {
@@ -238,4 +267,21 @@
   }, true)
 
   window.addEventListener("scroll", removeChip, { passive: true })
+
+  // messages driven by the context menu (background service worker)
+  chrome.runtime.onMessage.addListener((req) => {
+    if (req?.type === "FILL_FIELD") {
+      const el = document.activeElement
+      if (el && "value" in el) setNativeValue(el, req.payload?.value || "")
+      else toast("click a field first", "err")
+    } else if (req?.type === "FILL_LOGIN") {
+      if (req.payload?.ok && req.payload.matches?.length) {
+        const el = document.activeElement instanceof HTMLInputElement ? document.activeElement : document.querySelector('input[type="password"], input')
+        if (req.payload.matches.length > 1 && el) placeChooser(el, req.payload.matches)
+        else fillLogin(el || document.body, req.payload.matches[0])
+      } else {
+        toast(req.payload?.error || "no matching login", "err")
+      }
+    }
+  })
 })()
