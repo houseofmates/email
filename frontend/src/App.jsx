@@ -12,6 +12,8 @@ import { useSettings, getSettings } from "./services/settings"
 import { applyTheme } from "./services/theme"
 import { AuthContext } from "./auth-context"
 import Shortcuts from "./components/Shortcuts"
+import Onboarding from "./components/Onboarding"
+import { setSetting } from "./services/settings"
 
 export default function App() {
   const [authed, setAuthed] = useState(false)
@@ -83,6 +85,7 @@ export default function App() {
       {page === "drive" && <Drive {...shared} />}
       {page === "settings" && <Settings {...shared} />}
       <Shortcuts onNavigate={setPage} />
+      {!settings.onboarded && <Onboarding onNavigate={setPage} onDone={() => setSetting("onboarded", true)} />}
     </AuthContext.Provider>
   )
 }

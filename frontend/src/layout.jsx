@@ -1,3 +1,5 @@
+import { useSettings } from "./services/settings"
+
 const NAV_ITEMS = [
   { key: "inbox", label: "inbox" },
   { key: "mail", label: "mail" },
@@ -10,6 +12,9 @@ const NAV_ITEMS = [
 ]
 
 export default function Layout({ currentPage, onNavigate, onLogout, userEmail, children }) {
+  const [settings, update] = useSettings()
+  const collapsed = settings.sidebarCollapsed
+
   return (
     <div className="flex min-h-[100dvh] flex-col bg-pkm-900">
       {/* desktop header */}
@@ -28,19 +33,26 @@ export default function Layout({ currentPage, onNavigate, onLogout, userEmail, c
       </header>
 
       <div className="flex flex-1 min-h-0">
-        {/* desktop sidebar */}
-        <nav className="hidden md:flex w-48 shrink-0 flex-col border-r border-pkm-500 p-3 gap-1">
+        {/* desktop sidebar — collapsible (proton-style) */}
+        <nav className={`hidden md:flex shrink-0 flex-col border-r border-pkm-500 p-3 gap-1 transition-[width] ${collapsed ? "w-16" : "w-48"}`}>
+          <button onClick={() => update("sidebarCollapsed", !collapsed)} aria-label={collapsed ? "expand sidebar" : "collapse sidebar"}
+            title={collapsed ? "expand" : "collapse"}
+            className="mb-1 self-end rounded-md px-2 py-1 text-xs text-text-info transition hover:text-gold active:scale-[0.98]">
+            {collapsed ? "»" : "«"}
+          </button>
           {NAV_ITEMS.map((item) => (
             <button
               key={item.key}
               onClick={() => onNavigate?.(item.key)}
-              className={`rounded-md px-3 py-2 text-left text-sm transition active:scale-[0.98] lowercase ${
+              title={collapsed ? item.label : undefined}
+              aria-label={item.label}
+              className={`rounded-md py-2 text-sm transition active:scale-[0.98] lowercase ${collapsed ? "px-0 text-center" : "px-3 text-left"} ${
                 currentPage === item.key
                   ? "bg-pkm-600 text-gold font-semibold"
                   : "text-text-info hover:text-text-primary hover:bg-pkm-700/50"
               }`}
             >
-              {item.label}
+              {collapsed ? item.label[0] : item.label}
             </button>
           ))}
         </nav>
