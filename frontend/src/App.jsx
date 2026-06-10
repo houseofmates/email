@@ -5,6 +5,7 @@ import Mail from "./mail"
 import Calendar from "./calendar"
 import Passwords from "./passwords"
 import Aliases from "./aliases"
+import Contacts from "./contacts"
 import Settings from "./settings"
 import { useSettings, getSettings } from "./services/settings"
 import { applyTheme } from "./services/theme"
@@ -77,6 +78,7 @@ export default function App() {
       {page === "calendar" && <Calendar {...shared} />}
       {page === "passwords" && <Passwords {...shared} />}
       {page === "aliases" && <Aliases {...shared} />}
+      {page === "contacts" && <Contacts {...shared} />}
       {page === "settings" && <Settings {...shared} />}
       <Shortcuts onNavigate={setPage} />
     </AuthContext.Provider>
