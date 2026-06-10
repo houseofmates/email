@@ -6,6 +6,7 @@ import Calendar from "./calendar"
 import Passwords from "./passwords"
 import Aliases from "./aliases"
 import Contacts from "./contacts"
+import Drive from "./drive"
 import Settings from "./settings"
 import { useSettings, getSettings } from "./services/settings"
 import { applyTheme } from "./services/theme"
@@ -79,6 +80,7 @@ export default function App() {
       {page === "passwords" && <Passwords {...shared} />}
       {page === "aliases" && <Aliases {...shared} />}
       {page === "contacts" && <Contacts {...shared} />}
+      {page === "drive" && <Drive {...shared} />}
       {page === "settings" && <Settings {...shared} />}
       <Shortcuts onNavigate={setPage} />
     </AuthContext.Provider>

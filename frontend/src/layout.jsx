@@ -3,6 +3,7 @@ const NAV_ITEMS = [
   { key: "mail", label: "mail" },
   { key: "calendar", label: "calendar" },
   { key: "contacts", label: "contacts" },
+  { key: "drive", label: "drive" },
   { key: "passwords", label: "passwords" },
   { key: "aliases", label: "aliases" },
   { key: "settings", label: "settings" },
