@@ -3,6 +3,7 @@ import Layout from "./layout"
 import { vault, VaultLockedError } from "./services/vault"
 import { SkeletonCardGrid } from "./components/Skeleton"
 import PasswordGenerator from "./components/PasswordGenerator"
+import SecurityDashboard from "./components/SecurityDashboard"
 import { parseImport, toJSON, toCSV } from "./services/vault-io"
 
 function download(filename, content, type) {
@@ -146,7 +147,8 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
   const [manageFolders, setManageFolders] = useState(false)
   const [gen, setGen] = useState(null)       // null | { field? } — generator target
   const [importMsg, setImportMsg] = useState(null)
-  const [exportOpen, setExportOpen] = useState(false)
+  const [toolsOpen, setToolsOpen] = useState(false)
+  const [showSecurity, setShowSecurity] = useState(false)
   const fileRef = useRef(null)
 
   const sync = useCallback(async () => {
@@ -193,13 +195,14 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
     function onKey(e) {
       if (e.key !== "Escape") return
       if (gen) setGen(null)
+      else if (showSecurity) setShowSecurity(false)
       else if (showForm) { setShowForm(false); setEditing(null); setForm({}) }
       else if (confirmDelete) setConfirmDelete(null)
       else if (manageFolders) setManageFolders(false)
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
-  }, [showForm, confirmDelete, manageFolders, gen])
+  }, [showForm, confirmDelete, manageFolders, gen, showSecurity])
 
   async function lock() {
     await vault.lock(authHeader)
@@ -273,6 +276,8 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
   }
 
   // ── import / export ──────────────────────────────────────────────────────
+  const openImport = () => fileRef.current?.click()
+
   function exportVault(format) {
     if (format === "csv") download("vault.csv", toCSV(items, folderName), "text/csv")
     else download("vault.json", toJSON(items, folderName), "application/json")
@@ -307,6 +312,19 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
     }
   }
 
+  // drag a card onto a folder chip to refile it
+  async function moveToFolder(cipherId, folderId) {
+    const item = items.find((i) => i.id === cipherId)
+    if (!item || (item.folderId || null) === (folderId || null)) return
+    const updated = { ...item, folderId: folderId || null }
+    setItems((prev) => prev.map((i) => i.id === cipherId ? updated : i)) // optimistic
+    try { await vault.saveCipher(authHeader, updated) }
+    catch (err) {
+      if (err instanceof VaultLockedError) setLocked(true)
+      else { setError(String(err.message || err)); sync() }
+    }
+  }
+
   function toggleReveal(id) { setRevealed((p) => ({ ...p, [id]: !p[id] })) }
   function copy(v) { try { navigator.clipboard?.writeText(v) } catch { /* clipboard unavailable */ } }
 
@@ -330,16 +348,27 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
           {!locked && (
             <div className="flex items-center gap-2">
               {lastSync && <span className="hidden lg:inline text-[11px] text-text-info lowercase">synced {new Date(lastSync).toLocaleTimeString()}</span>}
-              <button onClick={() => setGen({})} className="rounded-lg border border-pkm-500 px-3 py-1.5 text-xs text-text-info transition hover:border-sky hover:text-sky active:scale-[0.98] lowercase">generator</button>
-              <button onClick={() => fileRef.current?.click()} className="rounded-lg border border-pkm-500 px-3 py-1.5 text-xs text-text-info transition hover:border-sky hover:text-sky active:scale-[0.98] lowercase">import</button>
               <div className="relative">
-                <button onClick={() => setExportOpen((o) => !o)} className="rounded-lg border border-pkm-500 px-3 py-1.5 text-xs text-text-info transition hover:border-sky hover:text-sky active:scale-[0.98] lowercase">export</button>
-                {exportOpen && (
+                <button onClick={() => setToolsOpen((o) => !o)} className="rounded-lg border border-pkm-500 px-3 py-1.5 text-xs text-text-info transition hover:border-sky hover:text-sky active:scale-[0.98] lowercase">tools ▾</button>
+                {toolsOpen && (
                   <>
-                    <div className="fixed inset-0 z-40" onClick={() => setExportOpen(false)} />
-                    <div className="absolute right-0 z-50 mt-1 w-36 rounded-lg border border-pkm-500 bg-pkm-800 p-1 shadow-xl">
-                      <button onClick={() => { exportVault("json"); setExportOpen(false) }} className="block w-full rounded-md px-3 py-2 text-left text-xs text-text-primary transition hover:bg-pkm-700 lowercase">json (full)</button>
-                      <button onClick={() => { exportVault("csv"); setExportOpen(false) }} className="block w-full rounded-md px-3 py-2 text-left text-xs text-text-primary transition hover:bg-pkm-700 lowercase">csv (logins)</button>
+                    <div className="fixed inset-0 z-40" onClick={() => setToolsOpen(false)} />
+                    <div className="absolute right-0 z-50 mt-1 w-44 rounded-lg border border-pkm-500 bg-pkm-800 p-1 shadow-xl">
+                      {(() => {
+                        const ToolItem = ({ label, onClick }) => (
+                          <button onClick={() => { onClick(); setToolsOpen(false) }}
+                            className="block w-full rounded-md px-3 py-2 text-left text-xs text-text-primary transition hover:bg-pkm-700 lowercase">{label}</button>
+                        )
+                        return (
+                          <>
+                            <ToolItem label="generator" onClick={() => setGen({})} />
+                            <ToolItem label="security check" onClick={() => setShowSecurity(true)} />
+                            <ToolItem label="import" onClick={openImport} />
+                            <ToolItem label="export json" onClick={() => exportVault("json")} />
+                            <ToolItem label="export csv" onClick={() => exportVault("csv")} />
+                          </>
+                        )
+                      })()}
                     </div>
                   </>
                 )}
@@ -375,9 +404,11 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
               <button onClick={() => setActiveFolder(undefined)}
                 className={`shrink-0 rounded-md px-2.5 py-1 text-xs transition lowercase ${activeFolder === undefined ? "bg-sky text-pkm-900" : "bg-pkm-700 text-text-info hover:text-text-primary"}`}>all folders</button>
               <button onClick={() => setActiveFolder(null)}
+                onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); moveToFolder(e.dataTransfer.getData("text/cipher-id"), null) }}
                 className={`shrink-0 rounded-md px-2.5 py-1 text-xs transition lowercase ${activeFolder === null ? "bg-sky text-pkm-900" : "bg-pkm-700 text-text-info hover:text-text-primary"}`}>no folder</button>
               {folders.map((f) => (
                 <button key={f.id} onClick={() => setActiveFolder(f.id)}
+                  onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); moveToFolder(e.dataTransfer.getData("text/cipher-id"), f.id) }}
                   className={`shrink-0 rounded-md px-2.5 py-1 text-xs transition lowercase ${activeFolder === f.id ? "bg-sky text-pkm-900" : "bg-pkm-700 text-text-info hover:text-text-primary"}`}>{f.name}</button>
               ))}
               <button onClick={addFolder} className="shrink-0 rounded-md px-2 py-1 text-xs text-text-info transition hover:text-gold lowercase" aria-label="add folder">+ folder</button>
@@ -414,6 +445,7 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {filtered.map((item) => (
                     <ItemCard key={item.id} item={item} folderName={folderName} revealed={revealed}
+                      onDragStart={(e) => e.dataTransfer.setData("text/cipher-id", item.id)}
                       onReveal={toggleReveal} onCopy={copy} onEdit={() => startEdit(item)} onDelete={() => setConfirmDelete(item.id)} />
                   ))}
                 </div>
@@ -462,6 +494,9 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
                     {folders.map((f) => <option key={f.id} value={f.id}>{f.name}</option>)}
                   </select>
                 </div>
+
+                {/* attachments — stored inline, encrypted with the vault */}
+                <AttachmentsField value={form.attachments || []} onChange={(arr) => handleChange("attachments", arr)} />
                 <div className="flex items-center justify-end gap-3 mt-2">
                   <button type="button" onClick={() => { setShowForm(false); setEditing(null); setForm({}) }} disabled={saving}
                     className="rounded-lg border border-pkm-500 px-4 py-2 text-sm text-text-info transition hover:text-text-primary lowercase">cancel</button>
@@ -518,21 +553,84 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
             onUse={gen.field ? (v) => { handleChange(gen.field, v); setGen(null) } : undefined}
           />
         )}
+
+        {/* security dashboard */}
+        {showSecurity && (
+          <SecurityDashboard
+            items={items} authHeader={authHeader} hibpRange={vault.hibpRange}
+            onOpenItem={(it) => { setShowSecurity(false); startEdit(it) }}
+            onClose={() => setShowSecurity(false)}
+          />
+        )}
       </div>
     </Layout>
   )
 }
 
+// ── attachments (stored inline as base64; the vault file encrypts them) ──────
+const MAX_ATTACHMENT = 2 * 1024 * 1024 // 2mb — keep the single vault blob sane
+const prettySize = (n) => (n < 1024 ? `${n} b` : n < 1024 * 1024 ? `${(n / 1024).toFixed(0)} kb` : `${(n / 1024 / 1024).toFixed(1)} mb`)
+
+function fileToAttachment(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader()
+    r.onload = () => resolve({ id: crypto.randomUUID(), name: file.name, size: file.size, type: file.type, data: String(r.result).split(",")[1] })
+    r.onerror = reject
+    r.readAsDataURL(file)
+  })
+}
+
+function AttachmentsField({ value, onChange }) {
+  const ref = useRef(null)
+  const [err, setErr] = useState(null)
+
+  async function add(e) {
+    const file = e.target.files?.[0]
+    if (ref.current) ref.current.value = ""
+    if (!file) return
+    if (file.size > MAX_ATTACHMENT) { setErr(`max ${prettySize(MAX_ATTACHMENT)} per file`); return }
+    setErr(null)
+    onChange([...(value || []), await fileToAttachment(file)])
+  }
+  function downloadAtt(att) {
+    const bytes = Uint8Array.from(atob(att.data), (c) => c.charCodeAt(0))
+    download(att.name, bytes, att.type || "application/octet-stream")
+  }
+  function remove(id) { onChange((value || []).filter((a) => a.id !== id)) }
+
+  return (
+    <div>
+      <label className="mb-1.5 block text-sm font-semibold text-text-primary lowercase">attachments</label>
+      <div className="space-y-2">
+        {(value || []).map((a) => (
+          <div key={a.id} className="flex items-center justify-between gap-2 rounded-lg border border-pkm-500 bg-pkm-700 px-3 py-2">
+            <span className="min-w-0 truncate text-sm text-text-primary lowercase">📎 {a.name} <span className="text-text-info">· {prettySize(a.size)}</span></span>
+            <div className="flex shrink-0 gap-1">
+              <button type="button" onClick={() => downloadAtt(a)} className="rounded-md border border-pkm-500 px-2 py-1 text-xs text-text-info transition hover:border-sky hover:text-sky lowercase">save</button>
+              <button type="button" onClick={() => remove(a.id)} className="rounded-md border border-danger-border px-2 py-1 text-xs text-danger transition hover:bg-danger-dim lowercase">remove</button>
+            </div>
+          </div>
+        ))}
+        <button type="button" onClick={() => ref.current?.click()} className="rounded-lg border border-dashed border-pkm-500 px-3 py-2 text-xs text-text-info transition hover:border-sky hover:text-sky lowercase w-full">+ attach file</button>
+        <input ref={ref} type="file" onChange={add} className="hidden" />
+        {err && <p className="text-xs text-danger lowercase">{err}</p>}
+      </div>
+    </div>
+  )
+}
+
 // ── item card ────────────────────────────────────────────────────────────────
-function ItemCard({ item, folderName, revealed, onReveal, onCopy, onEdit, onDelete }) {
+function ItemCard({ item, folderName, revealed, onReveal, onCopy, onEdit, onDelete, onDragStart }) {
   const fields = TYPE_FIELDS[item.type] || []
   const subtitle = item.type === "login" ? item.username
     : item.type === "card" ? (item.number ? `•••• ${String(item.number).slice(-4)}` : "")
     : item.type === "identity" ? [item.firstName, item.lastName].filter(Boolean).join(" ")
     : ""
   const secret = fields.find((f) => f.sensitive && item[f.k])
+  const attachments = item.attachments?.length || 0
   return (
-    <div className="rounded-lg border border-pkm-500 bg-pkm-800 px-4 py-3 transition hover:border-gold">
+    <div draggable onDragStart={onDragStart} title="drag onto a folder to refile"
+      className="cursor-grab rounded-lg border border-pkm-500 bg-pkm-800 px-4 py-3 transition hover:border-gold active:cursor-grabbing">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <p className="text-sm text-text-primary lowercase truncate">{item.name || "untitled"}</p>
@@ -544,7 +642,10 @@ function ItemCard({ item, folderName, revealed, onReveal, onCopy, onEdit, onDele
               <button onClick={() => onCopy(item[secret.k])} className="text-xs text-sky underline lowercase">copy</button>
             </div>
           )}
-          {item.folderId && <p className="mt-1 text-[11px] text-text-info lowercase">📁 {folderName(item.folderId)}</p>}
+          <div className="mt-1 flex items-center gap-2">
+            {item.folderId && <span className="text-[11px] text-text-info lowercase">📁 {folderName(item.folderId)}</span>}
+            {attachments > 0 && <span className="text-[11px] text-text-info lowercase">📎 {attachments}</span>}
+          </div>
         </div>
         <div className="flex shrink-0 gap-1">
           <button onClick={onEdit} className="rounded-md border border-pkm-500 px-2 py-1 text-xs text-text-info transition hover:border-sky hover:text-sky active:scale-[0.98] lowercase">edit</button>

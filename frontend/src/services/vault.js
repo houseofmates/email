@@ -97,6 +97,17 @@ export const vault = {
 
   importItems: (a, items) => request(a, "/import", { method: "POST", body: { items } }),
 
+  // hibp range proxy — returns the raw "SUFFIX:COUNT" text for a 5-char prefix
+  async hibpRange(authHeader, prefix) {
+    const headers = { authorization: authHeader }
+    const session = getSession()
+    if (session) headers["x-vault-session"] = session
+    const res = await fetch(`/api/passwords/hibp/${prefix}`, { headers, credentials: "same-origin" })
+    if (res.status === 401) { setSession(null); throw new VaultLockedError() }
+    if (!res.ok) throw new Error(`breach check failed (${res.status})`)
+    return res.text()
+  },
+
   createFolder: (a, name) => request(a, "/folders", { method: "POST", body: { name } }),
   renameFolder: (a, id, name) => request(a, `/folders/${id}`, { method: "PUT", body: { name } }),
   deleteFolder: (a, id) => request(a, `/folders/${id}`, { method: "DELETE" }),
