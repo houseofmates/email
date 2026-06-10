@@ -9,3 +9,11 @@ createRoot(document.getElementById('root')).render(
     <App />
   </StrictMode>,
 )
+
+// register the offline service worker in production builds only (skipped in dev
+// to avoid stale-cache surprises while developing)
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => { /* offline support optional */ })
+  })
+}
