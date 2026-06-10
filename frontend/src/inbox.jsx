@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
-import { listInbox, getEmail, emailText, sendEmail, setKeyword } from "./jmap"
+import { listInbox, getEmail, emailText, sendEmail, setKeyword, searchEmails } from "./jmap"
+import { parseSearchQuery } from "./services/search"
 import Layout from "./layout"
 
 function fromName(email) {
@@ -81,7 +82,9 @@ export default function Inbox({ authHeader, userEmail, onLogout, onNavigate }) {
   const [selectedId, setSelectedId] = useState(null)
   const [active, setActive] = useState(null)
   const [composeOpen, setComposeOpen] = useState(false)
-  const [filter, setFilter] = useState("inbox")
+  const [query, setQuery] = useState("")
+  const [results, setResults] = useState(null) // null = showing inbox; array = search results
+  const [searching, setSearching] = useState(false)
 
   async function refresh() {
     setLoading(true)
@@ -95,12 +98,39 @@ export default function Inbox({ authHeader, userEmail, onLogout, onNavigate }) {
     }
   }
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { refresh() }, [])
+
+  async function runSearch(e) {
+    e?.preventDefault()
+    const filter = parseSearchQuery(query)
+    if (!filter) { setResults(null); return }
+    setSearching(true)
+    setError(null)
+    setSelectedId(null)
+    try {
+      setResults(await searchEmails(authHeader, filter))
+    } catch (err) {
+      setError(String(err.message || err))
+    } finally {
+      setSearching(false)
+    }
+  }
+
+  function clearSearch() { setQuery(""); setResults(null) }
+
+  // what the list shows: search results when searching, else the inbox
+  const list = results !== null ? results : emails
 
   async function open(id) {
     setSelectedId(id)
     setActive(null)
     try { setActive(await getEmail(authHeader, id)) } catch { setActive(null) }
+    // mark as read on open and clear the unread styling locally
+    const markRead = (arr) => arr.map((m) => m.id === id ? { ...m, keywords: { ...m.keywords, $seen: true } } : m)
+    setEmails(markRead)
+    setResults((r) => (r ? markRead(r) : r))
+    try { await setKeyword(authHeader, id, "$seen", true) } catch { /* best effort */ }
   }
 
   return (
@@ -138,27 +168,42 @@ export default function Inbox({ authHeader, userEmail, onLogout, onNavigate }) {
             </div>
           </div>
 
-          {loading ? (
+          {/* search — supports from: to: subject: body: has:attachment before: after: */}
+          <form onSubmit={runSearch} className="border-b border-pkm-500 p-2">
+            <div className="flex items-center gap-2">
+              <input type="search" value={query} onChange={(e) => setQuery(e.target.value)}
+                placeholder="search mail (from: subject: has:attachment …)"
+                className="w-full rounded-lg border border-pkm-500 bg-pkm-700 px-3 py-2 text-sm text-text-primary placeholder:text-text-info outline-none transition focus:border-sky focus:ring-1 focus:ring-sky lowercase" />
+              {results !== null && (
+                <button type="button" onClick={clearSearch} className="shrink-0 rounded-md border border-pkm-500 px-2 py-2 text-xs text-text-info transition hover:border-sky hover:text-sky lowercase">clear</button>
+              )}
+            </div>
+            {results !== null && <p className="mt-1 px-1 text-[11px] text-text-info lowercase">{results.length} result{results.length === 1 ? "" : "s"}</p>}
+          </form>
+
+          {(loading || searching) ? (
             <div className="flex items-center justify-center p-8">
               <div className="h-6 w-6 animate-spin rounded-full border-2 border-pkm-500 border-t-gold" />
             </div>
           ) : error ? (
             <div className="p-4">
               <p className="text-sm text-danger lowercase">{error}</p>
-              <button onClick={refresh} className="mt-3 rounded-md border border-pkm-500 px-3 py-1.5 text-xs text-text-info transition hover:border-sky hover:text-sky active:scale-[0.98] lowercase">
+              <button onClick={results !== null ? runSearch : refresh} className="mt-3 rounded-md border border-pkm-500 px-3 py-1.5 text-xs text-text-info transition hover:border-sky hover:text-sky active:scale-[0.98] lowercase">
                 retry
               </button>
             </div>
-          ) : emails.length === 0 ? (
+          ) : list.length === 0 ? (
             <div className="flex flex-col items-center justify-center p-8 text-center">
-              <p className="text-sm text-text-info lowercase">inbox is empty</p>
-              <button onClick={() => setComposeOpen(true)} className="mt-3 text-xs text-sky underline lowercase">
-                compose a message
-              </button>
+              <p className="text-sm text-text-info lowercase">{results !== null ? "no matching mail" : "inbox is empty"}</p>
+              {results === null && (
+                <button onClick={() => setComposeOpen(true)} className="mt-3 text-xs text-sky underline lowercase">
+                  compose a message
+                </button>
+              )}
             </div>
           ) : (
             <div className="divide-y divide-pkm-500">
-              {emails.map((m) => {
+              {list.map((m) => {
                 const unread = !m.keywords?.$seen
                 return (
                   <button key={m.id} onClick={() => open(m.id)}
