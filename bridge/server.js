@@ -125,7 +125,17 @@ app.use('/dav', createProxyMiddleware({
   on: { proxyReq: fixRequestBody },
 }))
 
-// ── vaultwarden proxy ─────────────────────────────────────
+// ── vaultwarden: option-b decrypt routes (frontend) ───────
+// the bridge decrypts on behalf of the calm web ui. mounted BEFORE the raw
+// proxy below — express routers call next() on unmatched paths, so anything
+// these routes don't handle (e.g. bitwarden mobile/extension clients pointed
+// at /api/passwords) falls through to the proxy with its body intact. the
+// option-b router scopes its json parser to write routes only, never globally,
+// to preserve that fall-through (see vaultwarden.js).
+const vaultwarden = require('./vaultwarden')
+app.use('/api/passwords', vaultwarden.createRouter())
+
+// ── vaultwarden raw proxy (bitwarden-protocol clients) ────
 app.use('/api/passwords', createProxyMiddleware({
   target: process.env.VAULTWARDEN_URL || 'http://localhost:8085',
   changeOrigin: true,
