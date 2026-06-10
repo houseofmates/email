@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react"
-import { listInbox, getEmail, emailText, sendEmail, setKeyword, searchEmails } from "./jmap"
+import { useEffect, useState, useRef } from "react"
+import { listInbox, getEmail, emailText, sendEmail, setKeyword, searchEmails, listIdentities } from "./jmap"
 import { parseSearchQuery } from "./services/search"
+import { useSettings } from "./services/settings"
+import { ToastProvider, useToast } from "./components/Toast"
 import Layout from "./layout"
 
 function fromName(email) {
@@ -18,32 +20,37 @@ function fmtDate(iso) {
   return d.toLocaleDateString(undefined, { month: "short", day: "numeric" })
 }
 
-function Compose({ authHeader, userEmail, onClose }) {
-  const [to, setTo] = useState("")
-  const [subject, setSubject] = useState("")
-  const [body, setBody] = useState("")
-  const [status, setStatus] = useState(null)
-  const [sending, setSending] = useState(false)
+function Compose({ authHeader, userEmail, initial, onSend, onClose }) {
+  const [identities, setIdentities] = useState([])
+  const [from, setFrom] = useState(initial?.from || userEmail || "")
+  const [to, setTo] = useState(initial?.to || "")
+  const [subject, setSubject] = useState(initial?.subject || "")
+  const [body, setBody] = useState(initial?.body || "")
+  const [err, setErr] = useState(null)
 
-  async function submit(e) {
+  // load send-as identities for the "from" selector
+  useEffect(() => {
+    let cancelled = false
+    listIdentities(authHeader)
+      .then((list) => {
+        if (cancelled) return
+        setIdentities(list)
+        if (!initial?.from && list[0]?.email) setFrom(list[0].email)
+      })
+      .catch(() => {})
+    return () => { cancelled = true }
+  }, [authHeader, initial?.from])
+
+  function submit(e) {
     e.preventDefault()
-    if (!to.trim()) { setStatus({ kind: "err", msg: "recipient required" }); return }
-    setSending(true)
-    setStatus(null)
-    try {
-      await sendEmail(authHeader, { from: userEmail, to, subject, text: body })
-      setStatus({ kind: "ok", msg: "sent" })
-      setTimeout(onClose, 800)
-    } catch (err) {
-      setStatus({ kind: "err", msg: String(err.message || err) })
-    } finally {
-      setSending(false)
-    }
+    if (!to.trim()) { setErr("recipient required"); return }
+    onSend({ from, to, subject, text: body })
+    onClose()
   }
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center bg-pkm-900/70 p-4">
-      <div className="flex w-full max-w-[560px] flex-col gap-3 rounded-xl border border-pkm-500 bg-pkm-800 p-5 animate-fade-in">
+    <div className="fixed inset-0 z-40 flex items-center justify-center bg-pkm-900/70 p-4" onClick={onClose}>
+      <div className="flex w-full max-w-[560px] flex-col gap-3 rounded-xl border border-pkm-500 bg-pkm-800 p-5 animate-fade-in" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between">
           <h2 className="text-base text-gold lowercase tracking-wide">new message</h2>
           <button onClick={onClose} className="rounded-md border border-pkm-500 px-3 py-1.5 text-xs text-text-info transition hover:border-sky hover:text-sky lowercase active:scale-[0.98]">
@@ -51,6 +58,12 @@ function Compose({ authHeader, userEmail, onClose }) {
           </button>
         </div>
         <form onSubmit={submit} className="flex flex-col gap-3">
+          {identities.length > 1 && (
+            <select value={from} onChange={(e) => setFrom(e.target.value)}
+              className="rounded-lg border border-pkm-500 bg-pkm-700 px-3 py-2 text-sm text-text-primary outline-none transition focus:border-sky lowercase">
+              {identities.map((i) => <option key={i.id} value={i.email}>from: {i.name ? `${i.name} <${i.email}>` : i.email}</option>)}
+            </select>
+          )}
           <input type="text" inputMode="email" placeholder="to" value={to}
             onChange={(e) => setTo(e.target.value)}
             className="rounded-lg border border-pkm-500 bg-pkm-700 px-3 py-2 text-sm text-text-primary placeholder:text-text-info outline-none transition focus:border-sky lowercase" />
@@ -61,12 +74,10 @@ function Compose({ authHeader, userEmail, onClose }) {
             onChange={(e) => setBody(e.target.value)}
             className="resize-y rounded-lg border border-pkm-500 bg-pkm-700 px-3 py-2 text-sm text-text-primary placeholder:text-text-info outline-none transition focus:border-sky" />
           <div className="flex items-center justify-between gap-3">
-            <span className={`text-xs lowercase ${status?.kind === "err" ? "text-danger" : "text-gold"}`}>
-              {status?.msg || ""}
-            </span>
-            <button type="submit" disabled={sending}
+            <span className="text-xs text-danger lowercase">{err || ""}</span>
+            <button type="submit"
               className="rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-pkm-900 transition hover:brightness-110 active:scale-[0.98] disabled:opacity-60 lowercase">
-              {sending ? "sending..." : "send"}
+              send
             </button>
           </div>
         </form>
@@ -75,16 +86,62 @@ function Compose({ authHeader, userEmail, onClose }) {
   )
 }
 
-export default function Inbox({ authHeader, userEmail, onLogout, onNavigate }) {
+export default function Inbox(props) {
+  return (
+    <ToastProvider>
+      <InboxInner {...props} />
+    </ToastProvider>
+  )
+}
+
+function InboxInner({ authHeader, userEmail, onLogout, onNavigate }) {
   const [emails, setEmails] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [selectedId, setSelectedId] = useState(null)
   const [active, setActive] = useState(null)
   const [composeOpen, setComposeOpen] = useState(false)
+  const [draft, setDraft] = useState(null) // restored on undo, or signature on fresh compose
   const [query, setQuery] = useState("")
   const [results, setResults] = useState(null) // null = showing inbox; array = search results
   const [searching, setSearching] = useState(false)
+  const [settings] = useSettings()
+  const toast = useToast()
+  const sendTimer = useRef(null)
+
+  function openCompose() {
+    const sig = settings.signature ? `\n\n--\n${settings.signature}` : ""
+    setDraft(sig ? { body: sig } : null)
+    setComposeOpen(true)
+  }
+
+  async function doSend(payload) {
+    try {
+      await sendEmail(authHeader, payload)
+      toast.show({ message: "sent", kind: "ok" })
+      refresh()
+    } catch (err) {
+      toast.show({ message: `send failed: ${String(err.message || err)}`, kind: "err", duration: 8000 })
+      setDraft({ to: payload.to, subject: payload.subject, body: payload.text, from: payload.from })
+      setComposeOpen(true)
+    }
+  }
+
+  // undo-send: hold the message for the configured window before sending
+  function scheduleSend(payload) {
+    const secs = settings.undoSendSeconds || 0
+    if (!secs) { doSend(payload); return }
+    sendTimer.current = setTimeout(() => { sendTimer.current = null; doSend(payload) }, secs * 1000)
+    toast.show({
+      message: "sending…", actionLabel: "undo", duration: secs * 1000,
+      onAction: () => {
+        if (sendTimer.current) { clearTimeout(sendTimer.current); sendTimer.current = null }
+        setDraft({ to: payload.to, subject: payload.subject, body: payload.text, from: payload.from })
+        setComposeOpen(true)
+        toast.show({ message: "send cancelled", kind: "info" })
+      },
+    })
+  }
 
   async function refresh() {
     setLoading(true)
@@ -98,7 +155,6 @@ export default function Inbox({ authHeader, userEmail, onLogout, onNavigate }) {
     }
   }
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { refresh() }, [])
 
   async function runSearch(e) {
@@ -139,7 +195,7 @@ export default function Inbox({ authHeader, userEmail, onLogout, onNavigate }) {
       <div className="flex items-center justify-between border-b border-pkm-500 px-4 py-3 md:hidden">
         <h1 className="text-lg text-gold lowercase tracking-wide">inbox</h1>
         <div className="flex items-center gap-2">
-          <button onClick={() => setComposeOpen(true)}
+          <button onClick={openCompose}
             className="rounded-lg border border-sky px-3 py-1.5 text-xs text-sky transition hover:brightness-110 active:scale-[0.98] lowercase">
             compose
           </button>
@@ -157,7 +213,7 @@ export default function Inbox({ authHeader, userEmail, onLogout, onNavigate }) {
           <div className="hidden md:flex items-center justify-between border-b border-pkm-500 p-3">
             <h1 className="text-lg text-gold lowercase tracking-wide">inbox</h1>
             <div className="flex items-center gap-2">
-              <button onClick={() => setComposeOpen(true)}
+              <button onClick={openCompose}
                 className="rounded-lg bg-sky px-3 py-1.5 text-xs font-semibold text-pkm-900 transition hover:brightness-110 active:scale-[0.98] lowercase">
                 compose
               </button>
@@ -196,7 +252,7 @@ export default function Inbox({ authHeader, userEmail, onLogout, onNavigate }) {
             <div className="flex flex-col items-center justify-center p-8 text-center">
               <p className="text-sm text-text-info lowercase">{results !== null ? "no matching mail" : "inbox is empty"}</p>
               {results === null && (
-                <button onClick={() => setComposeOpen(true)} className="mt-3 text-xs text-sky underline lowercase">
+                <button onClick={openCompose} className="mt-3 text-xs text-sky underline lowercase">
                   compose a message
                 </button>
               )}
@@ -253,7 +309,7 @@ export default function Inbox({ authHeader, userEmail, onLogout, onNavigate }) {
         </div>
       </div>
 
-      {composeOpen && <Compose authHeader={authHeader} userEmail={userEmail} onClose={() => setComposeOpen(false)} />}
+      {composeOpen && <Compose authHeader={authHeader} userEmail={userEmail} initial={draft} onSend={scheduleSend} onClose={() => setComposeOpen(false)} />}
     </Layout>
   )
 }
