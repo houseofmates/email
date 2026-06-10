@@ -164,7 +164,42 @@ export async function getCalendars() {
 const EVENT_PROPS = [
   "id", "uid", "calendarIds", "title", "description", "start",
   "duration", "timeZone", "showWithoutTime", "location", "status", "color",
+  "recurrenceRules", "alerts",
 ]
+
+// ── recurrence + reminders (jscalendar) — pure, exported for tests ───────────
+const FREQS = ["daily", "weekly", "monthly", "yearly"]
+
+export function buildRecurrence(freq, interval = 1) {
+  if (!freq || freq === "none" || !FREQS.includes(freq)) return undefined
+  return [{ "@type": "RecurrenceRule", frequency: freq, interval: Math.max(1, Number(interval) || 1) }]
+}
+
+export function parseRecurrence(rules) {
+  const r = Array.isArray(rules) ? rules[0] : null
+  return r?.frequency ? { freq: r.frequency, interval: r.interval || 1 } : { freq: "none", interval: 1 }
+}
+
+// minutes-before -> a single display Alert (offset trigger). 0 = at start time.
+export function buildAlerts(minutes) {
+  if (minutes == null || minutes === "" || minutes === "none") return undefined
+  const m = Number(minutes)
+  if (Number.isNaN(m) || m < 0) return undefined
+  const offset = m === 0 ? "PT0S" : `-PT${m}M`
+  return { "1": { "@type": "Alert", trigger: { "@type": "OffsetTrigger", offset }, action: "display" } }
+}
+
+export function parseAlerts(alerts) {
+  const a = alerts && Object.values(alerts)[0]
+  const off = a?.trigger?.offset
+  if (!off) return null
+  if (/PT0S/.test(off)) return 0
+  let m
+  if ((m = /PT(\d+)M/.exec(off))) return +m[1]
+  if ((m = /PT(\d+)H/.exec(off))) return +m[1] * 60
+  if ((m = /P(\d+)D/.exec(off))) return +m[1] * 1440
+  return null
+}
 
 /** normalize a jscalendar event into the shape the ui uses. */
 function normalize(ev) {
@@ -182,6 +217,8 @@ function normalize(ev) {
     allDay,
     color: ev.color || null,
     calendarId: ev.calendarIds ? Object.keys(ev.calendarIds)[0] : null,
+    recurrence: parseRecurrence(ev.recurrenceRules),
+    reminderMinutes: parseAlerts(ev.alerts),
   }
 }
 
@@ -236,6 +273,8 @@ export async function createEvent(ev) {
     obj.timeZone = tz
     obj.duration = toDuration(ev.start, ev.end || new Date(ev.start.getTime() + 3600000))
   }
+  obj.recurrenceRules = buildRecurrence(ev.recurrence?.freq, ev.recurrence?.interval)
+  obj.alerts = buildAlerts(ev.reminderMinutes)
   const r = await call([["CalendarEvent/set", { accountId: acc, create: { new: obj } }, "0"]])
   const set = r[0]?.[1]
   if (set?.created?.new) return set.created.new.id || true
@@ -261,6 +300,8 @@ export async function updateEvent(id, fields) {
     }
     if (fields.end) patch.duration = toDuration(fields.start, fields.end)
   }
+  if (fields.recurrence !== undefined) patch.recurrenceRules = buildRecurrence(fields.recurrence?.freq, fields.recurrence?.interval) || null
+  if (fields.reminderMinutes !== undefined) patch.alerts = buildAlerts(fields.reminderMinutes) || null
   const r = await call([["CalendarEvent/set", { accountId: acc, update: { [id]: patch } }, "0"]])
   const set = r[0]?.[1]
   if (set?.updated && id in set.updated) return true

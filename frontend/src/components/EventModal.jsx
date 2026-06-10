@@ -36,6 +36,9 @@ export default function EventModal({ initial, calendars = [], onSave, onDelete, 
   const [start, setStart] = useState(() => initial?.start || new Date())
   const [end, setEnd] = useState(() => initial?.end || new Date(Date.now() + 3600000))
   const [calendarId, setCalendarId] = useState(initial?.calendarId || calendars[0]?.id || "")
+  const [freq, setFreq] = useState(initial?.recurrence?.freq || "none")
+  const [interval, setIntervalVal] = useState(initial?.recurrence?.interval || 1)
+  const [reminder, setReminder] = useState(initial?.reminderMinutes == null ? "none" : String(initial.reminderMinutes))
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState(null)
 
@@ -51,7 +54,11 @@ export default function EventModal({ initial, calendars = [], onSave, onDelete, 
     setBusy(true)
     setErr(null)
     try {
-      await onSave({ id: initial?.id, title: title.trim(), description, location, allDay, start, end, calendarId })
+      await onSave({
+        id: initial?.id, title: title.trim(), description, location, allDay, start, end, calendarId,
+        recurrence: { freq, interval: Number(interval) || 1 },
+        reminderMinutes: reminder === "none" ? "none" : Number(reminder),
+      })
       onClose()
     } catch (e) {
       setErr(String(e.message || e))
@@ -135,6 +142,39 @@ export default function EventModal({ initial, calendars = [], onSave, onDelete, 
               ))}
             </select>
           )}
+
+          {/* recurrence */}
+          <div className="flex items-center gap-2">
+            <label className="w-20 shrink-0 text-xs text-text-info lowercase">repeats</label>
+            <select className={inputClass(false)} value={freq} onChange={(e) => setFreq(e.target.value)} aria-label="repeats">
+              <option value="none">does not repeat</option>
+              <option value="daily">daily</option>
+              <option value="weekly">weekly</option>
+              <option value="monthly">monthly</option>
+              <option value="yearly">yearly</option>
+            </select>
+            {freq !== "none" && (
+              <>
+                <span className="shrink-0 text-xs text-text-info lowercase">every</span>
+                <input type="number" min="1" value={interval} onChange={(e) => setIntervalVal(e.target.value)}
+                  className={`${inputClass(false)} w-16`} aria-label="interval" />
+              </>
+            )}
+          </div>
+
+          {/* reminder */}
+          <div className="flex items-center gap-2">
+            <label className="w-20 shrink-0 text-xs text-text-info lowercase">remind</label>
+            <select className={inputClass(false)} value={reminder} onChange={(e) => setReminder(e.target.value)} aria-label="reminder">
+              <option value="none">no reminder</option>
+              <option value="0">at start time</option>
+              <option value="5">5 minutes before</option>
+              <option value="15">15 minutes before</option>
+              <option value="30">30 minutes before</option>
+              <option value="60">1 hour before</option>
+              <option value="1440">1 day before</option>
+            </select>
+          </div>
 
           {err && <p className="text-xs text-danger lowercase">{err}</p>}
         </div>
