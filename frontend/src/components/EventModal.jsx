@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { inputClass, goldBtn, ghostBtn, dangerBtn, modalBackdrop } from "./ui"
+import { findConflicts } from "../services/calendar"
 
 // add / edit a calendar event. matches the compose modal patterns (backdrop,
 // gold primary button, ghost/danger secondaries). all touch targets >= 44px.
@@ -27,7 +28,7 @@ function parseLocal(value) {
   return new Date(y, (mo || 1) - 1, d || 1, h || 0, mi || 0, 0)
 }
 
-export default function EventModal({ initial, calendars = [], onSave, onDelete, onClose }) {
+export default function EventModal({ initial, calendars = [], events = [], userEmail, onSave, onDelete, onClose }) {
   const editing = !!initial?.id
   const [title, setTitle] = useState(initial?.title || "")
   const [description, setDescription] = useState(initial?.description || "")
@@ -39,8 +40,13 @@ export default function EventModal({ initial, calendars = [], onSave, onDelete, 
   const [freq, setFreq] = useState(initial?.recurrence?.freq || "none")
   const [interval, setIntervalVal] = useState(initial?.recurrence?.interval || 1)
   const [reminder, setReminder] = useState(initial?.reminderMinutes == null ? "none" : String(initial.reminderMinutes))
+  const [attendees, setAttendees] = useState((initial?.attendees || []).map((a) => a.email).join(", "))
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState(null)
+
+  // the user's own participant (for rsvp), and self-conflict detection
+  const myParticipant = (initial?.participants || []).find((p) => userEmail && p.email?.toLowerCase() === userEmail.toLowerCase() && !p.owner)
+  const conflicts = findConflicts(start, end, events, initial?.id).length
 
   async function save() {
     if (!title.trim()) {
@@ -58,12 +64,20 @@ export default function EventModal({ initial, calendars = [], onSave, onDelete, 
         id: initial?.id, title: title.trim(), description, location, allDay, start, end, calendarId,
         recurrence: { freq, interval: Number(interval) || 1 },
         reminderMinutes: reminder === "none" ? "none" : Number(reminder),
+        organizer: userEmail,
+        attendees: attendees.split(",").map((s) => s.trim()).filter(Boolean),
       })
       onClose()
     } catch (e) {
       setErr(String(e.message || e))
       setBusy(false)
     }
+  }
+
+  async function rsvp(status) {
+    setBusy(true); setErr(null)
+    try { await onSave({ id: initial.id, myParticipantId: myParticipant.id, myStatus: status }); onClose() }
+    catch (e) { setErr(String(e.message || e)); setBusy(false) }
   }
 
   async function remove() {
@@ -175,6 +189,28 @@ export default function EventModal({ initial, calendars = [], onSave, onDelete, 
               <option value="1440">1 day before</option>
             </select>
           </div>
+
+          {/* attendees / invitations */}
+          <div>
+            <label className="mb-1 block text-xs text-text-info lowercase">attendees (comma-separated emails)</label>
+            <input className={inputClass(false)} value={attendees} onChange={(e) => setAttendees(e.target.value)} placeholder="a@x.co, b@y.co" />
+            <p className="mt-1 text-[11px] text-text-info lowercase">invitations are emailed to attendees by the server.</p>
+          </div>
+
+          {conflicts > 0 && (
+            <p className="text-xs text-sky lowercase">⚠ overlaps {conflicts} other event{conflicts === 1 ? "" : "s"} on your calendar</p>
+          )}
+
+          {myParticipant && (
+            <div className="rounded-lg border border-pkm-500 p-2">
+              <p className="mb-1.5 text-xs text-text-info lowercase">you're invited — current response: <span className="text-text-primary">{myParticipant.status}</span></p>
+              <div className="flex gap-2">
+                <button type="button" onClick={() => rsvp("accepted")} disabled={busy} className="rounded-md border border-gold px-3 py-1.5 text-xs text-gold transition hover:bg-gold-dim lowercase">accept</button>
+                <button type="button" onClick={() => rsvp("tentative")} disabled={busy} className="rounded-md border border-sky px-3 py-1.5 text-xs text-sky transition hover:bg-sky-dim lowercase">maybe</button>
+                <button type="button" onClick={() => rsvp("declined")} disabled={busy} className="rounded-md border border-danger-border px-3 py-1.5 text-xs text-danger transition hover:bg-danger-dim lowercase">decline</button>
+              </div>
+            </div>
+          )}
 
           {err && <p className="text-xs text-danger lowercase">{err}</p>}
         </div>
