@@ -4,6 +4,8 @@
 const MAIL = "urn:ietf:params:jmap:mail"
 const SUBMISSION = "urn:ietf:params:jmap:submission"
 const CORE = "urn:ietf:params:jmap:core"
+const SIEVE = "urn:ietf:params:jmap:sieve"
+const CONTACTS = "urn:ietf:params:jmap:contacts"
 
 let _session = null
 
@@ -221,4 +223,112 @@ export async function sendEmail(authHeader, { from, to, subject, text }) {
     sub?.notCreated?.send?.type ||
     "send failed"
   throw new Error(err)
+}
+
+// ── contacts (jmap contacts / jscontact) ─────────────────────────────────────
+export async function listAddressBooks(authHeader) {
+  const session = await getSession(authHeader)
+  const acc = accountId(session)
+  const r = await call(authHeader, session, [["AddressBook/get", { accountId: acc, ids: null }, "0"]], [CORE, CONTACTS])
+  return r[0]?.[1]?.list || []
+}
+
+export async function listContacts(authHeader, limit = 500) {
+  const session = await getSession(authHeader)
+  const acc = accountId(session)
+  const responses = await call(authHeader, session, [
+    ["ContactCard/query", { accountId: acc, sort: [{ property: "name/surname" }], limit }, "0"],
+    ["ContactCard/get", { accountId: acc, "#ids": { resultOf: "0", name: "ContactCard/query", path: "/ids" } }, "1"],
+  ], [CORE, CONTACTS])
+  return responses.find((r) => r[0] === "ContactCard/get")?.[1]?.list || []
+}
+
+// create or update a ContactCard. `card` is a jscontact object; pass id to update.
+export async function saveContact(authHeader, card, id) {
+  const session = await getSession(authHeader)
+  const acc = accountId(session)
+  const op = id ? { update: { [id]: card } } : { create: { c: card } }
+  const responses = await call(authHeader, session, [["ContactCard/set", { accountId: acc, ...op }, "0"]], [CORE, CONTACTS])
+  const r = responses[0]?.[1]
+  const failed = r?.notCreated?.c || (id && r?.notUpdated?.[id])
+  if (failed) throw new Error(failed.description || failed.type || "contact save failed")
+  return id ? { id, ...card } : { id: r?.created?.c?.id, ...r?.created?.c, ...card }
+}
+
+export async function deleteContact(authHeader, id) {
+  const session = await getSession(authHeader)
+  const acc = accountId(session)
+  const responses = await call(authHeader, session, [["ContactCard/set", { accountId: acc, destroy: [id] }, "0"]], [CORE, CONTACTS])
+  const r = responses[0]?.[1]
+  if (r?.notDestroyed?.[id]) throw new Error(r.notDestroyed[id].description || "contact delete failed")
+  return true
+}
+
+// list sending identities (the "from" addresses available to compose)
+export async function listIdentities(authHeader) {
+  const session = await getSession(authHeader)
+  const acc = accountId(session)
+  const responses = await call(authHeader, session,
+    [["Identity/get", { accountId: acc, ids: null }, "0"]], [CORE, MAIL, SUBMISSION])
+  return responses[0]?.[1]?.list || []
+}
+
+// ── advanced / full-text search ──────────────────────────────────────────────
+// `filter` is a jmap Email FilterCondition/FilterOperator (e.g.
+// { operator:"AND", conditions:[{ from:"x" },{ hasAttachment:true }] }).
+// returns matching emails (envelope props), newest first.
+export async function searchEmails(authHeader, filter, limit = 50) {
+  const session = await getSession(authHeader)
+  const acc = accountId(session)
+  if (!acc) throw new Error("no mail account")
+  const responses = await call(authHeader, session, [
+    ["Email/query", { accountId: acc, filter, sort: [{ property: "receivedAt", isAscending: false }], limit }, "0"],
+    ["Email/get", {
+      accountId: acc,
+      "#ids": { resultOf: "0", name: "Email/query", path: "/ids" },
+      properties: ["id", "threadId", "from", "subject", "preview", "receivedAt", "keywords", "hasAttachment"],
+    }, "1"],
+  ])
+  return responses.find((r) => r[0] === "Email/get")?.[1]?.list || []
+}
+
+// ── sieve scripts (filters + vacation) ───────────────────────────────────────
+function uploadUrl(session, acc) {
+  return (session.uploadUrl || "/jmap/upload/{accountId}/").replace("{accountId}", encodeURIComponent(acc))
+}
+
+export async function listSieveScripts(authHeader) {
+  const session = await getSession(authHeader)
+  const acc = accountId(session)
+  const responses = await call(authHeader, session, [
+    ["SieveScript/query", { accountId: acc }, "0"],
+    ["SieveScript/get", {
+      accountId: acc,
+      "#ids": { resultOf: "0", name: "SieveScript/query", path: "/ids" },
+      properties: ["id", "name", "isActive"],
+    }, "1"],
+  ], [CORE, SIEVE])
+  return responses.find((r) => r[0] === "SieveScript/get")?.[1]?.list || []
+}
+
+// upload the script text as a blob, then create-or-update the named script and
+// activate it. returns the SieveScript/set response.
+export async function saveSieveScript(authHeader, { name = "filters", content, scriptId }) {
+  const session = await getSession(authHeader)
+  const acc = accountId(session)
+  const up = await fetch(uploadUrl(session, acc), {
+    method: "POST",
+    headers: { "Content-Type": "application/sieve", Authorization: authHeader },
+    body: content,
+  })
+  if (!up.ok) throw new Error(`sieve upload ${up.status}`)
+  const { blobId } = await up.json()
+  const op = scriptId
+    ? { update: { [scriptId]: { blobId } }, onSuccessActivateScript: scriptId }
+    : { create: { s: { name, blobId } }, onSuccessActivateScript: "#s" }
+  const responses = await call(authHeader, session, [["SieveScript/set", { accountId: acc, ...op }, "0"]], [CORE, SIEVE])
+  const r = responses.find((x) => x[0] === "SieveScript/set")?.[1]
+  const failed = r?.notCreated?.s || (scriptId && r?.notUpdated?.[scriptId])
+  if (failed) throw new Error(failed.description || failed.type || "sieve save failed")
+  return r
 }
