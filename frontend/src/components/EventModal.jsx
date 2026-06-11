@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { inputClass, goldBtn, ghostBtn, dangerBtn, modalBackdrop } from "./ui"
 import { findConflicts } from "../services/calendar"
+import { useHistory } from "../hooks/useHistory"
 
 // add / edit a calendar event. matches the compose modal patterns (backdrop,
 // gold primary button, ghost/danger secondaries). all touch targets >= 44px.
@@ -31,7 +32,7 @@ function parseLocal(value) {
 export default function EventModal({ initial, calendars = [], events = [], userEmail, onSave, onDelete, onClose }) {
   const editing = !!initial?.id
   const [title, setTitle] = useState(initial?.title || "")
-  const [description, setDescription] = useState(initial?.description || "")
+  const description = useHistory(initial?.description || "")
   const [location, setLocation] = useState(initial?.location || "")
   const [allDay, setAllDay] = useState(!!initial?.allDay)
   const [start, setStart] = useState(() => initial?.start || new Date())
@@ -61,7 +62,7 @@ export default function EventModal({ initial, calendars = [], events = [], userE
     setErr(null)
     try {
       await onSave({
-        id: initial?.id, title: title.trim(), description, location, allDay, start, end, calendarId,
+        id: initial?.id, title: title.trim(), description: description.value, location, allDay, start, end, calendarId,
         recurrence: { freq, interval: Number(interval) || 1 },
         reminderMinutes: reminder === "none" ? "none" : Number(reminder),
         organizer: userEmail,
@@ -147,7 +148,8 @@ export default function EventModal({ initial, calendars = [], events = [], userE
             onChange={(e) => setLocation(e.target.value)} />
 
           <textarea className={`${inputClass(false)} min-h-[80px] resize-y`} placeholder="notes (optional)"
-            value={description} onChange={(e) => setDescription(e.target.value)} />
+            value={description.value} onChange={(e) => description.set(e.target.value)} onKeyDown={description.onKeyDown}
+            title="⌘/ctrl+z undo · ⇧+⌘/ctrl+z redo" />
 
           {calendars.length > 1 && (
             <select className={inputClass(false)} value={calendarId} onChange={(e) => setCalendarId(e.target.value)}>
