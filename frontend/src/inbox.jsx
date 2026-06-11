@@ -3,6 +3,7 @@ import { listInbox, getEmail, emailText, sendEmail, setKeyword, searchEmails, li
 import { parseSearchQuery } from "./services/search"
 import { useSettings } from "./services/settings"
 import { getTemplates, saveTemplate } from "./services/templates"
+import { useHistory } from "./hooks/useHistory"
 import { ToastProvider, useToast } from "./components/Toast"
 import Layout from "./layout"
 
@@ -26,18 +27,18 @@ function Compose({ authHeader, userEmail, initial, onSend, onClose }) {
   const [from, setFrom] = useState(initial?.from || userEmail || "")
   const [to, setTo] = useState(initial?.to || "")
   const [subject, setSubject] = useState(initial?.subject || "")
-  const [body, setBody] = useState(initial?.body || "")
+  const body = useHistory(initial?.body || "")
   const [err, setErr] = useState(null)
   const [templates, setTemplates] = useState(getTemplates)
 
   function insertTemplate(id) {
     const t = templates.find((x) => x.id === id)
-    if (t) setBody((b) => (b ? `${b}\n\n${t.body}` : t.body))
+    if (t) body.set((b) => (b ? `${b}\n\n${t.body}` : t.body))
   }
   function saveAsTemplate() {
     const name = (window.prompt("template name") || "").trim()
     if (!name) return
-    setTemplates(saveTemplate({ name, body }))
+    setTemplates(saveTemplate({ name, body: body.value }))
   }
 
   // load send-as identities for the "from" selector
@@ -56,7 +57,7 @@ function Compose({ authHeader, userEmail, initial, onSend, onClose }) {
   function submit(e) {
     e.preventDefault()
     if (!to.trim()) { setErr("recipient required"); return }
-    onSend({ from, to, subject, text: body })
+    onSend({ from, to, subject, text: body.value })
     onClose()
   }
 
@@ -82,8 +83,8 @@ function Compose({ authHeader, userEmail, initial, onSend, onClose }) {
           <input type="text" placeholder="subject" value={subject}
             onChange={(e) => setSubject(e.target.value)}
             className="rounded-lg border border-pkm-500 bg-pkm-700 px-3 py-2 text-sm text-text-primary placeholder:text-text-info outline-none transition focus:border-sky lowercase" />
-          <textarea placeholder="message" rows={8} value={body}
-            onChange={(e) => setBody(e.target.value)}
+          <textarea placeholder="message" rows={8} value={body.value}
+            onChange={(e) => body.set(e.target.value)} onKeyDown={body.onKeyDown} title="⌘/ctrl+z undo · ⇧+⌘/ctrl+z redo"
             className="resize-y rounded-lg border border-pkm-500 bg-pkm-700 px-3 py-2 text-sm text-text-primary placeholder:text-text-info outline-none transition focus:border-sky" />
           <div className="flex flex-wrap items-center gap-2">
             <select value="" onChange={(e) => { insertTemplate(e.target.value); e.target.value = "" }}
