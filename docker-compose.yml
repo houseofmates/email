@@ -1,0 +1,41 @@
+services:
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    ports: ["80:80", "443:443"]
+    volumes: ["./Caddyfile:/etc/caddy/Caddyfile", "caddy_data:/data", "caddy_config:/config"]
+    networks: ["email-net"]
+  bridge:
+    build: .
+    container_name: email-bridge
+    restart: unless-stopped
+    environment:
+      - STALWART_URL=http://stalwart:8080
+      - VAULTWARDEN_URL=http://vaultwarden:80
+      - SIMPLELOGIN_URL=http://simplelogin:5000
+    networks: ["email-net"]
+  stalwart:
+    image: stalwartlabs/stalwart:latest
+    container_name: stalwart
+    restart: unless-stopped
+    ports: ["25:25", "465:465", "587:587", "993:993"]
+    volumes: ["./stalwart/config:/etc/stalwart:rw", "./stalwart/data:/var/lib/stalwart"]
+    networks: ["email-net"]
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: vaultwarden
+    restart: unless-stopped
+    networks: ["email-net"]
+  sl-db:
+    image: postgres:12-alpine
+    container_name: sl-db
+    environment: [POSTGRES_USER=simplelogin, POSTGRES_PASSWORD=password, POSTGRES_DB=simplelogin]
+    networks: ["email-net"]
+  simplelogin:
+    image: simplelogin/app-with-postfix:latest
+    container_name: simplelogin
+    networks: ["email-net"]
+    depends_on: ["sl-db"]
+networks: { email-net: { driver: bridge } }
+volumes: { caddy_data: {}, caddy_config: {} }
