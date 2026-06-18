@@ -103,13 +103,13 @@ function SummaryPanel({ authHeader }) {
       {summary && (
         <div className="flex flex-col gap-3">
           <div className="rounded-lg border border-pkm-500 bg-pkm-800 px-4 py-3">
-            <p className="text-xs text-text-info uppercase tracking-wider mb-1 lowercase">summary</p>
+            <p className="text-xs text-text-info tracking-wider mb-1 lowercase">summary</p>
             <p className="text-sm text-text-primary leading-relaxed lowercase">{summary.summary}</p>
           </div>
 
           {summary.priority?.length > 0 && (
             <div className="rounded-lg border border-pkm-500 bg-pkm-800 px-4 py-3">
-              <p className="text-xs text-text-info uppercase tracking-wider mb-2 lowercase">priority items</p>
+              <p className="text-xs text-text-info tracking-wider mb-2 lowercase">priority items</p>
               <ul className="flex flex-col gap-1.5">
                 {summary.priority.map((p, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-text-primary">
@@ -123,7 +123,7 @@ function SummaryPanel({ authHeader }) {
 
           {summary.actionItems?.length > 0 && (
             <div className="rounded-lg border border-pkm-500 bg-pkm-800 px-4 py-3">
-              <p className="text-xs text-text-info uppercase tracking-wider mb-2 lowercase">action items</p>
+              <p className="text-xs text-text-info tracking-wider mb-2 lowercase">action items</p>
               <ul className="flex flex-col gap-1.5">
                 {summary.actionItems.map((a, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-text-primary">
@@ -221,7 +221,7 @@ function SecurityPanel({ authHeader }) {
       {/* reused passwords */}
       {report.reusedPasswords?.length > 0 && (
         <div className="rounded-lg border border-pkm-500 bg-pkm-800 px-4 py-3">
-          <p className="text-xs text-text-info uppercase tracking-wider mb-2 lowercase">
+          <p className="text-xs text-text-info tracking-wider mb-2 lowercase">
             reused passwords ({report.reusedPasswords.length})
           </p>
           <div className="flex flex-col gap-2">
@@ -238,7 +238,7 @@ function SecurityPanel({ authHeader }) {
       {/* breached passwords */}
       {report.breachedPasswords?.length > 0 && (
         <div className="rounded-lg border border-danger/30 bg-danger/10 px-4 py-3">
-          <p className="text-xs text-danger uppercase tracking-wider mb-2 lowercase">
+          <p className="text-xs text-danger tracking-wider mb-2 lowercase">
             breached passwords ({report.breachedPasswords.length})
           </p>
           {report.breachedPasswords.map((b, i) => (
@@ -252,7 +252,7 @@ function SecurityPanel({ authHeader }) {
       {/* LLM recommendations */}
       {report.recommendations && (
         <div className="rounded-lg border border-sky/30 bg-sky/5 px-4 py-3">
-          <p className="text-xs text-sky uppercase tracking-wider mb-1 lowercase">recommendations</p>
+          <p className="text-xs text-sky tracking-wider mb-1 lowercase">recommendations</p>
           <p className="text-xs text-text-primary leading-relaxed whitespace-pre-wrap lowercase">{report.recommendations}</p>
         </div>
       )}

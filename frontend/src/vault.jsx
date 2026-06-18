@@ -428,7 +428,7 @@ export default function Vault({ authHeader, onNavigate, onLogout, userEmail }) {
               <button onClick={() => { openItem(contextMenu.item); setContextMenu(null) }}
                 className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-text-primary transition hover:bg-pkm-700 lowercase">👁 view</button>
               <div className="my-1 border-t border-pkm-500" />
-              <div className="px-3 py-1 text-[10px] text-text-info uppercase tracking-wider lowercase">move to</div>
+              <div className="px-3 py-1 text-[10px] text-text-info tracking-wider lowercase">move to</div>
               {TYPES.filter(t => t.key !== contextMenu.item.type).map(t => (
                 <button key={t.key} onClick={() => { handleRecategorize(contextMenu.item, t.key); setContextMenu(null) }}
                   className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-text-primary transition hover:bg-pkm-700 lowercase">{t.icon} {t.label}</button>
