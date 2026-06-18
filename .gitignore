@@ -10,3 +10,26 @@ sync.sh
 sync.log
 .sync-lock
 .env
+
+# node
+node_modules/
+bridge/node_modules/
+
+# build output
+frontend/dist/
+bridge/dist/
+
+# logs
+*.log
+bridge/bridge.log
+
+# pids
+*.pid
+bridge/bridge.pid
+
+# backups / temp files
+bridge/*.bak*
+bridge/*.backup*
+bridge/*.bak
+bridge/*.swp
+bridge/server.js.bak*

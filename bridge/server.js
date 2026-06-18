@@ -1,7 +1,8 @@
 require('dotenv').config({ path: require('path').resolve(__dirname, '..', '.env') })
 
+const http = require('http')
+const httpProxy = require('http-proxy')
 const express = require('express')
-const { createProxyMiddleware, fixRequestBody } = require('http-proxy-middleware')
 const cors = require('cors')
 const path = require('path')
 
@@ -10,94 +11,92 @@ const PORT = process.env.BRIDGE_PORT || 3099
 
 app.use(cors())
 
-// IMPORTANT: do NOT install a global body parser here.
-//
-// `express.json()` consumes (drains) the request body stream. If it runs before
-// the proxy middlewares below, then any application/json POST that gets proxied
-// (e.g. the JMAP API call to /jmap/, vaultwarden, aliases) is forwarded upstream
-// with an already-consumed body. The upstream then blocks waiting for a body
-// that never arrives, the socket hangs until it times out, and the client sees a
-// 502 (this was the "jmap 502" after ~15s). Body parsing is instead scoped to
-// the local, non-proxied routes that actually read req.body (see jsonParser).
+// IMPORTANT: no global body parser here
 const jsonParser = express.json()
 
-// ── stalwart email proxy ──────────────────────────────────
-// stalwart serves JMAP at /jmap/* and REST API at /api/*
-app.use('/jmap', createProxyMiddleware({
-  target: process.env.STALWART_URL || 'http://localhost:8080',
-  changeOrigin: true,
-  on: { proxyReq: fixRequestBody },
-}))
+// ── proxy: forward to stalwart ──────────────────────────
+const STALWART = process.env.STALWART_URL || 'http://localhost:8080'
+const stalwartProxy = httpProxy.createProxyServer({ changeOrigin: true, proxyTimeout: 30000, timeout: 30000 })
 
-// stalwart management API (auth, account, live, etc.)
-app.use('/api/mail', createProxyMiddleware({
-  target: (process.env.STALWART_URL || 'http://localhost:8080') + '/api',
-  changeOrigin: true,
-  pathRewrite: { '^/api/mail': '' },
-  on: { proxyReq: fixRequestBody },
-}))
-
-// stalwart caldav/carddav (calendar + contacts) — used by the calendar view and
-// reachable by external clients (thunderbird, apple calendar) at /dav/*
-app.use('/dav', createProxyMiddleware({
-  target: process.env.STALWART_URL || 'http://localhost:8080',
-  changeOrigin: true,
-  on: { proxyReq: fixRequestBody },
-}))
-
-// ── vaultwarden proxy ─────────────────────────────────────
-app.use('/api/passwords', createProxyMiddleware({
-  target: process.env.VAULTWARDEN_URL || 'http://localhost:8085',
-  changeOrigin: true,
-  pathRewrite: { '^/api/passwords': '' },
-  on: { proxyReq: fixRequestBody },
-}))
-
-app.use('/identity', createProxyMiddleware({
-  target: process.env.VAULTWARDEN_URL || 'http://localhost:8085',
-  changeOrigin: true,
-  on: { proxyReq: fixRequestBody },
-}))
-
-// ── simplelogin proxy (if configured) ─────────────────────
-app.use('/api/aliases', (req, res, next) => {
-  const slUrl = process.env.SIMPLELOGIN_URL
-  if (slUrl) {
-    return createProxyMiddleware({
-      target: slUrl,
-      changeOrigin: true,
-      on: {
-        proxyReq: (proxyReq, req2, res2) => {
-          if (process.env.SIMPLELOGIN_API_KEY) {
-            proxyReq.setHeader('Authentication', process.env.SIMPLELOGIN_API_KEY)
-          }
-          fixRequestBody(proxyReq, req2, res2)
-        },
-      },
-    })(req, res, next)
+// ── stalwart auth proxy ────────────────────────────────────
+app.post('/api/auth', jsonParser, async (req, res) => {
+  const { type, accountName, accountSecret } = req.body || {}
+  try {
+    const authRes = await fetch(`${STALWART}/api/auth`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, accountName, accountSecret }),
+    })
+    const data = await authRes.json()
+    res.status(authRes.status).json(data)
+  } catch (err) {
+    res.status(502).json({ error: 'auth proxy failed: ' + err.message })
   }
-  // fallback: use stalwart's own alias store at /api/aliases
-  return createProxyMiddleware({
-    target: (process.env.STALWART_URL || 'http://localhost:8080') + '/api',
-    changeOrigin: true,
-    pathRewrite: { '^/api/aliases': '/aliases' },
-    on: { proxyReq: fixRequestBody },
-  })(req, res, next)
 })
 
-// ── proton mail forwarding ────────────────────────────────
-// stores the proton bridge account used to pull mail into the local inbox and
-// exposes a manual sync trigger. credentials are kept in memory only (and in the
-// configured env for restart persistence); they are never returned to the client.
-//
-// note: for *outgoing* mail to appear as sent from a proton alias, stalwart's
-// smtp sender / identity must also be configured for that address — forwarding
-// here only covers the inbound pull.
+app.use('/jmap', (req, res) => {
+  req.url = req.originalUrl
+  stalwartProxy.web(req, res, { target: STALWART })
+})
+
+app.use('/api/mail', (req, res) => {
+  req.url = req.originalUrl.replace(/^\/api\/mail/, '/api')
+  stalwartProxy.web(req, res, { target: STALWART })
+})
+
+app.use('/dav', (req, res) => {
+  req.url = req.originalUrl
+  stalwartProxy.web(req, res, { target: STALWART })
+})
+
+// ── vaultwarden proxy ───────────────────────────────────
+const VAULTWARDEN = process.env.VAULTWARDEN_URL || 'http://localhost:8085'
+const vwProxy = httpProxy.createProxyServer({ changeOrigin: true })
+
+app.use('/api/passwords', (req, res) => {
+  req.url = req.originalUrl.replace(/^\/api\/passwords/, '')
+  vwProxy.web(req, res, { target: VAULTWARDEN })
+})
+
+app.use('/identity', (req, res) => {
+  req.url = req.originalUrl
+  vwProxy.web(req, res, { target: VAULTWARDEN })
+})
+
+// ── aliases: serve from vault data store ─────────────────
+app.use('/api/aliases', (req, res, next) => {
+  const slUrl = process.env.SIMPLELOGIN_URL
+  if (slUrl && (slUrl.startsWith('http://') || slUrl.startsWith('https://'))) {
+    const proxy = httpProxy.createProxyServer({ changeOrigin: true })
+    // remap /api/aliases to simplelogin /api/v2/aliases
+    req.url = req.originalUrl.replace(/^\/api\/aliases/, '/api/v2/aliases')
+    if (process.env.SIMPLELOGIN_API_KEY) {
+      req.headers['Authentication'] = process.env.SIMPLELOGIN_API_KEY
+    }
+    return proxy.web(req, res, { target: slUrl })
+  }
+  const vaultRouter = require('./src/vault')
+  const aliases = vaultRouter.loadVault().filter(i => i.type === 'alias').map(vaultRouter.sanitize)
+  const id = req.path.slice(1)
+  if (id) {
+    const item = aliases.find(a => a.id === id)
+    return item ? res.json(item) : res.status(404).json({ error: 'not found' })
+  }
+  res.json(aliases)
+})
+
+// ── vault API ─────────────────────────────────────────────
+const vaultRouter = require('./src/vault')
+app.use('/api/vault', vaultRouter.router)
+
+// ── proton mail forwarding (IMAP bridge) ──────────────────
 const protonState = {
   email: process.env.PROTON_EMAIL || null,
   password: process.env.PROTON_PASSWORD || null,
   enabled: process.env.PROTON_FORWARDING === '1',
   lastSync: null,
+  twoFactorPending: false,
+  sessionId: null,
 }
 
 app.get('/api/forwarding/status', (req, res) => {
@@ -106,18 +105,43 @@ app.get('/api/forwarding/status', (req, res) => {
     enabled: protonState.enabled,
     lastSync: protonState.lastSync,
     configured: !!(protonState.email && protonState.password),
+    twoFactorPending: protonState.twoFactorPending,
   })
 })
 
 app.post('/api/forwarding/proton-login', jsonParser, (req, res) => {
-  const { email, password, enabled } = req.body || {}
+  const { email, password, enabled, twoFactorCode } = req.body || {}
   if (!email || !password) {
     return res.status(400).json({ error: 'email and password required' })
   }
   protonState.email = email
   protonState.password = password
   protonState.enabled = enabled !== false
-  res.json({ ok: true, email: protonState.email, enabled: protonState.enabled })
+
+  const Imap = require('imap')
+  const pw = twoFactorCode ? password + ':' + twoFactorCode : password
+  const imap = new Imap({
+    user: email,
+    password: pw,
+    host: '127.0.0.1',
+    port: 1143,
+    tls: false,
+  })
+  imap.once('ready', () => {
+    imap.end()
+    protonState.twoFactorPending = false
+    res.json({ ok: true, email, enabled: enabled !== false })
+  })
+  imap.once('error', (err) => {
+    const msg = err.message || ''
+    if (msg.toLowerCase().includes('2fa') || msg.toLowerCase().includes('two factor') || msg.toLowerCase().includes('authentication failed')) {
+      protonState.twoFactorPending = true
+      res.json({ ok: false, twoFactorPending: true, error: '2FA code required' })
+    } else {
+      res.status(400).json({ ok: false, error: msg })
+    }
+  })
+  imap.connect()
 })
 
 app.post('/api/forwarding/proton-sync', jsonParser, async (req, res) => {
@@ -128,37 +152,60 @@ app.post('/api/forwarding/proton-sync', jsonParser, async (req, res) => {
     return res.status(409).json({ error: 'forwarding disabled' })
   }
   try {
-    // the actual pull is performed by the proton-bridge sidecar (configured out
-    // of band); this endpoint kicks it and records the timestamp. wire the real
-    // bridge call here when the sidecar url is provided via PROTON_BRIDGE_URL.
-    const bridgeUrl = process.env.PROTON_BRIDGE_URL
-    let synced = 0
-    if (bridgeUrl) {
-      const r = await fetch(`${bridgeUrl}/sync`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: protonState.email }),
-      })
-      const data = await r.json().catch(() => ({}))
-      synced = data.synced || 0
-    }
-    protonState.lastSync = new Date().toISOString()
-    res.json({ ok: true, synced, lastSync: protonState.lastSync })
+    const { spawn } = require('child_process')
+    const config = JSON.stringify({
+      bridgeHost: '127.0.0.1',
+      bridgePort: 1143,
+      username: protonState.email,
+      password: protonState.password,
+      forwardTo: 'admin@houseofmates.space',
+      stalwartPassword: process.env.STALWART_ADMIN_PASSWORD || 'DSAzOWnlQdE18VMc',
+      addresses: ['admin@houseofmates.space'],
+    })
+    const child = spawn('node', [require('path').resolve(__dirname, 'proton-sync.js'), config], {
+      cwd: __dirname,
+      stdio: ['ignore', 'pipe', 'pipe'],
+      timeout: 120000,
+    })
+    let out = ''
+    let errOut = ''
+    child.stdout.on('data', c => out += c)
+    child.stderr.on('data', c => errOut += c)
+    child.on('close', (code) => {
+      protonState.lastSync = new Date().toISOString()
+      if (code === 0) {
+        res.json({ ok: true, synced: 1, lastSync: protonState.lastSync, output: out.trim() })
+      } else {
+        res.status(500).json({ error: 'sync failed: ' + (errOut || out).trim() })
+      }
+    })
   } catch (err) {
     res.status(502).json({ error: String(err.message || err) })
   }
 })
 
+// ── AI suite routes ─────────────────────────────────────────
+const aiRoutes = require('./src/ai-routes')
+app.use('/api', aiRoutes)
+
 // ── serve frontend static build ───────────────────────────
 const frontendDist = path.resolve(__dirname, '..', 'frontend', 'dist')
 app.use(express.static(frontendDist))
 
-// SPA fallback middleware - handle all non-API routes by serving index.html
+// SPA fallback
 app.use(function(req, res, next) {
   if (req.path.startsWith('/api/') || req.path.startsWith('/jmap/') || req.path.startsWith('/identity/') || req.path.startsWith('/dav/')) {
     return res.status(404).send('not found')
   }
   res.sendFile(path.join(frontendDist, 'index.html'))
+})
+
+// error handling
+app.use((err, req, res, next) => {
+  console.error('bridge error:', err.stack || err.message)
+  if (!res.headersSent) {
+    res.status(502).json({ error: 'bridge error: ' + err.message })
+  }
 })
 
 app.listen(PORT, () => {

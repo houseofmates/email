@@ -1,5 +1,5 @@
 [Unit]
-Description=email unified bridge
+Description=email unified bridge (houseofmates)
 After=network.target
 
 [Service]

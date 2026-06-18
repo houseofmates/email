@@ -14,35 +14,20 @@ export default function Login({ onLogin }) {
 
     // authenticate via stalwart
     try {
-      const res = await fetch("/api/auth", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type: "authCode",
-          accountName: email.trim(),
-          accountSecret: password,
-          clientId: "webadmin",
-        }),
+      const header = "Basic " + btoa(`${email.trim()}:${password}`)
+      const res = await fetch("/jmap/session", {
+        headers: { Authorization: header },
       })
 
       if (!res.ok) {
         const body = await res.json().catch(() => ({}))
-        throw new Error(body?.description || body?.error || `http ${res.status}`)
+        throw new Error(body?.detail || body?.title || `http ${res.status}`)
       }
 
-      const data = await res.json()
-
-      if (data.type === "authenticated") {
-        onLogin?.({ email: email.trim(), password })
-      } else if (data.type === "mfaRequired") {
-        setStatus({ kind: "err", msg: "mfa required — not supported yet" })
-      } else {
-        setStatus({ kind: "err", msg: "authentication failed" })
-      }
-    } catch (err) {
-      // fallback: just store creds directly (stalwart may not be running)
-      // the JMAP calls will fail if auth is wrong, which is fine
+      await res.json()
       onLogin?.({ email: email.trim(), password })
+    } catch (err) {
+      setStatus({ kind: "err", msg: err.message })
     } finally {
       setLoading(false)
     }

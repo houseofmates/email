@@ -76,7 +76,7 @@ function accountId(session) {
 /** low-level jmap request; returns the methodResponses array. */
 async function call(methodCalls, using = [CORE, MAIL]) {
   const session = await getSession()
-  const res = await fetch(session.apiUrl, {
+  const res = await fetch("/jmap/", {
     method: "POST",
     credentials: "same-origin",
     headers: {

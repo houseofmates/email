@@ -1,5 +1,21 @@
 import { useState, useEffect } from "react"
 import Layout from "./layout"
+import {
+  DndContext,
+  PointerSensor,
+  KeyboardSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core"
+import {
+  SortableContext,
+  arrayMove,
+  rectSortingStrategy,
+  useSortable,
+  sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 
 export function generatePassword(len = 20) {
   const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*-_"
@@ -19,6 +35,58 @@ const inputClass = (err) =>
     err ? "border-danger focus:border-danger focus:ring-danger" : "border-pkm-500 focus:border-gold focus:ring-gold"
   }`
 
+function PasswordsItem({ item, revealed, onToggleReveal, onCopy, onEdit, onDelete, onPin, pinned }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id })
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : 1,
+    position: "relative",
+    zIndex: isDragging ? 10 : "auto",
+  }
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="px-4 py-3 transition hover:bg-pkm-700/50">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <p className="text-sm text-text-primary lowercase truncate">{item.site}</p>
+          <p className="text-xs text-text-info lowercase truncate">{item.username}</p>
+          <div className="mt-1 flex items-center gap-2">
+            <span className="font-mono text-xs text-text-info">
+              {revealed[item.id] ? item.password : "\u2022".repeat(Math.min(item.password?.length || 0, 16))}
+            </span>
+            <button onClick={(e) => { e.stopPropagation(); onToggleReveal(item.id) }}
+              className="text-xs text-sky underline lowercase">
+              {revealed[item.id] ? "hide" : "show"}
+            </button>
+            <button onClick={(e) => { e.stopPropagation(); onCopy(item.password) }}
+              className="text-xs text-sky underline lowercase">
+              copy
+            </button>
+          </div>
+          {item.notes && <p className="mt-0.5 text-xs text-text-info lowercase">{item.notes}</p>}
+        </div>
+        <div className="flex shrink-0 gap-1">
+          <button onClick={(e) => { e.stopPropagation(); onPin(item.id) }}
+            className={`rounded-md border px-2 py-1 text-xs transition active:scale-[0.98] lowercase ${
+              pinned ? "border-gold text-gold bg-gold/10" : "border-pkm-500 text-text-info hover:border-gold hover:text-gold"
+            }`}>
+            {pinned ? "pinned" : "pin"}
+          </button>
+          <button onClick={(e) => { e.stopPropagation(); onEdit(item) }}
+            className="rounded-md border border-pkm-500 px-2 py-1 text-xs text-text-info transition hover:border-sky hover:text-sky active:scale-[0.98] lowercase">
+            edit
+          </button>
+          <button onClick={(e) => { e.stopPropagation(); onDelete(item.id) }}
+            className="rounded-md border border-danger-border px-2 py-1 text-xs text-danger transition hover:bg-danger-dim active:scale-[0.98] lowercase">
+            delete
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function Passwords({ authHeader, onNavigate, onLogout, userEmail }) {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
@@ -32,8 +100,28 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
   const [confirmDelete, setConfirmDelete] = useState(null)
   const [deleting, setDeleting] = useState(false)
   const [revealed, setRevealed] = useState({})
+  const [pinned, setPinned] = useState(() => {
+    try {
+      const saved = localStorage.getItem("email_pinned_passwords")
+      return saved ? JSON.parse(saved) : []
+    } catch { return [] }
+  })
 
   useEffect(() => { load() }, [])
+
+  useEffect(() => {
+    try { localStorage.setItem("email_pinned_passwords", JSON.stringify(pinned)) }
+    catch { /* storage fail */ }
+  }, [pinned])
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
 
   async function load() {
     setLoading(true)
@@ -102,6 +190,7 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
       const res = await fetch(`/api/aliases/${id}`, { method: "DELETE", headers: { Authorization: authHeader } })
       if (!res.ok) throw new Error("failed to delete")
       setItems((prev) => prev.filter((c) => c.id !== id))
+      setPinned((prev) => prev.filter((pid) => pid !== id))
       setConfirmDelete(null)
     } catch (err) { setError(err.message) }
     finally { setDeleting(false) }
@@ -115,7 +204,28 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
     navigator.clipboard?.writeText(pw)
   }
 
-  const filtered = items.filter((c) => {
+  function togglePin(id) {
+    setPinned((prev) => prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id])
+  }
+
+  function handleDragEnd(event) {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+    setItems((prev) => {
+      const oldIndex = prev.findIndex((i) => i.id === active.id)
+      const newIndex = prev.findIndex((i) => i.id === over.id)
+      return arrayMove(prev, oldIndex, newIndex)
+    })
+  }
+
+  const sortedItems = [...items].sort((a, b) => {
+    const aPinned = pinned.includes(a.id) ? 0 : 1
+    const bPinned = pinned.includes(b.id) ? 0 : 1
+    if (aPinned !== bPinned) return aPinned - bPinned
+    return (a.site || "").localeCompare(b.site || "")
+  })
+
+  const filtered = sortedItems.filter((c) => {
     const q = query.trim().toLowerCase()
     if (!q) return true
     return c.site.toLowerCase().includes(q) || c.username.toLowerCase().includes(q) || c.url.toLowerCase().includes(q)
@@ -156,42 +266,18 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
               <p className="text-sm text-text-info lowercase">{query ? "no matches" : "no passwords yet"}</p>
             </div>
           ) : (
-            <div className="divide-y divide-pkm-500">
-              {filtered.map((c) => (
-                <div key={c.id} className="px-4 py-3 transition hover:bg-pkm-700/50">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm text-text-primary lowercase truncate">{c.site}</p>
-                      <p className="text-xs text-text-info lowercase truncate">{c.username}</p>
-                      <div className="mt-1 flex items-center gap-2">
-                        <span className="font-mono text-xs text-text-info">
-                          {revealed[c.id] ? c.password : "•".repeat(Math.min(c.password?.length || 0, 16))}
-                        </span>
-                        <button onClick={() => toggleReveal(c.id)}
-                          className="text-xs text-sky underline lowercase">
-                          {revealed[c.id] ? "hide" : "show"}
-                        </button>
-                        <button onClick={() => copyPassword(c.password)}
-                          className="text-xs text-sky underline lowercase">
-                          copy
-                        </button>
-                      </div>
-                      {c.notes && <p className="mt-0.5 text-xs text-text-info lowercase">{c.notes}</p>}
-                    </div>
-                    <div className="flex shrink-0 gap-1">
-                      <button onClick={() => { setEditing(c); setForm({ site: c.site, url: c.url, username: c.username, password: "", notes: c.notes }); setFormErrors({}); setShowForm(true) }}
-                        className="rounded-md border border-pkm-500 px-2 py-1 text-xs text-text-info transition hover:border-sky hover:text-sky active:scale-[0.98] lowercase">
-                        edit
-                      </button>
-                      <button onClick={() => setConfirmDelete(c.id)}
-                        className="rounded-md border border-danger-border px-2 py-1 text-xs text-danger transition hover:bg-danger-dim active:scale-[0.98] lowercase">
-                        delete
-                      </button>
-                    </div>
-                  </div>
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+              <SortableContext items={filtered.map((c) => c.id)} strategy={rectSortingStrategy}>
+                <div className="divide-y divide-pkm-500">
+                  {filtered.map((c) => (
+                    <PasswordsItem key={c.id} item={c} revealed={revealed} pinned={pinned.includes(c.id)}
+                      onToggleReveal={toggleReveal} onCopy={copyPassword} onPin={togglePin}
+                      onEdit={(item) => { setEditing(item); setForm({ site: item.site, url: item.url, username: item.username, password: "", notes: item.notes }); setFormErrors({}); setShowForm(true) }}
+                      onDelete={(id) => setConfirmDelete(id)} />
+                  ))}
                 </div>
-              ))}
-            </div>
+              </SortableContext>
+            </DndContext>
           )}
         </div>
       </div>
