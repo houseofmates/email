@@ -8,6 +8,9 @@ const { exportCredentialsForAnalysis } = require('./vault-warden-api')
 
 // ── password strength heuristics (local, no network needed) ─
 
+// in-memory cache for vault reports (5 min TTL)
+const reportCache = { data: null, time: 0, TTL: 5 * 60 * 1000 }
+
 function analyzePasswordStrength(password) {
   if (!password) return { score: 0, label: 'missing', issues: ['no password set'] }
 
@@ -105,6 +108,11 @@ async function checkHIBP(password) {
  * @returns {Promise<object>}
  */
 async function generateSecurityReport() {
+  // check cache first
+  if (reportCache.data && (Date.now() - reportCache.time) < reportCache.TTL) {
+    return reportCache.data
+  }
+
   // try vaultwarden admin API first, fall back to local vault
   let logins = []
   let passwordAnalyses = []
@@ -189,7 +197,7 @@ Keep recommendations practical and ordered by priority.`,
       )
     : 100
 
-  return {
+  const result = {
     overallScore,
     totalLogins: logins.length,
     passwordStats: {
@@ -211,6 +219,12 @@ Keep recommendations practical and ordered by priority.`,
     recommendations,
     generated: new Date().toISOString(),
   }
+
+  // populate cache
+  reportCache.data = result
+  reportCache.time = Date.now()
+
+  return result
 }
 
 module.exports = { generateSecurityReport, analyzePasswordStrength, checkHIBP }
