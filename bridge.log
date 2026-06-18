@@ -1,0 +1,3 @@
+email bridge running on http://localhost:3099
+Error: ENOENT: no such file or directory, stat '/app/frontend/dist/index.html'
+Error: ENOENT: no such file or directory, stat '/app/frontend/dist/index.html'
