@@ -7,13 +7,12 @@ const axios = require('axios')
 
 const BASE_URL = 'https://integrate.api.nvidia.com/v1'
 const MODEL = 'deepseek-ai/deepseek-v4-flash'
-const TIMEOUT_MS = 30000
+const TIMEOUT_MS = parseInt(process.env.AI_TIMEOUT_MS, 10) || 30000
 
 class NvidiaNIMClient {
   constructor() {
     this.keys = []
     this.index = 0
-    this.lock = false // simple mutex for atomic rotation
 
     // collect all NVIDIA_API_KEY_{N} from env
     for (let i = 1; ; i++) {
@@ -40,20 +39,10 @@ class NvidiaNIMClient {
     })
   }
 
-  // thread-safe (as safe as node single-threaded + async can be) key rotation
+  // atomic key rotation — no lock needed, JS number ops are single-threaded
   _nextKey() {
-    // atomic — wait until we can acquire
-    while (this.lock) {
-      // yield control — in practice node's event loop handles this
-    }
-    this.lock = true
-    try {
-      const key = this.keys[this.index % this.keys.length]
-      this.index++
-      return key
-    } finally {
-      this.lock = false
-    }
+    const idx = this.index++ % this.keys.length
+    return this.keys[idx]
   }
 
   // attempt an LLM call, rotating keys on 429
@@ -87,7 +76,10 @@ class NvidiaNIMClient {
         })
         // mask key for logging
         const masked = apiKey.slice(0, 6) + '...' + apiKey.slice(-4)
-        console.log(`[ai-client] key[${keyIndex}] (${masked}) — 200`)
+        const usage = res.data?.usage || {}
+        console.log(
+          `[ai] model=${MODEL} key=${keyIndex} prompt_tokens=${usage.prompt_tokens || '?'} completion_tokens=${usage.completion_tokens || '?'} — 200`
+        )
 
         const choice = res.data?.choices?.[0]
         if (!choice) throw new Error('empty response from nvidia')
@@ -100,11 +92,11 @@ class NvidiaNIMClient {
       } catch (err) {
         const status = err.response?.status
         const masked = apiKey.slice(0, 6) + '...' + apiKey.slice(-4)
-        console.log(`[ai-client] key[${keyIndex}] (${masked}) — ${status || 'network error'}`)
+        console.log(`[ai] key=${keyIndex} ${status || 'network error'}`)
 
         if (status === 429) {
           // rate-limited → rotate to next key and retry
-          console.log('[ai-client] 429 detected — rotating to next key')
+          console.log('[ai] 429 detected — rotating to next key')
           continue
         }
 

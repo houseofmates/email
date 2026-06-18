@@ -1,5 +1,31 @@
-import { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import Layout from "./layout"
+
+// ── error boundary ───────────────────────────────────────────
+class AIErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { error: null }
+  }
+  static getDerivedStateFromError(error) {
+    return { error }
+  }
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="rounded-lg border border-danger/30 bg-danger/10 px-4 py-3 m-4">
+          <p className="text-sm text-danger lowercase">something went wrong in this section</p>
+          <p className="mt-1 text-xs text-text-info lowercase">{this.state.error.message}</p>
+          <button onClick={() => this.setState({ error: null })}
+            className="mt-2 rounded-md border border-pkm-500 px-3 py-1 text-xs text-text-info hover:border-sky lowercase">
+            retry
+          </button>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
 
 function clamp(v, min, max) { return Math.max(min, Math.min(max, v)) }
 
@@ -329,6 +355,12 @@ function UnifiedChat({ authHeader }) {
         <input type="text" value={input} onChange={e => setInput(e.target.value)}
           placeholder="ask anything..."
           disabled={sending}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+              e.preventDefault()
+              send(e)
+            }
+          }}
           className="flex-1 rounded-lg border border-pkm-500 bg-pkm-700 px-3 py-2 text-sm text-text-primary placeholder:text-text-info outline-none transition focus:border-gold lowercase" />
         <button type="submit" disabled={sending || !input.trim()}
           className="rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-pkm-900 transition hover:brightness-110 active:scale-[0.98] disabled:opacity-50 lowercase">
@@ -382,6 +414,12 @@ function DraftPanel() {
         <label className="mb-1 block text-xs text-text-info lowercase">email thread context</label>
         <textarea value={thread} onChange={e => setThread(e.target.value)} rows={6}
           placeholder="paste the email thread you want to reply to..."
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+              e.preventDefault()
+              generate()
+            }
+          }}
           className="w-full rounded-lg border border-pkm-500 bg-pkm-700 px-3 py-2 text-sm text-text-primary placeholder:text-text-info outline-none transition focus:border-gold resize-y lowercase" />
       </div>
 
@@ -456,10 +494,10 @@ export default function AIPage({ authHeader, onNavigate, onLogout, userEmail }) 
 
         {/* content */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6">
-          {tab === "chat" && <UnifiedChat authHeader={authHeader} />}
-          {tab === "summary" && <SummaryPanel authHeader={authHeader} />}
-          {tab === "security" && <SecurityPanel authHeader={authHeader} />}
-          {tab === "draft" && <DraftPanel />}
+          {tab === "chat" && <AIErrorBoundary><UnifiedChat authHeader={authHeader} /></AIErrorBoundary>}
+          {tab === "summary" && <AIErrorBoundary><SummaryPanel authHeader={authHeader} /></AIErrorBoundary>}
+          {tab === "security" && <AIErrorBoundary><SecurityPanel authHeader={authHeader} /></AIErrorBoundary>}
+          {tab === "draft" && <AIErrorBoundary><DraftPanel /></AIErrorBoundary>}
         </div>
       </div>
     </Layout>
