@@ -1,5 +1,21 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import Layout from "./layout"
+import {
+  DndContext,
+  PointerSensor,
+  KeyboardSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core"
+import {
+  SortableContext,
+  arrayMove,
+  rectSortingStrategy,
+  useSortable,
+  sortableKeyboardCoordinates,
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
 
 const TYPES = [
   { key: "login",    label: "logins",   icon: "🔑" },
@@ -91,6 +107,51 @@ function ImportJSON({ onImport, authHeader }) {
   )
 }
 
+function VaultCard({ item, revealed, pinned, onToggleReveal, onCopy, onEdit, onDelete, onPin, onContextMenu }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id })
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : 1,
+    zIndex: isDragging ? 10 : "auto",
+  }
+
+  const fields = TYPE_FIELDS[item.type] || []
+  const first = fields[0]
+  const second = fields.find(f => f.k !== first?.k && !f.sensitive)
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}
+      className="border rounded-lg border-pkm-500 bg-pkm-800 px-4 py-3 transition hover:bg-pkm-700/50 hover:border-gold cursor-pointer"
+      onClick={() => { onEdit(item) }}
+      onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); onContextMenu(item, e.clientX, e.clientY) }}>
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <span className="mr-1.5 text-xs">{TYPE_ICONS[item.type] || "📄"}</span>
+          <p className="inline text-sm text-text-primary lowercase truncate">{item[first?.k] || "untitled"}</p>
+          {second && <p className="text-xs text-text-info lowercase truncate mt-0.5">{item[second.k]}</p>}
+        </div>
+        <div className="flex shrink-0 gap-1">
+          <button onClick={(e) => { e.stopPropagation(); onPin(item.id) }}
+            className={`rounded-md border px-2 py-1 text-xs transition active:scale-[0.98] lowercase ${
+              pinned ? "border-gold text-gold bg-gold/10" : "border-pkm-500 text-text-info hover:border-gold hover:text-gold"
+            }`}>
+            📌
+          </button>
+          <button onClick={(e) => { e.stopPropagation(); onEdit(item) }}
+            className="rounded-md border border-pkm-500 px-2 py-1 text-xs text-text-info transition hover:border-sky hover:text-sky active:scale-[0.98] lowercase">
+            edit
+          </button>
+          <button onClick={(e) => { e.stopPropagation(); onDelete(item.id) }}
+            className="rounded-md border border-danger-border px-2 py-1 text-xs text-danger transition hover:bg-danger-dim active:scale-[0.98] lowercase">
+            delete
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function Vault({ authHeader, onNavigate, onLogout, userEmail }) {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(true)
@@ -109,8 +170,28 @@ export default function Vault({ authHeader, onNavigate, onLogout, userEmail }) {
   const [formType, setFormType] = useState("login")
   const [selectedItem, setSelectedItem] = useState(null)
   const [contextMenu, setContextMenu] = useState(null)
+  const [pinned, setPinned] = useState(() => {
+    try {
+      const saved = localStorage.getItem("email_pinned_vault")
+      return saved ? JSON.parse(saved) : []
+    } catch { return [] }
+  })
 
   useEffect(() => { load() }, [])
+
+  useEffect(() => {
+    try { localStorage.setItem("email_pinned_vault", JSON.stringify(pinned)) }
+    catch { /* storage fail */ }
+  }, [pinned])
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
 
   // close any open modal/popup on Esc
   useEffect(() => {
@@ -137,7 +218,18 @@ export default function Vault({ authHeader, onNavigate, onLogout, userEmail }) {
     finally { setLoading(false) }
   }
 
-  const filtered = items.filter(i => {
+  function togglePin(id) {
+    setPinned((prev) => prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id])
+  }
+
+  const sortedItems = [...items].sort((a, b) => {
+    const aPinned = pinned.includes(a.id) ? 0 : 1
+    const bPinned = pinned.includes(b.id) ? 0 : 1
+    if (aPinned !== bPinned) return aPinned - bPinned
+    return 0
+  })
+
+  const filtered = sortedItems.filter(i => {
     if (activeType && i.type !== activeType) return false
     if (!query.trim()) return true
     const q = query.toLowerCase()
@@ -206,6 +298,7 @@ export default function Vault({ authHeader, onNavigate, onLogout, userEmail }) {
       const res = await fetch(`/api/vault/${id}`, { method: "DELETE", headers: { Authorization: authHeader } })
       if (!res.ok) throw new Error("failed to delete")
       setItems(prev => prev.filter(i => i.id !== id))
+      setPinned(prev => prev.filter(pid => pid !== id))
       setConfirmDelete(null)
       setSelectedItem(null)
     } catch (err) { setError(err.message) }
@@ -238,40 +331,14 @@ export default function Vault({ authHeader, onNavigate, onLogout, userEmail }) {
     return items.filter(i => i.type === t).length
   }
 
-  function renderItemFields(item, compact) {
-    const fields = TYPE_FIELDS[item.type] || []
-    if (compact) {
-      const first = fields[0]
-      const second = fields.find(f => f.k !== first?.k && !f.sensitive)
-      return (
-        <>
-          <p className="text-sm text-text-primary lowercase truncate">{item[first?.k] || "untitled"}</p>
-          {second && <p className="text-xs text-text-info lowercase truncate">{item[second.k]}</p>}
-        </>
-      )
-    }
-    return fields.map(f => (
-      <div key={f.k}>
-        <label className="mb-1 block text-xs text-text-info uppercase tracking-wider">{f.l}</label>
-        {f.multiline ? (
-          <p className="text-sm text-text-primary whitespace-pre-wrap lowercase">{item[f.k] || "—"}</p>
-        ) : f.sensitive ? (
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-sm text-text-primary break-all lowercase">
-              {revealed[item.id + f.k] ? item[f.k] || "—" : "•".repeat(Math.min(item[f.k]?.length || 0, 20))}
-            </span>
-            {item[f.k] && (
-              <>
-                <button onClick={() => toggleReveal(item.id + f.k)} className="text-xs text-sky underline lowercase">{revealed[item.id + f.k] ? "hide" : "show"}</button>
-                <button onClick={() => copy(item[f.k])} className="text-xs text-sky underline lowercase">copy</button>
-              </>
-            )}
-          </div>
-        ) : (
-          <p className="text-sm text-text-primary lowercase truncate">{item[f.k] || "—"}</p>
-        )}
-      </div>
-    ))
+  function handleDragEnd(event) {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+    setItems((prev) => {
+      const oldIndex = prev.findIndex((i) => i.id === active.id)
+      const newIndex = prev.findIndex((i) => i.id === over.id)
+      return arrayMove(prev, oldIndex, newIndex)
+    })
   }
 
   return (
@@ -330,31 +397,18 @@ export default function Vault({ authHeader, onNavigate, onLogout, userEmail }) {
               {!query && <p className="mt-1 text-xs text-text-info">add one above, or import from bitwarden/proton pass</p>}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filtered.map(item => (
-                <div key={item.id}
-                  className="cursor-pointer border rounded-lg border-pkm-500 bg-pkm-800 px-4 py-3 transition hover:bg-pkm-700/50 hover:border-gold"
-                  onClick={() => startEdit(item)}
-                  onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); setContextMenu({ item, x: e.clientX, y: e.clientY }) }}>
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0 flex-1">
-                      <span className="mr-1.5 text-xs">{TYPE_ICONS[item.type] || "📄"}</span>
-                      {renderItemFields(item, true)}
-                    </div>
-                    <div className="flex shrink-0 gap-1">
-                      <button onClick={(e) => { e.stopPropagation(); startEdit(item) }}
-                        className="rounded-md border border-pkm-500 px-2 py-1 text-xs text-text-info transition hover:border-sky hover:text-sky active:scale-[0.98] lowercase">
-                        edit
-                      </button>
-                      <button onClick={(e) => { e.stopPropagation(); setConfirmDelete(item.id) }}
-                        className="rounded-md border border-danger-border px-2 py-1 text-xs text-danger transition hover:bg-danger-dim active:scale-[0.98] lowercase">
-                        delete
-                      </button>
-                    </div>
-                  </div>
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+              <SortableContext items={filtered.map(i => i.id)} strategy={rectSortingStrategy}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filtered.map(item => (
+                    <VaultCard key={item.id} item={item} revealed={revealed} pinned={pinned.includes(item.id)}
+                      onToggleReveal={toggleReveal} onCopy={copy}
+                      onEdit={startEdit} onDelete={(id) => setConfirmDelete(id)} onPin={togglePin}
+                      onContextMenu={(item, x, y) => setContextMenu({ item, x, y })} />
+                  ))}
                 </div>
-              ))}
-            </div>
+              </SortableContext>
+            </DndContext>
           )}
         </div>
 
@@ -363,6 +417,11 @@ export default function Vault({ authHeader, onNavigate, onLogout, userEmail }) {
           <div className="fixed inset-0 z-[70]" onContextMenu={(e) => e.preventDefault()} onClick={() => setContextMenu(null)}>
             <div className="absolute rounded-lg border border-pkm-500 bg-pkm-800 p-1.5 shadow-xl"
               style={{ left: Math.min(contextMenu.x, window.innerWidth - 190), top: Math.min(contextMenu.y, window.innerHeight - 220) }}>
+              <button onClick={() => { togglePin(contextMenu.item.id); setContextMenu(null) }}
+                className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-text-primary transition hover:bg-pkm-700 lowercase">
+                📌 {pinned.includes(contextMenu.item.id) ? "unpin" : "pin"}
+              </button>
+              <div className="my-1 border-t border-pkm-500" />
               <button onClick={() => { startEdit(contextMenu.item); setContextMenu(null) }}
                 className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-text-primary transition hover:bg-pkm-700 lowercase">✏️ edit</button>
               <div className="my-1 border-t border-pkm-500" />

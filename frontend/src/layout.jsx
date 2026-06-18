@@ -1,7 +1,8 @@
 const NAV_ITEMS = [
   { key: "inbox", label: "inbox" },
-  { key: "mail", label: "mail" },
+  { key: "ai", label: "ai" },
   { key: "calendar", label: "calendar" },
+  { key: "mail", label: "mail" },
   { key: "passwords", label: "passwords" },
   { key: "aliases", label: "aliases" },
   { key: "settings", label: "settings" },

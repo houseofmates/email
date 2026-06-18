@@ -7,9 +7,19 @@
     "dev": "node --watch server.js"
   },
   "dependencies": {
+    "axios": "^1.18.0",
+    "axios-retry": "^4.5.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "http-proxy-middleware": "^3.0.5"
-  }
+    "http-proxy-middleware": "^3.0.5",
+    "imap": "^0.8.19",
+    "mailparser": "^3.9.9",
+    "nodemailer": "^8.0.11"
+  },
+  "main": "fetch-and-curl.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }

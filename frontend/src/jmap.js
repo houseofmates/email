@@ -30,7 +30,7 @@ function accountId(session) {
 }
 
 async function call(authHeader, session, methodCalls, using = [CORE, MAIL]) {
-  const res = await fetch(session.apiUrl, {
+  const res = await fetch("/jmap/", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
