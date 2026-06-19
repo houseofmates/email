@@ -12,9 +12,10 @@ export default function Login({ onLogin }) {
     setLoading(true)
     setStatus(null)
 
-    // authenticate via stalwart
+    // authenticate via stalwart — use local part only (stalwart v0.16 auths by account name)
     try {
-      const header = "Basic " + btoa(`${email.trim()}:${password}`)
+      const localPart = email.trim().split("@")[0]
+      const header = "Basic " + btoa(`${localPart}:${password}`)
       const res = await fetch("/jmap/session", {
         headers: { Authorization: header },
       })
