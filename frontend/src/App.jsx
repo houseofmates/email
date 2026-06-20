@@ -3,9 +3,10 @@ import Login from "./login"
 import Inbox from "./inbox"
 import Mail from "./mail"
 import Calendar from "./calendar"
-import Passwords from "./passwords"
+import Vault from "./vault"
 import Aliases from "./aliases"
 import Settings from "./settings"
+import AIPage from "./ai"
 
 export const AuthContext = createContext(null)
 
@@ -61,11 +62,12 @@ export default function App() {
 
   return (
     <AuthContext.Provider value={auth}>
-      {page === "inbox" && <Inbox {...shared} />}
+      {page === "inbox" && <Mail {...shared} />}
       {page === "mail" && <Mail {...shared} />}
       {page === "calendar" && <Calendar {...shared} />}
-      {page === "passwords" && <Passwords {...shared} />}
+      {page === "passwords" && <Vault {...shared} />}
       {page === "aliases" && <Aliases {...shared} />}
+      {page === "ai" && <AIPage {...shared} />}
       {page === "settings" && <Settings {...shared} />}
     </AuthContext.Provider>
   )

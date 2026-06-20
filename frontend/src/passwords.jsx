@@ -10,6 +10,58 @@ const TYPES = [
   { key: "identity", label: "identities", icon: "👤" },
 ]
 
+function PasswordsItem({ item, revealed, onToggleReveal, onCopy, onEdit, onDelete, onPin, pinned }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id })
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : 1,
+    position: "relative",
+    zIndex: isDragging ? 10 : "auto",
+  }
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners} className="px-4 py-3 transition hover:bg-pkm-700/50">
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <p className="text-sm text-text-primary lowercase truncate">{item.site}</p>
+          <p className="text-xs text-text-info lowercase truncate">{item.username}</p>
+          <div className="mt-1 flex items-center gap-2">
+            <span className="font-mono text-xs text-text-info">
+              {revealed[item.id] ? item.password : "\u2022".repeat(Math.min(item.password?.length || 0, 16))}
+            </span>
+            <button onClick={(e) => { e.stopPropagation(); onToggleReveal(item.id) }}
+              className="text-xs text-sky underline lowercase">
+              {revealed[item.id] ? "hide" : "show"}
+            </button>
+            <button onClick={(e) => { e.stopPropagation(); onCopy(item.password) }}
+              className="text-xs text-sky underline lowercase">
+              copy
+            </button>
+          </div>
+          {item.notes && <p className="mt-0.5 text-xs text-text-info lowercase">{item.notes}</p>}
+        </div>
+        <div className="flex shrink-0 gap-1">
+          <button onClick={(e) => { e.stopPropagation(); onPin(item.id) }}
+            className={`rounded-md border px-2 py-1 text-xs transition active:scale-[0.98] lowercase ${
+              pinned ? "border-gold text-gold bg-gold/10" : "border-pkm-500 text-text-info hover:border-gold hover:text-gold"
+            }`}>
+            {pinned ? "pinned" : "pin"}
+          </button>
+          <button onClick={(e) => { e.stopPropagation(); onEdit(item) }}
+            className="rounded-md border border-pkm-500 px-2 py-1 text-xs text-text-info transition hover:border-sky hover:text-sky active:scale-[0.98] lowercase">
+            edit
+          </button>
+          <button onClick={(e) => { e.stopPropagation(); onDelete(item.id) }}
+            className="rounded-md border border-danger-border px-2 py-1 text-xs text-danger transition hover:bg-danger-dim active:scale-[0.98] lowercase">
+            delete
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function Passwords({ authHeader, onNavigate, onLogout, userEmail }) {
   const [items, setItems] = useState([])
   const [loading, setLoading] = useState(false)
@@ -84,8 +136,8 @@ export default function Passwords({ authHeader, onNavigate, onLogout, userEmail 
                    <p className="font-bold text-sm text-text-primary lowercase truncate">{i.name}</p>
                    <p className="text-xs text-text-info lowercase mt-1 truncate">{i.username || i.site}</p>
                 </div>
-              ))}
-            </div>
+              </SortableContext>
+            </DndContext>
           )}
         </div>
       </div>
