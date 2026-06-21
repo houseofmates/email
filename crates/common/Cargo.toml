@@ -78,13 +78,13 @@ compact_str = { version = "0.9.0", features = ["rkyv", "serde"] }
 lz4_flex = { version = "0.13", features = ["frame"], default-features = false }
 hickory-proto = "0.26"
 nohash-hasher = "0.2.0"
-quick_cache = "0.6.23"
+quick_cache = "0.6.9"
 rasn = "0.28"
 rasn-cms = "0.28"
 rasn-pkix = "0.28"
 sequoia-openpgp = { version = "2.0", default-features = false, features = ["crypto-rust", "allow-experimental-crypto", "allow-variable-time-crypto"] }
 zxcvbn = "3.1.0"
-pkcs8 = { version = "0.11.0", features = ["alloc", "std"] }
+pkcs8 = { version = "0.10.2", features = ["alloc", "std"] }
 quick-xml = "0.39"
 rand = "0.10"
 

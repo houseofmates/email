@@ -1,5 +1,0 @@
-{$DOMAIN} {
-    reverse_proxy bridge:3099 {
-        header_up X-Forwarded-Proto {scheme}
-    }
-}
