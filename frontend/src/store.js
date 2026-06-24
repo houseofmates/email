@@ -12,6 +12,13 @@ export const useStore = create(
         set({ theme });
       },
     }),
-    { name: 'pkm-storage' }
+    {
+      name: 'pkm-storage',
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          document.documentElement.classList.toggle('dark', state.theme === 'dark');
+        }
+      },
+    }
   )
 )
