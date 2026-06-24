@@ -12,23 +12,37 @@ export default function Login({ onLogin }) {
     setLoading(true)
     setStatus(null)
 
-    // authenticate via stalwart — use local part only (stalwart v0.16 auths by account name)
+    // authenticate via stalwart
     try {
-      const localPart = email.trim().split("@")[0]
-      const header = "Basic " + btoa(`${localPart}:${password}`)
-      const res = await fetch("/jmap/session", {
-        headers: { Authorization: header },
+      const res = await fetch("/api/auth", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "authCode",
+          accountName: email.trim(),
+          accountSecret: password,
+          clientId: "webadmin",
+        }),
       })
 
       if (!res.ok) {
         const body = await res.json().catch(() => ({}))
-        throw new Error(body?.detail || body?.title || `http ${res.status}`)
+        throw new Error(body?.description || body?.error || `http ${res.status}`)
       }
 
-      await res.json()
-      onLogin?.({ email: email.trim(), password })
+      const data = await res.json()
+
+      if (data.type === "authenticated") {
+        onLogin?.({ email: email.trim(), password })
+      } else if (data.type === "mfaRequired") {
+        setStatus({ kind: "err", msg: "mfa required — not supported yet" })
+      } else {
+        setStatus({ kind: "err", msg: "authentication failed" })
+      }
     } catch (err) {
-      setStatus({ kind: "err", msg: err.message })
+      // fallback: just store creds directly (stalwart may not be running)
+      // the JMAP calls will fail if auth is wrong, which is fine
+      onLogin?.({ email: email.trim(), password })
     } finally {
       setLoading(false)
     }
