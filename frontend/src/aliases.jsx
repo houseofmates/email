@@ -38,7 +38,8 @@ export default function Aliases(props) {
           </button>
         ))}</div>
         <div className="p-8 overflow-y-auto flex-1">
-          {loading ? <Skeleton className="h-32 w-full rounded-[2.5rem]" /> :
+          {tab === 'aliases' ? (
+            loading ? <Skeleton className="h-32 w-full rounded-[2.5rem]" /> :
             aliases.length === 0 ?
             <div className="p-20 text-center text-text-info lowercase italic opacity-40 flex flex-col items-center justify-center h-full">
               <div className="text-6xl mb-8">💨</div>no aliases found
@@ -54,7 +55,11 @@ export default function Aliases(props) {
                 </button>
               </div>
             ))
-          }
+          ) : (
+            <div className="p-20 text-center text-text-info lowercase italic opacity-40 flex flex-col items-center justify-center h-full">
+              <div className="text-6xl mb-8">🚧</div>{tab} feature coming soon
+            </div>
+          )}
         </div>
       </div>
     </Layout>

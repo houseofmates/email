@@ -26,7 +26,8 @@ app.use(helmet({
 // Force HTTPS in production (if detected via headers from Caddy)
 app.use((req, res, next) => {
   if (process.env.NODE_ENV === 'production' && req.headers['x-forwarded-proto'] !== 'https') {
-    return res.redirect(`https://${req.headers.host}${req.url}`);
+    const hostname = process.env.HOSTNAME || req.headers.host;
+    return res.redirect(`https://${hostname}${req.url}`);
   }
   next();
 });
@@ -36,21 +37,24 @@ const authLimiter = rateLimit({ windowMs: 15*60*1000, max: 20, message: { error:
 
 const jsonParser = express.json()
 
-// Sanitize logs
-app.use((req, res, next) => {
-  const oldLog = console.log;
-  console.log = (...args) => {
-    const sanitized = args.map(arg => {
-      if (typeof arg === 'string') {
-        return arg.replace(/Authorization: [^ ]+/g, 'Authorization: [REDACTED]')
-                  .replace(/"masterPassword":"[^"]+"/g, '"masterPassword":"[REDACTED]"');
-      }
-      return arg;
-    });
-    oldLog(...sanitized);
-  };
-  next();
-});
+// Sanitize logs - patch console methods once at startup
+const sanitizeArg = (arg) => {
+  if (typeof arg === 'string') {
+    return arg.replace(/Authorization: [^ ]+/g, 'Authorization: [REDACTED]')
+              .replace(/"masterPassword":"[^"]+"/g, '"masterPassword":"[REDACTED]"');
+  }
+  return arg;
+};
+
+const originalLog = console.log;
+const originalError = console.error;
+const originalWarn = console.warn;
+const originalInfo = console.info;
+
+console.log = (...args) => originalLog(...args.map(sanitizeArg));
+console.error = (...args) => originalError(...args.map(sanitizeArg));
+console.warn = (...args) => originalWarn(...args.map(sanitizeArg));
+console.info = (...args) => originalInfo(...args.map(sanitizeArg));
 
 // Option B Decryptor
 app.post('/api/crypto/decrypt', authLimiter, jsonParser, async (req, res) => {
