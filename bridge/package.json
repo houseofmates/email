@@ -2,14 +2,16 @@
   "name": "email-bridge",
   "version": "1.0.0",
   "private": true,
-  "scripts": { "start": "node server.js" },
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-rate-limit": "^7.5.0",
     "helmet": "^8.0.0",
-    "http-proxy-middleware": "^3.0.3",
+    "http-proxy-middleware": "3.0.7",
     "node-fetch": "^3.3.2"
   }
 }
