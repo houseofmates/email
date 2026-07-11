@@ -23,12 +23,6 @@ export default function Settings({ authHeader, onNavigate, onLogout, userEmail }
             </div>
           </div>
 
-          {/* vault import */}
-          <div>
-            <h2 className="text-sm text-gold lowercase mb-2">vault import</h2>
-            <VaultImport authHeader={authHeader} />
-          </div>
-
           {/* mail accounts / forwarding */}
           <div>
             <h2 className="text-sm text-gold lowercase mb-2">mail accounts</h2>
@@ -45,10 +39,8 @@ export default function Settings({ authHeader, onNavigate, onLogout, userEmail }
             </div>
           </div>
 
-          {/* vault stats */}
-          <VaultStats authHeader={authHeader} />
-
-          {/* advanced — connection details */}
+          {/* advanced — hidden behind a click; holds connection details for
+              external desktop / mobile clients */}
           <AdvancedSection userEmail={userEmail} />
 
           {/* about */}
@@ -67,132 +59,15 @@ export default function Settings({ authHeader, onNavigate, onLogout, userEmail }
   )
 }
 
-// ── vault import section ─────────────────────────────
-function VaultImport({ authHeader }) {
-  const [tab, setTab] = useState("proton-csv")
-  const [importing, setImporting] = useState(false)
-  const [result, setResult] = useState(null)
-  const [error, setError] = useState(null)
-
-  async function handleFile(e) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setImporting(true); setResult(null); setError(null)
-    try {
-      const text = await file.text()
-
-      if (tab === "bitwarden") {
-        const res = await fetch("/api/vault/import-bitwarden", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: authHeader },
-          body: JSON.stringify(JSON.parse(text)),
-        })
-        const r = await res.json()
-        if (!res.ok) throw new Error(r.error || "import failed")
-        setResult(r)
-      } else {
-        // proton pass csv
-        const res = await fetch("/api/vault/import-proton", {
-          method: "POST",
-          headers: { "Content-Type": "text/plain", Authorization: authHeader },
-          body: text,
-        })
-        const r = await res.json()
-        if (!res.ok) throw new Error(r.error || "import failed")
-        setResult(r)
-      }
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setImporting(false)
-      // reset file input so the same file can be re-imported
-      e.target.value = ""
-    }
-  }
-
-  return (
-    <div className="rounded-lg border border-pkm-500 bg-pkm-800 p-4 space-y-3">
-      <p className="text-xs text-text-info lowercase leading-relaxed">
-        import existing passwords and secrets from another manager. items are added to
-        your vault and can be edited, pinned, recategorized, or renamed afterwards.
-      </p>
-
-      <div className="flex gap-2">
-        <button onClick={() => setTab("proton-csv")}
-          className={`rounded-md px-3 py-1.5 text-xs transition lowercase ${tab === "proton-csv" ? "bg-gold text-pkm-900" : "bg-pkm-700 text-text-info hover:text-text-primary"}`}>
-          proton pass csv
-        </button>
-        <button onClick={() => setTab("bitwarden")}
-          className={`rounded-md px-3 py-1.5 text-xs transition lowercase ${tab === "bitwarden" ? "bg-gold text-pkm-900" : "bg-pkm-700 text-text-info hover:text-text-primary"}`}>
-          bitwarden json
-        </button>
-      </div>
-
-      <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-pkm-500 px-3 py-3 text-xs text-text-info transition hover:border-sky hover:text-sky lowercase">
-        <input type="file" accept={tab === "bitwarden" ? ".json" : ".csv"} onChange={handleFile} className="hidden" disabled={importing} />
-        {importing ? "importing..." : result ? `imported ${result.imported} items` : `choose ${tab === "bitwarden" ? "bitwarden json" : "proton pass csv"} file`}
-      </label>
-
-      {error && <p className="text-xs text-danger lowercase">{error}</p>}
-
-      {result && (
-        <div className="text-xs text-gold lowercase">
-          <p>{result.imported} of {result.total} items imported</p>
-          <p className="mt-1 text-text-info">go to the vault tab to edit, pin, rename, or recategorize them.</p>
-        </div>
-      )}
-    </div>
-  )
-}
-
-// ── vault stats ──────────────────────────────────────
-function VaultStats({ authHeader }) {
-  const [stats, setStats] = useState(null)
-  const [error, setError] = useState(null)
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch("/api/vault/", { headers: { Authorization: authHeader } })
-        if (!res.ok) throw new Error("failed to load vault")
-        const items = await res.json()
-        const counts = {}
-        for (const i of items) {
-          counts[i.type] = (counts[i.type] || 0) + 1
-        }
-        setStats({ total: items.length, counts })
-      } catch (err) {
-        setError(err.message)
-      }
-    })()
-  }, [authHeader])
-
-  if (!stats) return null
-
-  return (
-    <div>
-      <h2 className="text-sm text-gold lowercase mb-2">vault</h2>
-      <div className="rounded-lg border border-pkm-500 bg-pkm-800 p-4">
-        <p className="text-sm text-text-primary lowercase">{stats.total} total items</p>
-        {Object.entries(stats.counts).map(([type, count]) => (
-          <p key={type} className="text-xs text-text-info lowercase mt-1">{type}: {count}</p>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// ── proton forwarding ────────────────────────────────
+// proton forwarding — pulls proton mail into the local inbox via the bridge.
 function ProtonForwarding({ authHeader }) {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [enabled, setEnabled] = useState(true)
-  const [status, setStatus] = useState(null)
-  const [msg, setMsg] = useState(null)
+  const [status, setStatus] = useState(null) // server status
+  const [msg, setMsg] = useState(null) // { kind, text }
   const [saving, setSaving] = useState(false)
   const [syncing, setSyncing] = useState(false)
-  const [twoFactorPending, setTwoFactorPending] = useState(false)
-  const [twoFactorCode, setTwoFactorCode] = useState("")
 
   async function loadStatus() {
     try {
@@ -205,7 +80,6 @@ function ProtonForwarding({ authHeader }) {
       setStatus(data)
       if (data.email) setEmail(data.email)
       if (typeof data.enabled === "boolean") setEnabled(data.enabled)
-      if (data.twoFactorPending) setTwoFactorPending(true)
     } catch { /* status optional */ }
   }
 
@@ -225,7 +99,7 @@ function ProtonForwarding({ authHeader }) {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || "sync failed")
-      setMsg({ kind: "ok", text: `sync done` })
+      setMsg({ kind: "ok", text: `synced ${data.synced || 0} messages` })
       await loadStatus()
     } catch (err) {
       setMsg({ kind: "err", text: String(err.message || err) })
@@ -242,24 +116,16 @@ function ProtonForwarding({ authHeader }) {
     setSaving(true)
     setMsg(null)
     try {
-      const body = { email: email.trim(), password, enabled }
-      if (twoFactorCode) body.twoFactorCode = twoFactorCode
       const res = await fetch("/api/forwarding/proton-login", {
         method: "POST",
         credentials: "same-origin",
         headers: { "Content-Type": "application/json", Authorization: authHeader },
-        body: JSON.stringify(body),
+        body: JSON.stringify({ email, password, enabled }),
       })
       const data = await res.json()
-      if (data.twoFactorPending) {
-        setTwoFactorPending(true)
-        setMsg({ kind: "err", text: data.error || "2FA code required" })
-        return
-      }
+      if (!res.ok) throw new Error(data.error || "save failed")
       setMsg({ kind: "ok", text: "saved" })
       setPassword("")
-      setTwoFactorCode("")
-      setTwoFactorPending(false)
       await loadStatus()
       if (enabled) await sync()
     } catch (err) {
@@ -272,10 +138,12 @@ function ProtonForwarding({ authHeader }) {
   return (
     <div className="rounded-lg border border-pkm-500 bg-pkm-800 p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-text-primary lowercase">proton mail sync</p>
-        <span className="text-xs text-text-info lowercase">
-          pulls all mail from your proton account (including aliases &amp; connected gmail) into admin@houseofmates.space
-        </span>
+        <p className="text-sm text-text-primary lowercase">proton forwarding</p>
+        {status?.lastSync && (
+          <span className="text-xs text-text-info lowercase">
+            last sync {new Date(status.lastSync).toLocaleString()}
+          </span>
+        )}
       </div>
 
       <input
@@ -293,18 +161,6 @@ function ProtonForwarding({ authHeader }) {
         className={inputClass(false)}
       />
 
-      {twoFactorPending && (
-        <input
-          type="text"
-          inputMode="numeric"
-          placeholder="2FA authentication code"
-          value={twoFactorCode}
-          onChange={(e) => setTwoFactorCode(e.target.value.replace(/\D/g, "").slice(0, 6))}
-          className={inputClass(false)}
-          autoFocus
-        />
-      )}
-
       <label className="flex cursor-pointer items-center gap-2 text-xs text-text-info lowercase">
         <input type="checkbox" checked={enabled} onChange={(e) => setEnabled(e.target.checked)} />
         enable forwarding
@@ -312,7 +168,7 @@ function ProtonForwarding({ authHeader }) {
 
       <div className="flex items-center gap-2">
         <button onClick={save} disabled={saving} className={goldBtn}>
-          {saving ? "saving..." : twoFactorPending ? "verify &amp; save" : "save"}
+          {saving ? "saving..." : "save"}
         </button>
         <button onClick={sync} disabled={syncing || !status?.configured} className={ghostBtn}>
           {syncing ? "syncing..." : "sync now"}
@@ -324,16 +180,16 @@ function ProtonForwarding({ authHeader }) {
       )}
 
       <p className="text-xs text-text-info lowercase leading-relaxed">
-        connects to the proton mail bridge on localhost:1143 via IMAP. if 2FA is enabled
-        on your account, the server will prompt for a one-time code. all emails sent to
-        your proton address — including from aliases and connected gmail accounts — are
-        pulled into your admin@houseofmates.space inbox.
+        pulls proton mail into your inbox. to also send outgoing mail as your
+        proton alias, stalwart's smtp sender / identity must be configured for
+        that address — forwarding here only covers inbound mail.
       </p>
     </div>
   )
 }
 
-// ── advanced section ─────────────────────────────────
+// advanced section — connection details for external desktop / mobile clients.
+// collapsed by default so the settings screen stays calm and uncluttered.
 function AdvancedSection({ userEmail }) {
   const [open, setOpen] = useState(false)
   const host = typeof window !== "undefined" ? window.location.host : "mail.example.com"
@@ -376,7 +232,7 @@ function AdvancedSection({ userEmail }) {
   )
 }
 
-// ── copy row ─────────────────────────────────────────
+// a label + value with a copy button. shows a brief "copied" confirmation.
 function CopyRow({ label, value, multiline }) {
   const [copied, setCopied] = useState(false)
   const timeoutRef = useRef(null)
@@ -410,7 +266,6 @@ function CopyRow({ label, value, multiline }) {
   )
 }
 
-// ── service card ─────────────────────────────────────
 function ServiceCard({ name, endpoint }) {
   return (
     <div className="rounded-lg border border-pkm-500 bg-pkm-800 p-4 flex items-center justify-between">
