@@ -3,23 +3,15 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js"
+    "start": "node server.js"
   },
   "dependencies": {
-    "axios": "^1.18.0",
-    "axios-retry": "^4.5.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "http-proxy-middleware": "^3.0.7",
-    "imap": "^0.8.19",
-    "mailparser": "^3.9.9",
-    "nodemailer": "^9.0.1"
-  },
-  "main": "fetch-and-curl.js",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
+    "http-proxy-middleware": "3.0.7",
+    "node-fetch": "^3.3.2"
+  }
 }
