@@ -10,3 +10,7 @@ sync.sh
 sync.log
 .sync-lock
 .env
+
+# live mail runtime data (container bind mount)
+/stalwart/data/
+/stalwart/db/
