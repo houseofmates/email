@@ -190,6 +190,8 @@ function CalendarInner({ authHeader, onNavigate, onLogout, userEmail }) {
         <EventModal
           initial={editing.event || editing.draft}
           calendars={calendars}
+          events={events}
+          userEmail={userEmail}
           onSave={handleSave}
           onDelete={handleDelete}
           onClose={() => setEditing(null)}

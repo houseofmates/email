@@ -10,3 +10,4 @@ sync.sh
 sync.log
 .sync-lock
 .env
+bridge/node_modules/

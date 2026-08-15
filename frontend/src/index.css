@@ -18,10 +18,31 @@
   --color-danger-border: rgba(255, 68, 68, 0.3);
 }
 
+/* light theme — overrides the same --color-* tokens the utilities reference.
+   dark is canonical (the @theme defaults above); this is the one sanctioned
+   palette extension, gold/sky kept but deepened for contrast on a light paper
+   surface. selector specificity (:root[data-theme]) beats tailwind's :root. */
+:root[data-theme="light"] {
+  --color-pkm-900: #f0ede5; /* app background (warm paper) */
+  --color-pkm-800: #ffffff; /* cards / modals */
+  --color-pkm-700: #f4f1e9; /* inputs / surfaces */
+  --color-pkm-600: #e8e3d6; /* active nav */
+  --color-pkm-500: #d8d2c4; /* borders */
+  --color-gold: #946400;    /* deep amber — readable as text and as button bg */
+  --color-gold-dim: rgba(148, 100, 0, 0.12);
+  --color-sky: #1f6ea8;
+  --color-sky-dim: rgba(31, 110, 168, 0.12);
+  --color-text-primary: #14110a;
+  --color-text-info: #5b6b73; /* desaturated metadata, >=4.5:1 on paper */
+  --color-danger: #c62828;
+  --color-danger-dim: rgba(198, 40, 40, 0.1);
+  --color-danger-border: rgba(198, 40, 40, 0.35);
+}
+
 body {
   margin: 0;
-  background: #050505;
-  color: #ffffff;
+  background: var(--color-pkm-900);
+  color: var(--color-text-primary);
   font-family: "Varela Round", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -93,4 +114,23 @@ input:-webkit-autofill:focus {
 
 .animate-float {
   animation: float 3s ease-in-out infinite;
+}
+
+/* skeleton loading — opacity-only pulse on a solid surface (no gradient/glow,
+   transform/opacity only) so it stays within the calm aesthetic. */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 1.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse-soft,
+  .animate-pulse-gold,
+  .animate-float {
+    animation: none;
+  }
 }

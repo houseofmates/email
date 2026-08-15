@@ -164,7 +164,86 @@ export async function getCalendars() {
 const EVENT_PROPS = [
   "id", "uid", "calendarIds", "title", "description", "start",
   "duration", "timeZone", "showWithoutTime", "location", "status", "color",
+  "recurrenceRules", "alerts", "participants", "replyTo",
 ]
+
+// ── recurrence + reminders (jscalendar) — pure, exported for tests ───────────
+const FREQS = ["daily", "weekly", "monthly", "yearly"]
+
+export function buildRecurrence(freq, interval = 1) {
+  if (!freq || freq === "none" || !FREQS.includes(freq)) return undefined
+  return [{ "@type": "RecurrenceRule", frequency: freq, interval: Math.max(1, Number(interval) || 1) }]
+}
+
+export function parseRecurrence(rules) {
+  const r = Array.isArray(rules) ? rules[0] : null
+  return r?.frequency ? { freq: r.frequency, interval: r.interval || 1 } : { freq: "none", interval: 1 }
+}
+
+// minutes-before -> a single display Alert (offset trigger). 0 = at start time.
+export function buildAlerts(minutes) {
+  if (minutes == null || minutes === "" || minutes === "none") return undefined
+  const m = Number(minutes)
+  if (Number.isNaN(m) || m < 0) return undefined
+  const offset = m === 0 ? "PT0S" : `-PT${m}M`
+  return { "1": { "@type": "Alert", trigger: { "@type": "OffsetTrigger", offset }, action: "display" } }
+}
+
+export function parseAlerts(alerts) {
+  const a = alerts && Object.values(alerts)[0]
+  const off = a?.trigger?.offset
+  if (!off) return null
+  if (/PT0S/.test(off)) return 0
+  let m
+  if ((m = /PT(\d+)M/.exec(off))) return +m[1]
+  if ((m = /PT(\d+)H/.exec(off))) return +m[1] * 60
+  if ((m = /P(\d+)D/.exec(off))) return +m[1] * 1440
+  return null
+}
+
+// ── participants / invitations (jscalendar) ──────────────────────────────────
+const pkey = (email) => "p_" + String(email).toLowerCase().replace(/[^a-z0-9]/g, "")
+
+// build a participants map: the organizer (owner, accepted) + attendees
+// (needs-action, expecting a reply). stalwart sends the imip invitations.
+export function buildParticipants(organizerEmail, attendees) {
+  const emails = (attendees || []).map((e) => String(e).trim().toLowerCase()).filter(Boolean)
+  if (!emails.length) return undefined
+  const parts = {}
+  if (organizerEmail) {
+    parts[pkey(organizerEmail)] = { "@type": "Participant", name: organizerEmail, sendTo: { imip: `mailto:${organizerEmail}` }, roles: { owner: true, attendee: true }, participationStatus: "accepted" }
+  }
+  for (const e of emails) {
+    if (organizerEmail && e === organizerEmail.toLowerCase()) continue
+    parts[pkey(e)] = { "@type": "Participant", sendTo: { imip: `mailto:${e}` }, roles: { attendee: true }, participationStatus: "needs-action", expectReply: true }
+  }
+  return parts
+}
+
+export function parseParticipants(participants) {
+  const list = Object.entries(participants || {}).map(([id, p]) => ({
+    id,
+    email: (p.sendTo?.imip || "").replace(/^mailto:/i, "") || p.email || "",
+    name: p.name || "",
+    status: p.participationStatus || "needs-action",
+    owner: !!p.roles?.owner,
+  }))
+  return { participants: list, organizer: list.find((p) => p.owner)?.email || null, attendees: list.filter((p) => !p.owner) }
+}
+
+// ── free/busy-lite: conflict detection against the user's own events ──────────
+// (true attendee availability needs server scheduling; this flags self-overlap.)
+export function findConflicts(start, end, events, excludeId) {
+  const s = start?.getTime?.() ?? start
+  const e = end?.getTime?.() ?? end
+  if (s == null || e == null) return []
+  return (events || []).filter((ev) => {
+    if (!ev || ev.id === excludeId || ev.allDay) return false
+    const es = ev.start?.getTime?.() ?? 0
+    const ee = ev.end?.getTime?.() ?? es
+    return s < ee && es < e // half-open overlap
+  })
+}
 
 /** normalize a jscalendar event into the shape the ui uses. */
 function normalize(ev) {
@@ -182,6 +261,9 @@ function normalize(ev) {
     allDay,
     color: ev.color || null,
     calendarId: ev.calendarIds ? Object.keys(ev.calendarIds)[0] : null,
+    recurrence: parseRecurrence(ev.recurrenceRules),
+    reminderMinutes: parseAlerts(ev.alerts),
+    ...parseParticipants(ev.participants),
   }
 }
 
@@ -236,6 +318,13 @@ export async function createEvent(ev) {
     obj.timeZone = tz
     obj.duration = toDuration(ev.start, ev.end || new Date(ev.start.getTime() + 3600000))
   }
+  obj.recurrenceRules = buildRecurrence(ev.recurrence?.freq, ev.recurrence?.interval)
+  obj.alerts = buildAlerts(ev.reminderMinutes)
+  const participants = buildParticipants(ev.organizer, ev.attendees)
+  if (participants) {
+    obj.participants = participants
+    if (ev.organizer) obj.replyTo = { imip: `mailto:${ev.organizer}` }
+  }
   const r = await call([["CalendarEvent/set", { accountId: acc, create: { new: obj } }, "0"]])
   const set = r[0]?.[1]
   if (set?.created?.new) return set.created.new.id || true
@@ -260,6 +349,17 @@ export async function updateEvent(id, fields) {
       patch.timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "Etc/UTC"
     }
     if (fields.end) patch.duration = toDuration(fields.start, fields.end)
+  }
+  if (fields.recurrence !== undefined) patch.recurrenceRules = buildRecurrence(fields.recurrence?.freq, fields.recurrence?.interval) || null
+  if (fields.reminderMinutes !== undefined) patch.alerts = buildAlerts(fields.reminderMinutes) || null
+  if (fields.attendees !== undefined) {
+    const parts = buildParticipants(fields.organizer, fields.attendees)
+    patch.participants = parts || null
+    patch.replyTo = parts && fields.organizer ? { imip: `mailto:${fields.organizer}` } : null
+  }
+  // rsvp: update only the user's participation status (accept/tentative/decline)
+  if (fields.myParticipantId && fields.myStatus) {
+    patch[`participants/${fields.myParticipantId}/participationStatus`] = fields.myStatus
   }
   const r = await call([["CalendarEvent/set", { accountId: acc, update: { [id]: patch } }, "0"]])
   const set = r[0]?.[1]
