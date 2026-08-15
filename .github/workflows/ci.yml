@@ -306,7 +306,7 @@ jobs:
 
       - name: Run sccache-cache
         continue-on-error: true
-        uses: mozilla-actions/sccache-action@v0.0.10
+        uses: mozilla-actions/sccache-action@v0.0.11
         with:
           disable_annotations: true
 
@@ -338,7 +338,7 @@ jobs:
 
       - name: Run sccache-cache
         continue-on-error: true
-        uses: mozilla-actions/sccache-action@v0.0.10
+        uses: mozilla-actions/sccache-action@v0.0.11
         with:
           disable_annotations: true
 
